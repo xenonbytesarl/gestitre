@@ -1,0 +1,12 @@
+{
+  "sidebar_logout": "Se déconnecter",
+
+  "sidebar_menu_information": "Mes informations",
+  "sidebar_menu_shareholder": "Liste des actionnaires",
+  "sidebar_menu_movement": "Mouvements de titres",
+  "sidebar_menu_account": "Compte d'actionnaires",
+  "sidebar_menu_history": "Historique des activités",
+  "sidebar_menu_about": "A propos",
+
+  "navbar_connected_user": "Utilisateur"
+}

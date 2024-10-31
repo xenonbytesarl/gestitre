@@ -1,6 +1,6 @@
 import {Navigate, Route, Routes} from "react-router-dom";
 import Layout from "@/layout/Layout.tsx";
-import Dashboard from "@/pages/Dashboard.tsx";
+import Dashboard from "@/pages/dashboard/Dashboard.tsx";
 import NotFound from "@/pages/NotFound.tsx";
 
 

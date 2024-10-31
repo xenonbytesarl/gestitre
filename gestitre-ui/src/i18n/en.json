@@ -1,0 +1,12 @@
+{
+  "sidebar_logout": "Logout",
+
+  "sidebar_menu_information": "My Informations",
+  "sidebar_menu_shareholder": "Shareholders",
+  "sidebar_menu_movement": "Instruments movements",
+  "sidebar_menu_account": "Shareholders accounts",
+  "sidebar_menu_history": "Activity history",
+  "sidebar_menu_about": "About",
+
+  "navbar_connected_user": "User"
+}
