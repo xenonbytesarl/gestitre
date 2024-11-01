@@ -22,8 +22,6 @@ import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.UNDERS
  */
 public record Image(Text name, InputStream content) {
 
-
-
     public Image(@Nonnull Text name, @Nonnull InputStream content) {
         this.name = Objects.requireNonNull(name);
         this.content = Objects.requireNonNull(content);
@@ -53,15 +51,15 @@ public record Image(Text name, InputStream content) {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Image image = (Image) o;
-        return Objects.equals(name, image.name);
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Image image = (Image) object;
+        return Objects.equals(name, image.name) && Objects.equals(content, image.content);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(name);
+        return Objects.hash(name, content);
     }
 }

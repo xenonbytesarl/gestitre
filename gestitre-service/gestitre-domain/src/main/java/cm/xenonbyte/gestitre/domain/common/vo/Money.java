@@ -35,11 +35,15 @@ public record Money(BigDecimal amount) {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Money money = (Money) o;
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Money money = (Money) object;
         return Objects.equals(amount, money.amount);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(amount);
+    }
 }

@@ -32,11 +32,15 @@ public record StorageLocation(Text path) {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        StorageLocation that = (StorageLocation) o;
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        StorageLocation that = (StorageLocation) object;
         return Objects.equals(path, that.path);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(path);
+    }
 }

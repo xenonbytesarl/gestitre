@@ -26,12 +26,6 @@ public record Note(Text text) {
     }
 
     @Override
-    @Nonnull
-    public Text text() {
-        return text;
-    }
-
-    @Override
     public boolean equals(Object object) {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
@@ -39,4 +33,8 @@ public record Note(Text text) {
         return Objects.equals(text, note.text);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(text);
+    }
 }

@@ -6,5 +6,5 @@ package cm.xenonbyte.gestitre.domain.common.vo;
  * @since 30/08/2024
  */
 public enum Direction {
-    ASC, DSC
+    ASC, DESC
 }

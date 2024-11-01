@@ -1,0 +1,40 @@
+package cm.xenonbyte.gestitre.domain.common.vo;
+
+import cm.xenonbyte.gestitre.domain.common.validation.Assert;
+import jakarta.annotation.Nonnull;
+
+import java.util.Objects;
+
+/**
+ * @author bamk
+ * @version 1.0
+ * @since 06/08/2024
+ */
+public record Field(Text text) {
+
+    public Field(@Nonnull Text text) {
+        this.text = Objects.requireNonNull(text);
+    }
+
+    @Nonnull
+    public static Field of(Text field) {
+        Assert.field("Field", field)
+                .notNull()
+                .notNull(field.value())
+                .notEmpty(field.value());
+        return new Field(field);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Field field = (Field) object;
+        return Objects.equals(text, field.text);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(text);
+    }
+}

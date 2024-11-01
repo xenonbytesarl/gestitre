@@ -26,17 +26,15 @@ public record Filename(Text text) {
     }
 
     @Override
-    @Nonnull
-    public Text text() {
-        return text;
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Filename filename = (Filename) object;
+        return Objects.equals(text, filename.text);
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Filename name = (Filename) o;
-        return Objects.equals(text, name.text);
+    public int hashCode() {
+        return Objects.hashCode(text);
     }
-
 }

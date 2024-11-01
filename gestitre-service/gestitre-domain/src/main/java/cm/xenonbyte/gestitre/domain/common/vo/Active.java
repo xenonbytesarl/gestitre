@@ -25,18 +25,15 @@ public record Active(Boolean value) {
     }
 
     @Override
-    @Nonnull
-    public Boolean value() {
-        return value;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Active active = (Active) o;
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Active active = (Active) object;
         return Objects.equals(value, active.value);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(value);
+    }
 }

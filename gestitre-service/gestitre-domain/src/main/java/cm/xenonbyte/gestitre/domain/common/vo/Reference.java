@@ -26,11 +26,15 @@ public record Reference(Text text) {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Reference reference = (Reference) o;
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Reference reference = (Reference) object;
         return Objects.equals(text, reference.text);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(text);
+    }
 }

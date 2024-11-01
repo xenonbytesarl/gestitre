@@ -16,24 +16,24 @@ public record Keyword(Text text) {
     }
 
     @Nonnull
-    public static Keyword of(Text text) {
-        Assert.field("Search keyword", text)
-                .notNull();
-        return new Keyword(text);
+    public static Keyword of(Text keyword) {
+        Assert.field("Search keyword", keyword)
+                .notNull()
+                .notNull(keyword.value());
+        return new Keyword(keyword);
     }
 
-    @Override
-    @Nonnull
-    public Text text() {
-        return text;
-    }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Keyword keyword = (Keyword) o;
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Keyword keyword = (Keyword) object;
         return Objects.equals(text, keyword.text);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(text);
+    }
 }

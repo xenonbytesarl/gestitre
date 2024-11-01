@@ -10,6 +10,7 @@ import java.util.List;
  */
 public final class Assert {
 
+    private static final String EMAIL_REGEX = "^[^@]+@[^@]+\\.[^@]+$";
 
     public static ObjectAssert field(String field, Object value) {
         return new ObjectAssert(field, value);
@@ -78,6 +79,36 @@ public final class Assert {
         public ObjectAssert minLength(int threshold, int length) {
             if(length < threshold ) {
                 throw InvalidFieldBadException.forMinLengthValue(field, threshold);
+            }
+            return this;
+        }
+
+        public ObjectAssert isEmail(String target) {
+            if(!target.matches(EMAIL_REGEX)) {
+                throw InvalidFieldBadException.forEmailValue(field);
+            }
+            return this;
+        }
+
+        public ObjectAssert notPositive(Long target) {
+            if(target < 0 ) {
+                throw InvalidFieldBadException.forPositiveValue(field);
+            }
+            return this;
+        }
+
+        public ObjectAssert notNumberValue(String target) {
+            try {
+                Integer.parseInt(target.replaceAll("\\s", ""));
+                return this;
+            } catch (NumberFormatException nfe) {
+                throw InvalidFieldBadException.forNumberValue(field);
+            }
+        }
+
+        public ObjectAssert notPositive(Integer target) {
+            if(target < 0 ) {
+                throw InvalidFieldBadException.forPositiveValue(field);
             }
             return this;
         }

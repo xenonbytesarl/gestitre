@@ -26,17 +26,15 @@ public record Name(Text text) {
     }
 
     @Override
-    @Nonnull
-    public Text text() {
-        return text;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Name name = (Name) o;
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Name name = (Name) object;
         return Objects.equals(text, name.text);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(text);
+    }
 }

@@ -23,14 +23,6 @@ public record Text(String value) {
         return value.isEmpty();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Text text = (Text) o;
-        return Objects.equals(value, text.value);
-    }
-
 
     public Text concat(@Nonnull String value) {
         return new Text(this.value.concat(value));
@@ -38,5 +30,18 @@ public record Text(String value) {
 
     public Text replace(@Nonnull String oldValue, @Nonnull String newValue) {
         return Text.of(this.value.replace(oldValue, newValue));
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Text text = (Text) object;
+        return Objects.equals(value, text.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(value);
     }
 }
