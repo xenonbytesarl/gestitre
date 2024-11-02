@@ -10,27 +10,27 @@ import java.util.Objects;
  * @version 1.0
  * @since 06/08/2024
  */
-public record Field(Text text) {
+public record PageInfoField(Text text) {
 
-    public Field(@Nonnull Text text) {
+    public PageInfoField(@Nonnull Text text) {
         this.text = Objects.requireNonNull(text);
     }
 
     @Nonnull
-    public static Field of(Text field) {
+    public static PageInfoField of(Text field) {
         Assert.field("Field", field)
                 .notNull()
                 .notNull(field.value())
                 .notEmpty(field.value());
-        return new Field(field);
+        return new PageInfoField(field);
     }
 
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
-        Field field = (Field) object;
-        return Objects.equals(text, field.text);
+        PageInfoField pageInfoField = (PageInfoField) object;
+        return Objects.equals(text, pageInfoField.text);
     }
 
     @Override

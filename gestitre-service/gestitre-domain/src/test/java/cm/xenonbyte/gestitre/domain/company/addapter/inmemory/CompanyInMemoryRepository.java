@@ -1,11 +1,11 @@
 package cm.xenonbyte.gestitre.domain.company.addapter.inmemory;
 
-import cm.xenonbyte.gestitre.domain.common.vo.Direction;
-import cm.xenonbyte.gestitre.domain.common.vo.Field;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoDirection;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoField;
 import cm.xenonbyte.gestitre.domain.common.vo.Keyword;
-import cm.xenonbyte.gestitre.domain.common.vo.Page;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoPage;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfo;
-import cm.xenonbyte.gestitre.domain.common.vo.Size;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoSize;
 import cm.xenonbyte.gestitre.domain.company.entity.Company;
 import cm.xenonbyte.gestitre.domain.company.vo.CompanyId;
 import cm.xenonbyte.gestitre.domain.company.vo.CompanyName;
@@ -48,28 +48,28 @@ public final class CompanyInMemoryRepository implements CompanyRepository {
     }
 
     @Override
-    public PageInfo<Company> findAll(@Nonnull Page page, @Nonnull Size size, @Nonnull Field field, @Nonnull Direction direction) {
+    public PageInfo<Company> findAll(@Nonnull PageInfoPage pageInfoPage, @Nonnull PageInfoSize pageInfoSize, @Nonnull PageInfoField pageInfoField, @Nonnull PageInfoDirection pageInfoDirection) {
         PageInfo<Company> companyPageInfo = new PageInfo<>();
         Comparator<Company> comparing = Comparator.comparing((Company company) -> company.getCompanyName().text().value());
         return companyPageInfo.of(
-                page.value(),
-                size.value(),
+                pageInfoPage.value(),
+                pageInfoSize.value(),
                 companies.values().stream()
-                        .sorted(direction.equals(Direction.ASC) ? comparing: comparing.reversed())
+                        .sorted(pageInfoDirection.equals(PageInfoDirection.ASC) ? comparing: comparing.reversed())
                         .toList()
         );
     }
 
     @Override
-    public PageInfo<Company> search(@Nonnull Page page, @Nonnull Size size, @Nonnull Field field, @Nonnull Direction direction, @Nonnull Keyword keyword) {
+    public PageInfo<Company> search(@Nonnull PageInfoPage pageInfoPage, @Nonnull PageInfoSize pageInfoSize, @Nonnull PageInfoField pageInfoField, @Nonnull PageInfoDirection pageInfoDirection, @Nonnull Keyword keyword) {
         PageInfo<Company> companyPageInfo = new PageInfo<>();
         Comparator<Company> comparing = Comparator.comparing((Company company) -> company.getCompanyName().text().value());
         return companyPageInfo.of(
-                page.value(),
-                size.value(),
+                pageInfoPage.value(),
+                pageInfoSize.value(),
                 companies.values().stream()
                         .filter(company -> company.getCompanyName().text().value().contains(keyword.text().value()))
-                        .sorted(direction.equals(Direction.ASC) ? comparing: comparing.reversed())
+                        .sorted(pageInfoDirection.equals(PageInfoDirection.ASC) ? comparing: comparing.reversed())
                         .toList()
         );
     }
@@ -110,8 +110,8 @@ public final class CompanyInMemoryRepository implements CompanyRepository {
 
     @Nonnull
     @Override
-    public Company update(@Nonnull Company oldCompany, @Nonnull Company newCompany) {
-        companies.replace(oldCompany.getId(), newCompany);
+    public Company update(@Nonnull CompanyId companyId, @Nonnull Company newCompany) {
+        companies.replace(companyId, newCompany);
         return newCompany;
     }
 }

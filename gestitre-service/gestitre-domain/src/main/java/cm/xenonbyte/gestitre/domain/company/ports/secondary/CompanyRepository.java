@@ -1,11 +1,11 @@
 package cm.xenonbyte.gestitre.domain.company.ports.secondary;
 
-import cm.xenonbyte.gestitre.domain.common.vo.Direction;
-import cm.xenonbyte.gestitre.domain.common.vo.Field;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoDirection;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoField;
 import cm.xenonbyte.gestitre.domain.common.vo.Keyword;
-import cm.xenonbyte.gestitre.domain.common.vo.Page;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoPage;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfo;
-import cm.xenonbyte.gestitre.domain.common.vo.Size;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoSize;
 import cm.xenonbyte.gestitre.domain.company.entity.Company;
 import cm.xenonbyte.gestitre.domain.company.vo.CompanyId;
 import cm.xenonbyte.gestitre.domain.company.vo.CompanyName;
@@ -28,9 +28,9 @@ public interface CompanyRepository {
 
     Optional<Company> findById(@Nonnull CompanyId companyId);
 
-    PageInfo<Company> findAll(@Nonnull Page page,@Nonnull Size size,@Nonnull Field field,@Nonnull Direction direction);
+    PageInfo<Company> findAll(@Nonnull PageInfoPage pageInfoPage, @Nonnull PageInfoSize pageInfoSize, @Nonnull PageInfoField pageInfoField, @Nonnull PageInfoDirection pageInfoDirection);
 
-    PageInfo<Company> search(@Nonnull Page page,@Nonnull Size size,@Nonnull Field field,@Nonnull Direction direction,@Nonnull Keyword keyword);
+    PageInfo<Company> search(@Nonnull PageInfoPage pageInfoPage, @Nonnull PageInfoSize pageInfoSize, @Nonnull PageInfoField pageInfoField, @Nonnull PageInfoDirection pageInfoDirection, @Nonnull Keyword keyword);
 
     Boolean existsByEmail(@Nonnull Email email);
 
@@ -42,5 +42,5 @@ public interface CompanyRepository {
 
     Optional<Company> findCompanyByCompanyName(@Nonnull CompanyName companyName);
 
-    @Nonnull Company update(@Nonnull Company oldCompany, @Nonnull Company newCompany);
+    @Nonnull Company update(@Nonnull CompanyId companyId, @Nonnull Company newCompany);
 }

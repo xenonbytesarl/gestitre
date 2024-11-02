@@ -1,11 +1,11 @@
 package cm.xenonbyte.gestitre.domain.company.ports.primary;
 
-import cm.xenonbyte.gestitre.domain.common.vo.Direction;
-import cm.xenonbyte.gestitre.domain.common.vo.Field;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoDirection;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoField;
 import cm.xenonbyte.gestitre.domain.common.vo.Keyword;
-import cm.xenonbyte.gestitre.domain.common.vo.Page;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoPage;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfo;
-import cm.xenonbyte.gestitre.domain.common.vo.Size;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoSize;
 import cm.xenonbyte.gestitre.domain.company.entity.Company;
 import cm.xenonbyte.gestitre.domain.company.event.CompanyCreatedEvent;
 import cm.xenonbyte.gestitre.domain.company.event.CompanyUpdatedEvent;
@@ -23,9 +23,9 @@ public interface CompanyService {
 
     @Nonnull Company findCompanyById(@Nonnull CompanyId companyId);
 
-    PageInfo<Company> findCompanies(@Nonnull Page page, @Nonnull Size size, @Nonnull Field field, @Nonnull Direction direction);
+    PageInfo<Company> findCompanies(@Nonnull PageInfoPage pageInfoPage, @Nonnull PageInfoSize pageInfoSize, @Nonnull PageInfoField pageInfoField, @Nonnull PageInfoDirection pageInfoDirection);
 
-    PageInfo<Company> searchCompanies(@Nonnull Page page, @Nonnull Size size, @Nonnull Field field, @Nonnull Direction direction, @Nonnull Keyword keyword);
+    PageInfo<Company> searchCompanies(@Nonnull PageInfoPage pageInfoPage, @Nonnull PageInfoSize pageInfoSize, @Nonnull PageInfoField pageInfoField, @Nonnull PageInfoDirection pageInfoDirection, @Nonnull Keyword keyword);
 
     @Nonnull CompanyUpdatedEvent updateCompany(@Nonnull CompanyId companyId, @Nonnull Company company);
 }

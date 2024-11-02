@@ -2,12 +2,12 @@ package cm.xenonbyte.gestitre.domain.company;
 
 import cm.xenonbyte.gestitre.domain.common.annotation.DomainService;
 import cm.xenonbyte.gestitre.domain.common.validation.Assert;
-import cm.xenonbyte.gestitre.domain.common.vo.Direction;
-import cm.xenonbyte.gestitre.domain.common.vo.Field;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoDirection;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoField;
 import cm.xenonbyte.gestitre.domain.common.vo.Keyword;
-import cm.xenonbyte.gestitre.domain.common.vo.Page;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoPage;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfo;
-import cm.xenonbyte.gestitre.domain.common.vo.Size;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoSize;
 import cm.xenonbyte.gestitre.domain.company.entity.Company;
 import cm.xenonbyte.gestitre.domain.company.event.CompanyCreatedEvent;
 import cm.xenonbyte.gestitre.domain.company.event.CompanyUpdatedEvent;
@@ -67,41 +67,41 @@ public final class CompanyDomainService implements CompanyService {
 
     @Override
     public PageInfo<Company> findCompanies(
-            @Nonnull Page page,
-            @Nonnull Size size,
-            @Nonnull Field field,
-            @Nonnull Direction direction
+            @Nonnull PageInfoPage pageInfoPage,
+            @Nonnull PageInfoSize pageInfoSize,
+            @Nonnull PageInfoField pageInfoField,
+            @Nonnull PageInfoDirection pageInfoDirection
     ) {
-        Assert.field("Page", page).notNull();
-        Assert.field("Size", size).notNull();
-        Assert.field("Field", field).notNull();
-        Assert.field("Direction", direction).notNull();
-        return companyRepository.findAll(page, size, field, direction);
+        Assert.field("Page", pageInfoPage).notNull();
+        Assert.field("Size", pageInfoSize).notNull();
+        Assert.field("Field", pageInfoField).notNull();
+        Assert.field("Direction", pageInfoDirection).notNull();
+        return companyRepository.findAll(pageInfoPage, pageInfoSize, pageInfoField, pageInfoDirection);
     }
 
     @Override
     public PageInfo<Company> searchCompanies(
-            @Nonnull Page page,
-            @Nonnull Size size,
-            @Nonnull Field field,
-            @Nonnull Direction direction,
+            @Nonnull PageInfoPage pageInfoPage,
+            @Nonnull PageInfoSize pageInfoSize,
+            @Nonnull PageInfoField pageInfoField,
+            @Nonnull PageInfoDirection pageInfoDirection,
             @Nonnull Keyword keyword
     ) {
-        Assert.field("Page", page).notNull();
-        Assert.field("Size", size).notNull();
-        Assert.field("Field", field).notNull();
-        Assert.field("Direction", direction).notNull();
+        Assert.field("Page", pageInfoPage).notNull();
+        Assert.field("Size", pageInfoSize).notNull();
+        Assert.field("Field", pageInfoField).notNull();
+        Assert.field("Direction", pageInfoDirection).notNull();
         Assert.field("Keyword", keyword).notNull();
-        return companyRepository.search(page, size, field, direction, keyword);
+        return companyRepository.search(pageInfoPage, pageInfoSize, pageInfoField, pageInfoDirection, keyword);
     }
 
     @Nonnull
     @Override
     public CompanyUpdatedEvent updateCompany(@Nonnull CompanyId companyId, @Nonnull Company newCompany) {
         newCompany.validateMandatoryFields();
-        Company oldCompany = findCompanyById(companyId);
+        findCompanyById(companyId);
         validateCompany(newCompany);
-        newCompany = companyRepository.update(oldCompany, newCompany);
+        newCompany = companyRepository.update(companyId, newCompany);
         return new CompanyUpdatedEvent(newCompany, ZonedDateTime.now());
     }
 

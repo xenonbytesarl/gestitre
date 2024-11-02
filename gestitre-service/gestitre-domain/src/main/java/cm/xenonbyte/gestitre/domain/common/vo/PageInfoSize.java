@@ -10,25 +10,25 @@ import java.util.Objects;
  * @version 1.0
  * @since 01/11/2024
  */
-public record Size(Integer value) {
-    public Size(@Nonnull Integer value) {
+public record PageInfoSize(Integer value) {
+    public PageInfoSize(@Nonnull Integer value) {
         this.value = Objects.requireNonNull(value);
     }
 
     @Nonnull
-    public static Size of(Integer value) {
+    public static PageInfoSize of(Integer value) {
         Assert.field("Quantity", value)
                 .notNull()
                 .notNull(value)
                 .notPositive(value);
-        return new Size(value);
+        return new PageInfoSize(value);
     }
 
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
-        Size quantity = (Size) object;
+        PageInfoSize quantity = (PageInfoSize) object;
         return Objects.equals(value, quantity.value);
     }
 

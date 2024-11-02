@@ -1,14 +1,14 @@
 package cm.xenonbyte.gestitre.domain.company;
 
 import cm.xenonbyte.gestitre.domain.common.vo.Active;
-import cm.xenonbyte.gestitre.domain.common.vo.Direction;
-import cm.xenonbyte.gestitre.domain.common.vo.Field;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoDirection;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoField;
 import cm.xenonbyte.gestitre.domain.common.vo.Filename;
 import cm.xenonbyte.gestitre.domain.common.vo.Keyword;
 import cm.xenonbyte.gestitre.domain.common.vo.Name;
-import cm.xenonbyte.gestitre.domain.common.vo.Page;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoPage;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfo;
-import cm.xenonbyte.gestitre.domain.common.vo.Size;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoSize;
 import cm.xenonbyte.gestitre.domain.common.vo.StorageLocation;
 import cm.xenonbyte.gestitre.domain.common.vo.Text;
 import cm.xenonbyte.gestitre.domain.company.addapter.inmemory.CertificateTemplateInMemoryRepository;
@@ -175,7 +175,7 @@ final class CompanyDomainTest {
 
         certificateTemplateId = new CertificateTemplateId(UUID.fromString("0192e83e-35ea-7df0-a1ac-9189813e8f62"));
 
-        certificateTemplateRepository.save(
+        certificateTemplateRepository.create(
                 CertificateTemplate.builder()
                         .id(certificateTemplateId)
                         .name(Name.of(Text.of("Certificate template")))
@@ -383,12 +383,12 @@ final class CompanyDomainTest {
         @Test
         void should_success_when_find_all_companies() {
             //Given
-            Page page = Page.of(0);
-            Size size = Size.of(2);
-            Field field = Field.of(Text.of("companyName"));
-            Direction direction = Direction.ASC;
+            PageInfoPage pageInfoPage = PageInfoPage.of(0);
+            PageInfoSize pageInfoSize = PageInfoSize.of(2);
+            PageInfoField pageInfoField = PageInfoField.of(Text.of("companyName"));
+            PageInfoDirection pageInfoDirection = PageInfoDirection.ASC;
             //Act
-            PageInfo<Company> actual = companyService.findCompanies(page, size, field, direction);
+            PageInfo<Company> actual = companyService.findCompanies(pageInfoPage, pageInfoSize, pageInfoField, pageInfoDirection);
             //Then
             assertThat(actual).isNotNull();
             assertThat(actual.getTotalElements()).isPositive();
@@ -403,13 +403,13 @@ final class CompanyDomainTest {
         @Test
         void should_not_empty_when_search_companies_with_existing_keyword() {
             //Given
-            Page page = Page.of(0);
-            Size size = Size.of(2);
-            Field field = Field.of(Text.of("companyName"));
-            Direction direction = Direction.ASC;
+            PageInfoPage pageInfoPage = PageInfoPage.of(0);
+            PageInfoSize pageInfoSize = PageInfoSize.of(2);
+            PageInfoField pageInfoField = PageInfoField.of(Text.of("companyName"));
+            PageInfoDirection pageInfoDirection = PageInfoDirection.ASC;
             Keyword keyword = Keyword.of(Text.of("1"));
             //Act
-            PageInfo<Company> actual = companyService.searchCompanies(page, size, field, direction, keyword);
+            PageInfo<Company> actual = companyService.searchCompanies(pageInfoPage, pageInfoSize, pageInfoField, pageInfoDirection, keyword);
             //Then
             assertThat(actual).isNotNull();
             assertThat(actual.getTotalElements()).isPositive();
@@ -421,13 +421,13 @@ final class CompanyDomainTest {
         @Test
         void should_empty_when_search_companies_with_existing_keyword() {
             //Given
-            Page page = Page.of(0);
-            Size size = Size.of(2);
-            Field field = Field.of(Text.of("companyName"));
-            Direction direction = Direction.ASC;
+            PageInfoPage pageInfoPage = PageInfoPage.of(0);
+            PageInfoSize pageInfoSize = PageInfoSize.of(2);
+            PageInfoField pageInfoField = PageInfoField.of(Text.of("companyName"));
+            PageInfoDirection pageInfoDirection = PageInfoDirection.ASC;
             Keyword keyword = Keyword.of(Text.of("zzz"));
             //Act
-            PageInfo<Company> actual = companyService.searchCompanies(page, size, field, direction, keyword);
+            PageInfo<Company> actual = companyService.searchCompanies(pageInfoPage, pageInfoSize, pageInfoField, pageInfoDirection, keyword);
             //Then
             assertThat(actual).isNotNull();
             assertThat(actual.getTotalElements()).isZero();

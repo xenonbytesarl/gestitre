@@ -1,15 +1,13 @@
 package cm.xenonbyte.gestitre.domain.company.addapter.inmemory;
 
-import cm.xenonbyte.gestitre.domain.common.vo.Direction;
-import cm.xenonbyte.gestitre.domain.common.vo.Field;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoDirection;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoField;
 import cm.xenonbyte.gestitre.domain.common.vo.Keyword;
 import cm.xenonbyte.gestitre.domain.common.vo.Name;
-import cm.xenonbyte.gestitre.domain.common.vo.Page;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoPage;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfo;
-import cm.xenonbyte.gestitre.domain.common.vo.Size;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoSize;
 import cm.xenonbyte.gestitre.domain.company.entity.CertificateTemplate;
-import cm.xenonbyte.gestitre.domain.company.entity.Company;
-import cm.xenonbyte.gestitre.domain.company.event.CertificateTemplateCreatedEvent;
 import cm.xenonbyte.gestitre.domain.company.ports.secondary.CertificateTemplateRepository;
 import cm.xenonbyte.gestitre.domain.company.vo.CertificateTemplateId;
 import jakarta.annotation.Nonnull;
@@ -30,7 +28,7 @@ public final class CertificateTemplateInMemoryRepository implements CertificateT
 
     @Nonnull
     @Override
-    public CertificateTemplate save(@Nonnull CertificateTemplate certificateTemplate) {
+    public CertificateTemplate create(@Nonnull CertificateTemplate certificateTemplate) {
         certificateTemplates.put(certificateTemplate.getId(), certificateTemplate);
         return certificateTemplate;
     }
@@ -56,37 +54,37 @@ public final class CertificateTemplateInMemoryRepository implements CertificateT
 
     @Nonnull
     @Override
-    public PageInfo<CertificateTemplate> findAll(@Nonnull Page page, @Nonnull Size size, @Nonnull Field field, @Nonnull Direction direction) {
+    public PageInfo<CertificateTemplate> findAll(@Nonnull PageInfoPage pageInfoPage, @Nonnull PageInfoSize pageInfoSize, @Nonnull PageInfoField pageInfoField, @Nonnull PageInfoDirection pageInfoDirection) {
         PageInfo<CertificateTemplate> certificateTemplatePageInfo = new PageInfo<>();
         Comparator<CertificateTemplate> comparing = Comparator.comparing((CertificateTemplate certificateTemplate) -> certificateTemplate.getName().text().value());
         return certificateTemplatePageInfo.of(
-                page.value(),
-                size.value(),
+                pageInfoPage.value(),
+                pageInfoSize.value(),
                 certificateTemplates.values().stream()
-                        .sorted(direction.equals(Direction.ASC) ? comparing: comparing.reversed())
+                        .sorted(pageInfoDirection.equals(PageInfoDirection.ASC) ? comparing: comparing.reversed())
                         .toList()
         );
     }
 
     @Nonnull
     @Override
-    public PageInfo<CertificateTemplate> search(@Nonnull Page page, @Nonnull Size size, @Nonnull Field field, @Nonnull Direction direction, @Nonnull Keyword keyword) {
+    public PageInfo<CertificateTemplate> search(@Nonnull PageInfoPage pageInfoPage, @Nonnull PageInfoSize pageInfoSize, @Nonnull PageInfoField pageInfoField, @Nonnull PageInfoDirection pageInfoDirection, @Nonnull Keyword keyword) {
         PageInfo<CertificateTemplate> certificateTemplatePageInfo = new PageInfo<>();
         Comparator<CertificateTemplate> comparing = Comparator.comparing((CertificateTemplate certificateTemplate) -> certificateTemplate.getName().text().value());
         return certificateTemplatePageInfo.of(
-                page.value(),
-                size.value(),
+                pageInfoPage.value(),
+                pageInfoSize.value(),
                 certificateTemplates.values().stream()
                         .filter(certificateTemplate -> certificateTemplate.getName().text().value().contains(keyword.text().value()))
-                        .sorted(direction.equals(Direction.ASC) ? comparing: comparing.reversed())
+                        .sorted(pageInfoDirection.equals(PageInfoDirection.ASC) ? comparing: comparing.reversed())
                         .toList()
         );
     }
 
     @Nonnull
     @Override
-    public CertificateTemplate updateCertificateTemplate(@Nonnull CertificateTemplate oldCertificateTemplate, @Nonnull CertificateTemplate newCertificateTemplate) {
-        certificateTemplates.put(oldCertificateTemplate.getId(), newCertificateTemplate);
+    public CertificateTemplate update(@Nonnull CertificateTemplateId certificateTemplateId, @Nonnull CertificateTemplate newCertificateTemplate) {
+        certificateTemplates.put(certificateTemplateId, newCertificateTemplate);
         return newCertificateTemplate;
     }
 

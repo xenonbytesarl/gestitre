@@ -2,13 +2,13 @@ package cm.xenonbyte.gestitre.domain.company;
 
 import cm.xenonbyte.gestitre.domain.common.annotation.DomainService;
 import cm.xenonbyte.gestitre.domain.common.validation.Assert;
-import cm.xenonbyte.gestitre.domain.common.vo.Direction;
-import cm.xenonbyte.gestitre.domain.common.vo.Field;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoDirection;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoField;
 import cm.xenonbyte.gestitre.domain.common.vo.Keyword;
 import cm.xenonbyte.gestitre.domain.common.vo.Name;
-import cm.xenonbyte.gestitre.domain.common.vo.Page;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoPage;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfo;
-import cm.xenonbyte.gestitre.domain.common.vo.Size;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoSize;
 import cm.xenonbyte.gestitre.domain.company.entity.CertificateTemplate;
 import cm.xenonbyte.gestitre.domain.company.event.CertificateTemplateCreatedEvent;
 import cm.xenonbyte.gestitre.domain.company.event.CertificateTemplateUpdateEvent;
@@ -42,7 +42,7 @@ public final class CertificateTemplateDomainService implements CertificateTempla
         certificateTemplate.validateMandatoryFields();
         validateCertificateTemplate(certificateTemplate);
         certificateTemplate.initializeDefaultValues();
-        certificateTemplate = certificateTemplateRepository.save(certificateTemplate);
+        certificateTemplate = certificateTemplateRepository.create(certificateTemplate);
         return new CertificateTemplateCreatedEvent(certificateTemplate, ZonedDateTime.now());
     }
 
@@ -57,34 +57,34 @@ public final class CertificateTemplateDomainService implements CertificateTempla
     @Nonnull
     @Override
     public PageInfo<CertificateTemplate> findCertificates(
-            @Nonnull Page page,
-            @Nonnull Size size,
-            @Nonnull Field field,
-            @Nonnull Direction direction
+            @Nonnull PageInfoPage pageInfoPage,
+            @Nonnull PageInfoSize pageInfoSize,
+            @Nonnull PageInfoField pageInfoField,
+            @Nonnull PageInfoDirection pageInfoDirection
     ) {
-        Assert.field("Page", page).notNull();
-        Assert.field("Size", size).notNull();
-        Assert.field("Field", field).notNull();
-        Assert.field("Direction", direction).notNull();
+        Assert.field("Page", pageInfoPage).notNull();
+        Assert.field("Size", pageInfoSize).notNull();
+        Assert.field("Field", pageInfoField).notNull();
+        Assert.field("Direction", pageInfoDirection).notNull();
 
-        return certificateTemplateRepository.findAll(page, size, field, direction);
+        return certificateTemplateRepository.findAll(pageInfoPage, pageInfoSize, pageInfoField, pageInfoDirection);
     }
 
     @Nonnull
     @Override
     public PageInfo<CertificateTemplate> searchCertificates(
-            @Nonnull Page page,
-            @Nonnull Size size,
-            @Nonnull Field field,
-            @Nonnull Direction direction,
+            @Nonnull PageInfoPage pageInfoPage,
+            @Nonnull PageInfoSize pageInfoSize,
+            @Nonnull PageInfoField pageInfoField,
+            @Nonnull PageInfoDirection pageInfoDirection,
             @Nonnull Keyword keyword
     ) {
-        Assert.field("Page", page).notNull();
-        Assert.field("Size", size).notNull();
-        Assert.field("Field", field).notNull();
-        Assert.field("Direction", direction).notNull();
+        Assert.field("Page", pageInfoPage).notNull();
+        Assert.field("Size", pageInfoSize).notNull();
+        Assert.field("Field", pageInfoField).notNull();
+        Assert.field("Direction", pageInfoDirection).notNull();
         Assert.field("Keyword", keyword).notNull();
-        return certificateTemplateRepository.search(page, size, field, direction, keyword);
+        return certificateTemplateRepository.search(pageInfoPage, pageInfoSize, pageInfoField, pageInfoDirection, keyword);
     }
 
     @Nonnull
@@ -93,9 +93,9 @@ public final class CertificateTemplateDomainService implements CertificateTempla
             @Nonnull CertificateTemplateId certificateTemplateId,
             @Nonnull CertificateTemplate newCertificateTemplate) {
         newCertificateTemplate.validateMandatoryFields();
-        CertificateTemplate oldCertificateTemplate = findCertificateById(certificateTemplateId);
+        findCertificateById(certificateTemplateId);
         validateCertificateTemplate(newCertificateTemplate);
-        newCertificateTemplate = certificateTemplateRepository.updateCertificateTemplate(oldCertificateTemplate, newCertificateTemplate);
+        newCertificateTemplate = certificateTemplateRepository.update(certificateTemplateId, newCertificateTemplate);
         return new CertificateTemplateUpdateEvent(newCertificateTemplate, ZonedDateTime.now());
     }
 

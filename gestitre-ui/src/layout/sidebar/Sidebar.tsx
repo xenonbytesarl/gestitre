@@ -6,7 +6,7 @@ const Sidebar = () => {
         <div className="fixed flex flex-col justify-start items-start bg-gradient-to-br from-primary/90 to-primary/85 text-primary-foreground h-screen w-80">
             <div className="w-full">
                 <div className="flex flex-col justify-center items-center w-full my-6">
-                    <img className="size-28 rounded-full" src="/images/french.png" alt="..."/>
+                    <img className="pageInfoSize-28 rounded-full" src="/images/french.png" alt="..."/>
                     <p className="flex flex-row justify-center items-center gap-2 w-full my-4 text-lg cursor-pointer">
                         <span className="material-symbols-outlined">logout</span>
                         <span>{t('sidebar_logout')}</span>
@@ -52,7 +52,7 @@ const Sidebar = () => {
                 </div>
             </div>
             <div className="flex flex-col justify-center items-center w-full mt-8">
-                <img className="size-28 rounded-full" src="/images/french.png" alt="..."/>
+                <img className="pageInfoSize-28 rounded-full" src="/images/french.png" alt="..."/>
             </div>
         </div>
     );

@@ -10,25 +10,25 @@ import java.util.Objects;
  * @version 1.0
  * @since 01/11/2024
  */
-public record Page(Integer value) {
-    public Page(@Nonnull Integer value) {
+public record PageInfoPage(Integer value) {
+    public PageInfoPage(@Nonnull Integer value) {
         this.value = Objects.requireNonNull(value);
     }
 
     @Nonnull
-    public static Page of(Integer value) {
+    public static PageInfoPage of(Integer value) {
         Assert.field("Page", value)
                 .notNull()
                 .notNull(value)
                 .notPositive(value);
-        return new Page(value);
+        return new PageInfoPage(value);
     }
 
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
-        Page quantity = (Page) object;
+        PageInfoPage quantity = (PageInfoPage) object;
         return Objects.equals(value, quantity.value);
     }
 
