@@ -12,6 +12,8 @@
         <module>gestitre-domain</module>
         <module>gestitre-infrastructure</module>
         <module>gestitre-resource</module>
+        <module>gestitre-application</module>
+        <module>gestitre-boostrap</module>
     </modules>
 
     <properties>
@@ -42,6 +44,11 @@
                 <version>${quarkus.platform.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>cm.xenonbyte.gestitre</groupId>
+                <artifactId>gestitre-application</artifactId>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>cm.xenonbyte.gestitre</groupId>

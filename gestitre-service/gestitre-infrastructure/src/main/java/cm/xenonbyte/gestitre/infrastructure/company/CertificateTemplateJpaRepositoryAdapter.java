@@ -1,11 +1,11 @@
 package cm.xenonbyte.gestitre.infrastructure.company;
 
-import cm.xenonbyte.gestitre.domain.common.vo.PageInfoDirection;
-import cm.xenonbyte.gestitre.domain.common.vo.PageInfoField;
 import cm.xenonbyte.gestitre.domain.common.vo.Keyword;
 import cm.xenonbyte.gestitre.domain.common.vo.Name;
-import cm.xenonbyte.gestitre.domain.common.vo.PageInfoPage;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfo;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoDirection;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoField;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoPage;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoSize;
 import cm.xenonbyte.gestitre.domain.company.entity.CertificateTemplate;
 import cm.xenonbyte.gestitre.domain.company.ports.secondary.CertificateTemplateRepository;
@@ -15,6 +15,7 @@ import io.quarkus.panache.common.Page;
 import io.quarkus.panache.common.Sort;
 import jakarta.annotation.Nonnull;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Named;
 import jakarta.transaction.Transactional;
 
 import java.util.Map;
@@ -28,6 +29,7 @@ import static cm.xenonbyte.gestitre.infrastructure.common.InsfrastructureConstan
  * @version 1.0
  * @since 01/11/2024
  */
+@Named(value = "certificateTemplateRepository")
 @ApplicationScoped
 public final class CertificateTemplateJpaRepositoryAdapter implements CertificateTemplateRepository {
 

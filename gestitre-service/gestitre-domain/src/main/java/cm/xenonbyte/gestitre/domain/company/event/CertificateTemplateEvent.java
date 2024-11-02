@@ -25,4 +25,12 @@ public abstract class CertificateTemplateEvent implements BaseEvent<CertificateT
         this.certificateTemplate = certificateTemplate;
         this.createdAt = createdAt;
     }
+
+    public CertificateTemplate getCertificateTemplate() {
+        return certificateTemplate;
+    }
+
+    public ZonedDateTime getCreatedAt() {
+        return createdAt;
+    }
 }
