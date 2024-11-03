@@ -2,9 +2,11 @@ package cm.xenonbyte.gestitre.application.common.exception;
 
 import cm.xenonbyte.gestitre.application.common.dto.ErrorApiResponse;
 import cm.xenonbyte.gestitre.application.common.dto.ValidationError;
+import cm.xenonbyte.gestitre.application.common.in18.LocalizationService;
 import cm.xenonbyte.gestitre.domain.common.exception.BaseDomainBadException;
 import cm.xenonbyte.gestitre.domain.common.exception.BaseDomainConflictException;
 import cm.xenonbyte.gestitre.domain.common.exception.BaseDomainNotFoundException;
+import jakarta.inject.Inject;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.ws.rs.core.Response;
@@ -30,6 +32,9 @@ import static jakarta.ws.rs.core.Response.Status.NOT_FOUND;
 @UnwrapException({BaseDomainBadException.class, BaseDomainConflictException.class, BaseDomainNotFoundException.class, ConstraintViolationException.class, Exception.class})
 public class ApplicationUnwrapExceptionMapping {
 
+    @Inject
+    LocalizationService localizationService;
+
     public static final String VALIDATION_ERROR_MESSAGE = "ApplicationUnwrapExceptionMapping.1";
 
     @ServerExceptionMapper
@@ -40,7 +45,7 @@ public class ApplicationUnwrapExceptionMapping {
                         .success(false)
                         .status(BAD_REQUEST.name())
                         .timestamp(ZonedDateTime.now())
-                        .reason(exception.getMessage())
+                        .reason(localizationService.getMessage(exception.getMessage(),exception.getArgs()))
                         .code(BAD_REQUEST.getStatusCode())
                 )
                 .build();
@@ -55,7 +60,7 @@ public class ApplicationUnwrapExceptionMapping {
                                 .success(false)
                                 .status(CONFLICT.name())
                                 .timestamp(ZonedDateTime.now())
-                                .reason(exception.getMessage())
+                                .reason(localizationService.getMessage(exception.getMessage(), exception.getArgs()))
                                 .code(CONFLICT.getStatusCode())
                 )
                 .build();
@@ -70,7 +75,7 @@ public class ApplicationUnwrapExceptionMapping {
                                 .success(false)
                                 .status(NOT_FOUND.name())
                                 .timestamp(ZonedDateTime.now())
-                                .reason(exception.getMessage())
+                                .reason(localizationService.getMessage(exception.getMessage(), exception.getArgs()))
                                 .code(NOT_FOUND.getStatusCode())
                 )
                 .build();
@@ -82,7 +87,7 @@ public class ApplicationUnwrapExceptionMapping {
         List<ValidationError> errors = exception.getConstraintViolations().stream()
                 .map(constraintViolation -> ValidationError.builder()
                         .field(getField(constraintViolation))
-                        .message(getMessage(constraintViolation)).build())
+                        .message(localizationService.getMessage(getMessage(constraintViolation))).build())
                 .collect(Collectors.toUnmodifiableList());
 
         return Response.status(BAD_REQUEST)
@@ -91,7 +96,7 @@ public class ApplicationUnwrapExceptionMapping {
                                 .success(false)
                                 .status(BAD_REQUEST.name())
                                 .timestamp(ZonedDateTime.now())
-                                .reason(VALIDATION_ERROR_MESSAGE)
+                                .reason(localizationService.getMessage(VALIDATION_ERROR_MESSAGE))
                                 .code(BAD_REQUEST.getStatusCode())
                                 .errors(errors)
                 )
@@ -118,7 +123,7 @@ public class ApplicationUnwrapExceptionMapping {
                                 .success(false)
                                 .status(INTERNAL_SERVER_ERROR.name())
                                 .timestamp(ZonedDateTime.now())
-                                .reason(exception.getMessage())
+                                .reason(localizationService.getMessage(exception.getMessage()))
                                 .code(INTERNAL_SERVER_ERROR.getStatusCode())
                 )
                 .build();

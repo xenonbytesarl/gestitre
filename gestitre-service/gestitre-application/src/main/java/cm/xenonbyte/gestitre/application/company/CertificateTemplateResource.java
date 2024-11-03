@@ -1,8 +1,10 @@
 package cm.xenonbyte.gestitre.application.company;
 
 import cm.xenonbyte.gestitre.application.common.dto.SuccessApiResponse;
+import cm.xenonbyte.gestitre.application.common.in18.LocalizationService;
 import cm.xenonbyte.gestitre.application.company.dto.CreateCertificateTemplateViewRequest;
 import cm.xenonbyte.gestitre.application.company.dto.UpdateCertificateTemplateViewRequest;
+import jakarta.annotation.Nonnull;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
@@ -15,6 +17,7 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Response;
 
 import java.time.ZonedDateTime;
+import java.util.Objects;
 import java.util.UUID;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -40,9 +43,13 @@ public class CertificateTemplateResource {
 
 
     private final CertificateTemplateApplicationAdapter certificateTemplateApplicationAdapter;
+    private final LocalizationService localizationService;
 
-    public CertificateTemplateResource(CertificateTemplateApplicationAdapter certificateTemplateApplicationAdapter) {
-        this.certificateTemplateApplicationAdapter = certificateTemplateApplicationAdapter;
+    public CertificateTemplateResource(
+            @Nonnull final CertificateTemplateApplicationAdapter certificateTemplateApplicationAdapter,
+            @Nonnull final LocalizationService localizationService) {
+        this.certificateTemplateApplicationAdapter = Objects.requireNonNull(certificateTemplateApplicationAdapter);
+        this.localizationService = Objects.requireNonNull(localizationService);
     }
 
 
@@ -57,7 +64,7 @@ public class CertificateTemplateResource {
                         .status(CREATED.name())
                         .code(CREATED.getStatusCode())
                         .timestamp(ZonedDateTime.now())
-                        .message(CERTIFICATE_TEMPLATE_CREATED_SUCCESSFULLY)
+                        .message(localizationService.getMessage(CERTIFICATE_TEMPLATE_CREATED_SUCCESSFULLY))
                         .data(of(CONTENT, certificateTemplateApplicationAdapter.createCertificateTemplate(createCertificateTemplateViewRequest)))
                         .build()
                 )
@@ -75,7 +82,7 @@ public class CertificateTemplateResource {
                         .status(OK.name())
                         .code(OK.getStatusCode())
                         .timestamp(ZonedDateTime.now())
-                        .message(CERTIFICATE_TEMPLATE_FIND_SUCCESSFULLY)
+                        .message(localizationService.getMessage(CERTIFICATE_TEMPLATE_FIND_SUCCESSFULLY))
                         .data(of(CONTENT, certificateTemplateApplicationAdapter.findCertificateTemplateById(certificateTemplateId)))
                 )
                 .build();
@@ -95,7 +102,7 @@ public class CertificateTemplateResource {
                                 .status(OK.name())
                                 .code(OK.getStatusCode())
                                 .timestamp(ZonedDateTime.now())
-                                .message(CERTIFICATE_TEMPLATES_FIND_SUCCESSFULLY)
+                                .message(localizationService.getMessage(CERTIFICATE_TEMPLATES_FIND_SUCCESSFULLY))
                                 .data(of(CONTENT, certificateTemplateApplicationAdapter.findCertificateTemplates(page, size, field, direction)))
                 )
                 .build();
@@ -119,7 +126,7 @@ public class CertificateTemplateResource {
                                 .status(OK.name())
                                 .code(OK.getStatusCode())
                                 .timestamp(ZonedDateTime.now())
-                                .message(CERTIFICATE_TEMPLATES_FIND_SUCCESSFULLY)
+                                .message(localizationService.getMessage(CERTIFICATE_TEMPLATES_FIND_SUCCESSFULLY))
                                 .data(of(CONTENT, certificateTemplateApplicationAdapter.searchCertificateTemplates(page, size, field, direction, keyword)))
                 )
                 .build();
@@ -137,7 +144,7 @@ public class CertificateTemplateResource {
                                 .status(OK.name())
                                 .code(OK.getStatusCode())
                                 .timestamp(ZonedDateTime.now())
-                                .message(CERTIFICATE_TEMPLATE_UPDATED_SUCCESSFULLY)
+                                .message(localizationService.getMessage(CERTIFICATE_TEMPLATE_UPDATED_SUCCESSFULLY))
                                 .data(of(CONTENT, certificateTemplateApplicationAdapter.updateCertificateTemplate(certificateTemplateId, updateCertificateTemplateViewRequest)))
                                 .build()
                 )
