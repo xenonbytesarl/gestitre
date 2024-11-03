@@ -2,7 +2,6 @@ package cm.xenonbyte.gestitre.domain.company.vo.contact;
 
 import cm.xenonbyte.gestitre.domain.common.validation.Assert;
 import cm.xenonbyte.gestitre.domain.common.vo.Name;
-import cm.xenonbyte.gestitre.domain.company.vo.address.Fax;
 
 import java.util.Objects;
 
@@ -14,7 +13,7 @@ import java.util.Objects;
 public record Contact(Phone phone, Fax fax, Email email, Name name) {
 
     public Contact(Phone phone, Fax fax, Email email, Name name) {
-        this.phone = Objects.requireNonNull(phone);
+        this.phone = phone;
         this.fax = fax;
         this.email = Objects.requireNonNull(email);
         this.name = Objects.requireNonNull(name);
@@ -48,12 +47,8 @@ public record Contact(Phone phone, Fax fax, Email email, Name name) {
         return new Contact(phone, fax, email, name);
     }
 
-    public static Contact of(Phone phone,  Email email, Name name) {
-        Assert.field("Phone", phone)
-                .notNull()
-                .notNull(phone.text())
-                .notNull(phone.text().value())
-                .notEmpty(phone.text().value());
+    public static Contact of(Email email, Name name) {
+
 
         Assert.field("Email", email)
                 .notNull()
@@ -66,7 +61,7 @@ public record Contact(Phone phone, Fax fax, Email email, Name name) {
                 .notNull(name.text().value())
                 .notEmpty(name.text().value());
 
-        return new Contact(phone, null, email, name);
+        return new Contact(null, null, email, name);
     }
 
     public static Builder builder() {

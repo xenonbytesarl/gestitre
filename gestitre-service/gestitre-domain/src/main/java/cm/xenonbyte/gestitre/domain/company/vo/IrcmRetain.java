@@ -20,9 +20,9 @@ public record IrcmRetain(Money amount) {
     public static IrcmRetain of(Money ircmRetain) {
         Assert.field("IRCM retain", ircmRetain)
                 .notNull()
-                .notNull(ircmRetain.amount())
-                .notNull(ircmRetain.amount())
-                .notPositive(ircmRetain.amount());
+                .notNull(ircmRetain.value())
+                .notNull(ircmRetain.value())
+                .notPositive(ircmRetain.value());
         return new IrcmRetain(ircmRetain);
     }
 

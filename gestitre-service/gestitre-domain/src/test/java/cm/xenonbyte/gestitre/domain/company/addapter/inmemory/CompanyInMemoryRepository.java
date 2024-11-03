@@ -29,7 +29,7 @@ public final class CompanyInMemoryRepository implements CompanyRepository {
     private final Map<CompanyId, Company> companies = new LinkedHashMap();
     @Nonnull
     @Override
-    public Company save(@Nonnull Company company) {
+    public Company create(@Nonnull Company company) {
         companies.put(company.getId(), company);
         return company;
     }
@@ -87,7 +87,7 @@ public final class CompanyInMemoryRepository implements CompanyRepository {
     }
 
     @Override
-    public Optional<Company> findCompanyByPhone(@Nonnull Phone phone) {
+    public Optional<Company> findByPhone(@Nonnull Phone phone) {
         return companies.values().stream().filter(company ->
                 company.getContact().phone().text().value().replaceAll("\\s", "")
                         .equals(phone.text().value().replaceAll("\\s", ""))).
@@ -95,14 +95,14 @@ public final class CompanyInMemoryRepository implements CompanyRepository {
     }
 
     @Override
-    public Optional<Company> findCompanyByEmail(@Nonnull Email email) {
+    public Optional<Company> findByEmail(@Nonnull Email email) {
         return companies.values().stream().filter(company ->
                 company.getContact().email().text().value().equals(email.text().value()))
                 .findFirst();
     }
 
     @Override
-    public Optional<Company> findCompanyByCompanyName(@Nonnull CompanyName companyName) {
+    public Optional<Company> findByCompanyName(@Nonnull CompanyName companyName) {
         return companies.values().stream().filter(company ->
                 company.getCompanyName().text().value().equalsIgnoreCase(companyName.text().value()))
                 .findFirst();

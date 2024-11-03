@@ -21,6 +21,7 @@ import jakarta.annotation.Nonnull;
 
 import java.time.ZonedDateTime;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 /**
  * @author bamk
@@ -29,6 +30,8 @@ import java.util.Objects;
  */
 @DomainService
 public final class CertificateTemplateDomainService implements CertificateTemplateService {
+
+    private static final Logger LOGGER = Logger.getLogger(CertificateTemplateDomainService.class.getName());
 
     private final CertificateTemplateRepository certificateTemplateRepository;
 
@@ -43,15 +46,18 @@ public final class CertificateTemplateDomainService implements CertificateTempla
         validateCertificateTemplate(certificateTemplate);
         certificateTemplate.initializeDefaultValues();
         certificateTemplate = certificateTemplateRepository.create(certificateTemplate);
+        LOGGER.info("Certificate template created with id " + certificateTemplate.getId().getValue());
         return new CertificateTemplateCreatedEvent(certificateTemplate, ZonedDateTime.now());
     }
 
     @Nonnull
     @Override
     public CertificateTemplate findCertificateById(@Nonnull CertificateTemplateId certificateTemplateId) {
-        return certificateTemplateRepository.findById(certificateTemplateId).orElseThrow(
-                () -> new CertificateTemplateNotFoundException(new String[] {certificateTemplateId.toString()})
+        CertificateTemplate certificateTemplate = certificateTemplateRepository.findById(certificateTemplateId).orElseThrow(
+                () -> new CertificateTemplateNotFoundException(new String[]{certificateTemplateId.toString()})
         );
+        LOGGER.info("Certificate template found with id " + certificateTemplateId.getValue());
+        return certificateTemplate;
     }
 
     @Nonnull
@@ -62,12 +68,11 @@ public final class CertificateTemplateDomainService implements CertificateTempla
             @Nonnull PageInfoField pageInfoField,
             @Nonnull PageInfoDirection pageInfoDirection
     ) {
-        Assert.field("Page", pageInfoPage).notNull();
-        Assert.field("Size", pageInfoSize).notNull();
-        Assert.field("Field", pageInfoField).notNull();
-        Assert.field("Direction", pageInfoDirection).notNull();
-
-        return certificateTemplateRepository.findAll(pageInfoPage, pageInfoSize, pageInfoField, pageInfoDirection);
+        validatePageInfoParameters(pageInfoPage, pageInfoSize, pageInfoField, pageInfoDirection);
+        PageInfo<CertificateTemplate> certificateTemplatePageInfo =
+                certificateTemplateRepository.findAll(pageInfoPage, pageInfoSize, pageInfoField, pageInfoDirection);
+        LOGGER.info("Found " + certificateTemplatePageInfo.getTotalElements() + " certificates");
+        return certificateTemplatePageInfo;
     }
 
     @Nonnull
@@ -79,12 +84,12 @@ public final class CertificateTemplateDomainService implements CertificateTempla
             @Nonnull PageInfoDirection pageInfoDirection,
             @Nonnull Keyword keyword
     ) {
-        Assert.field("Page", pageInfoPage).notNull();
-        Assert.field("Size", pageInfoSize).notNull();
-        Assert.field("Field", pageInfoField).notNull();
-        Assert.field("Direction", pageInfoDirection).notNull();
+        validatePageInfoParameters(pageInfoPage, pageInfoSize, pageInfoField, pageInfoDirection);
         Assert.field("Keyword", keyword).notNull();
-        return certificateTemplateRepository.search(pageInfoPage, pageInfoSize, pageInfoField, pageInfoDirection, keyword);
+        PageInfo<CertificateTemplate> certificateTemplatePageInfo =
+                certificateTemplateRepository.search(pageInfoPage, pageInfoSize, pageInfoField, pageInfoDirection, keyword);
+        LOGGER.info("Found " + certificateTemplatePageInfo.getTotalElements() + " certificates for keyword " + keyword.text().value());
+        return certificateTemplatePageInfo;
     }
 
     @Nonnull
@@ -96,6 +101,7 @@ public final class CertificateTemplateDomainService implements CertificateTempla
         findCertificateById(certificateTemplateId);
         validateCertificateTemplate(newCertificateTemplate);
         newCertificateTemplate = certificateTemplateRepository.update(certificateTemplateId, newCertificateTemplate);
+        LOGGER.info("Certificate template updated with id " + newCertificateTemplate.getId().getValue());
         return new CertificateTemplateUpdateEvent(newCertificateTemplate, ZonedDateTime.now());
     }
 
@@ -107,5 +113,16 @@ public final class CertificateTemplateDomainService implements CertificateTempla
         if(certificateTemplateId == null && certificateTemplateRepository.existsByName(name)) {
             throw new CertificateTemplateNameConflictException(new String[] {name.text().value()});
         }
+    }
+
+    private static void validatePageInfoParameters(
+            PageInfoPage pageInfoPage,
+            PageInfoSize pageInfoSize,
+            PageInfoField pageInfoField,
+            PageInfoDirection pageInfoDirection) {
+        Assert.field("Page", pageInfoPage).notNull();
+        Assert.field("Size", pageInfoSize).notNull();
+        Assert.field("Field", pageInfoField).notNull();
+        Assert.field("Direction", pageInfoDirection).notNull();
     }
 }

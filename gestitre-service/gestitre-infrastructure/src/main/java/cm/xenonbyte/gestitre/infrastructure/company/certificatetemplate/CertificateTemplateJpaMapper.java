@@ -1,4 +1,4 @@
-package cm.xenonbyte.gestitre.infrastructure.company;
+package cm.xenonbyte.gestitre.infrastructure.company.certificatetemplate;
 
 import cm.xenonbyte.gestitre.domain.company.entity.CertificateTemplate;
 import jakarta.annotation.Nonnull;

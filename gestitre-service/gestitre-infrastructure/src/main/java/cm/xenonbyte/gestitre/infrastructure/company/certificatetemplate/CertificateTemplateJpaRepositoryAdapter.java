@@ -1,4 +1,4 @@
-package cm.xenonbyte.gestitre.infrastructure.company;
+package cm.xenonbyte.gestitre.infrastructure.company.certificatetemplate;
 
 import cm.xenonbyte.gestitre.domain.common.vo.Keyword;
 import cm.xenonbyte.gestitre.domain.common.vo.Name;
@@ -35,7 +35,7 @@ public final class CertificateTemplateJpaRepositoryAdapter implements Certificat
 
     private final CertificateTemplateJpaRepository certificateTemplateJpaRepository;
     private final CertificateTemplateJpaMapper certificateTemplateJpaMapper;
-    private static final String CERTIFICATE_TEMPLATE_SEARCH_BY_KEYWORD_QUERY = "select ctjpa from CertificateTemplateJpa ctjpa where lower(ctjpa.name) like lower(concat('%',:" + KEYWORD_PARAM + ",'%')) order by ctjpa.";
+    private static final String CERTIFICATE_TEMPLATE_SEARCH_BY_KEYWORD_QUERY = "select ct from CertificateTemplateJpa ct where lower(ct.name) like lower(concat('%',:" + KEYWORD_PARAM + ",'%')) order by ct.";
 
     public CertificateTemplateJpaRepositoryAdapter(
             @Nonnull CertificateTemplateJpaRepository certificateTemplateJpaRepository,
@@ -57,7 +57,7 @@ public final class CertificateTemplateJpaRepositoryAdapter implements Certificat
 
     @Override
     public Boolean existsByName(@Nonnull Name name) {
-        return certificateTemplateJpaRepository.findByName(name.text().value()) != null;
+        return certificateTemplateJpaRepository.existsByName(name.text().value());
     }
 
     @Override
@@ -81,26 +81,26 @@ public final class CertificateTemplateJpaRepositoryAdapter implements Certificat
             @Nonnull PageInfoField pageInfoField,
             @Nonnull PageInfoDirection pageInfoDirection) {
 
-        PanacheQuery<CertificateTemplateJpa> queryResult =
-                certificateTemplateJpaRepository.findAll(
-                        Sort
-                            .by(pageInfoField.text().value())
-                            .direction(
-                                pageInfoDirection.equals(PageInfoDirection.ASC)
-                                    ? Sort.Direction.Ascending
-                                    : Sort.Direction.Descending
-                            )
-                        );
-        PanacheQuery<CertificateTemplateJpa> pageQueryResult =
-                queryResult.page(Page.of(pageInfoPage.value(), pageInfoSize.value()));
+        PanacheQuery<CertificateTemplateJpa> certificateTemplateQueryResult =
+            certificateTemplateJpaRepository.findAll(
+                Sort
+                    .by(pageInfoField.text().value())
+                    .direction(
+                        pageInfoDirection.equals(PageInfoDirection.ASC)
+                            ? Sort.Direction.Ascending
+                            : Sort.Direction.Descending
+                    )
+            );
+        PanacheQuery<CertificateTemplateJpa> certificateTemplatePageQueryResult =
+                certificateTemplateQueryResult.page(Page.of(pageInfoPage.value(), pageInfoSize.value()));
 
         return new PageInfo<>(
-                !pageQueryResult.hasPreviousPage(),
-                !pageQueryResult.hasNextPage(),
+                !certificateTemplatePageQueryResult.hasPreviousPage(),
+                !certificateTemplatePageQueryResult.hasNextPage(),
                 pageInfoSize.value(),
-                queryResult.count(),
-                queryResult.pageCount(),
-                pageQueryResult
+                certificateTemplateQueryResult.count(),
+                certificateTemplateQueryResult.pageCount(),
+                certificateTemplatePageQueryResult
                     .list()
                     .stream()
                     .map(certificateTemplateJpaMapper::toCertificateTemplate)
@@ -118,21 +118,21 @@ public final class CertificateTemplateJpaRepositoryAdapter implements Certificat
             @Nonnull Keyword keyword) {
 
         String orderBy = pageInfoField.text().value() + " " + (pageInfoDirection.equals(PageInfoDirection.ASC) ? "asc" : "desc");
-        PanacheQuery<CertificateTemplateJpa> queryResult =
+        PanacheQuery<CertificateTemplateJpa> certificateTemplateQueryResult =
                 certificateTemplateJpaRepository.find(
                         CERTIFICATE_TEMPLATE_SEARCH_BY_KEYWORD_QUERY + orderBy,
                         Map.of(KEYWORD_PARAM, keyword.text().value())
                 );
-        PanacheQuery<CertificateTemplateJpa> pageQueryResult =
-                queryResult.page(Page.of(pageInfoPage.value(), pageInfoSize.value()));
+        PanacheQuery<CertificateTemplateJpa> certificateTemplatePageQueryResult =
+                certificateTemplateQueryResult.page(Page.of(pageInfoPage.value(), pageInfoSize.value()));
 
         return new PageInfo<>(
-                !pageQueryResult.hasPreviousPage(),
-                !pageQueryResult.hasNextPage(),
+                !certificateTemplatePageQueryResult.hasPreviousPage(),
+                !certificateTemplatePageQueryResult.hasNextPage(),
                 pageInfoSize.value(),
-                queryResult.count(),
-                queryResult.pageCount(),
-                pageQueryResult
+                certificateTemplateQueryResult.count(),
+                certificateTemplateQueryResult.pageCount(),
+                certificateTemplatePageQueryResult
                         .list()
                         .stream()
                         .map(certificateTemplateJpaMapper::toCertificateTemplate)

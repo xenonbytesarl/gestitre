@@ -53,7 +53,7 @@ public final class Company extends BaseEntity<CompanyId> {
     private Filename logoFilename;
     private Filename stampFilename;
     private NetDividendStock netDividendStock;
-    private GrossDividendStockUnit grossDividendByStock;
+    private GrossDividendStockUnit grossDividendStockUnit;
     private NominalValue nominalValue;
     private Capitalization capitalization;
     private Quantity stockQuantity;
@@ -87,7 +87,7 @@ public final class Company extends BaseEntity<CompanyId> {
         logoFilename = builder.logoFilename;
         stampFilename = builder.stampFilename;
         netDividendStock = builder.netDividendStock;
-        grossDividendByStock = builder.grossDividendByStock;
+        grossDividendStockUnit = builder.grossDividendStockUnit;
         nominalValue = builder.nominalValue;
         capitalization = builder.capitalization;
         stockQuantity = builder.stockQuantity;
@@ -159,8 +159,8 @@ public final class Company extends BaseEntity<CompanyId> {
         return netDividendStock;
     }
 
-    public GrossDividendStockUnit getGrossDividendByStock() {
-        return grossDividendByStock;
+    public GrossDividendStockUnit getGrossDividendStockUnit() {
+        return grossDividendStockUnit;
     }
 
     public NominalValue getNominalValue() {
@@ -232,7 +232,7 @@ public final class Company extends BaseEntity<CompanyId> {
         private Filename logoFilename;
         private Filename stampFilename;
         private NetDividendStock netDividendStock;
-        private GrossDividendStockUnit grossDividendByStock;
+        private GrossDividendStockUnit grossDividendStockUnit;
         private NominalValue nominalValue;
         private Capitalization capitalization;
         private Quantity stockQuantity;
@@ -322,8 +322,8 @@ public final class Company extends BaseEntity<CompanyId> {
             return this;
         }
 
-        public Builder grossDividendByStock(GrossDividendStockUnit val) {
-            grossDividendByStock = val;
+        public Builder grossDividendStockUnit(GrossDividendStockUnit val) {
+            grossDividendStockUnit = val;
             return this;
         }
 

@@ -20,9 +20,9 @@ public record GrossDividendStockUnit(Money amount) {
     public static GrossDividendStockUnit of(Money grossDividendStockUnit) {
         Assert.field("Gross dividend stock unit", grossDividendStockUnit)
                 .notNull()
-                .notNull(grossDividendStockUnit.amount())
-                .notNull(grossDividendStockUnit.amount())
-                .notPositive(grossDividendStockUnit.amount());
+                .notNull(grossDividendStockUnit.value())
+                .notNull(grossDividendStockUnit.value())
+                .notPositive(grossDividendStockUnit.value());
         return new GrossDividendStockUnit(grossDividendStockUnit);
     }
 

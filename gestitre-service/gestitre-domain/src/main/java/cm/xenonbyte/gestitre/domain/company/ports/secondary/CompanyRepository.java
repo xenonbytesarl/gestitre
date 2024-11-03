@@ -22,7 +22,7 @@ import java.util.Optional;
  */
 public interface CompanyRepository {
     @Nonnull
-    Company save(@Nonnull Company company);
+    Company create(@Nonnull Company company);
 
     Boolean existsByCompanyName(CompanyName companyName);
 
@@ -36,11 +36,11 @@ public interface CompanyRepository {
 
     Boolean existsByPhone(@Nonnull Phone phone);
 
-    Optional<Company> findCompanyByPhone(@Nonnull Phone phone);
+    Optional<Company> findByPhone(@Nonnull Phone phone);
 
-    Optional<Company> findCompanyByEmail(@Nonnull Email email);
+    Optional<Company> findByEmail(@Nonnull Email email);
 
-    Optional<Company> findCompanyByCompanyName(@Nonnull CompanyName companyName);
+    Optional<Company> findByCompanyName(@Nonnull CompanyName companyName);
 
     @Nonnull Company update(@Nonnull CompanyId companyId, @Nonnull Company newCompany);
 }

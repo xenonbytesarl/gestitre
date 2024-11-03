@@ -11,27 +11,26 @@ import java.util.Objects;
  * @version 1.0
  * @since 01/11/2024
  */
-public record Fax(Text text) {
-    public Fax(@Nonnull Text text) {
+public record Street(Text text) {
+    public Street(@Nonnull Text text) {
         this.text = Objects.requireNonNull(text);
     }
 
     @Nonnull
-    public static Fax of(Text fax) {
-        Assert.field("Fax", fax)
+    public static Street of(Text street) {
+        Assert.field("Street", street)
                 .notNull()
-                .notNull(fax.value())
-                .notEmpty(fax.value())
-                .notNumberValue(fax.value());
-        return new Fax(fax);
+                .notNull(street.value())
+                .notEmpty(street.value());
+        return new Street(street);
     }
 
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
-        Fax fax = (Fax) object;
-        return Objects.equals(text, fax.text);
+        Street street = (Street) object;
+        return Objects.equals(text, street.text);
     }
 
     @Override

@@ -29,6 +29,7 @@ import jakarta.annotation.Nonnull;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 /**
  * @author bamk
@@ -37,6 +38,9 @@ import java.util.Optional;
  */
 @DomainService
 public final class CompanyDomainService implements CompanyService {
+
+    private static final Logger LOGGER = Logger.getLogger(CompanyDomainService.class.getName());
+
     private final CompanyRepository companyRepository;
     private final CertificateTemplateRepository certificateTemplateRepository;
 
@@ -53,16 +57,20 @@ public final class CompanyDomainService implements CompanyService {
         company.validateMandatoryFields();
         validateCompany(company);
         company.initializeDefaultValues();
-        companyRepository.save(company);
+        companyRepository.create(company);
+        LOGGER.info("Company is created with id " + company.getId().getValue());
+        //TODO fire create event to audit manager
         return new CompanyCreatedEvent(company, ZonedDateTime.now());
     }
 
     @Nonnull
     @Override
     public Company findCompanyById(@Nonnull CompanyId companyId) {
-        return companyRepository.findById(companyId).orElseThrow(
-                () -> new CompanyNotFoundException(new String[] {companyId.getValue().toString()})
+        Company company = companyRepository.findById(companyId).orElseThrow(
+                () -> new CompanyNotFoundException(new String[]{companyId.getValue().toString()})
         );
+        LOGGER.info("Company found with id " + companyId.getValue());
+        return company;
     }
 
     @Override
@@ -72,10 +80,9 @@ public final class CompanyDomainService implements CompanyService {
             @Nonnull PageInfoField pageInfoField,
             @Nonnull PageInfoDirection pageInfoDirection
     ) {
-        Assert.field("Page", pageInfoPage).notNull();
-        Assert.field("Size", pageInfoSize).notNull();
-        Assert.field("Field", pageInfoField).notNull();
-        Assert.field("Direction", pageInfoDirection).notNull();
+        validatePageParameters(pageInfoPage, pageInfoSize, pageInfoField, pageInfoDirection);
+        PageInfo<Company> companyPageInfo = companyRepository.findAll(pageInfoPage, pageInfoSize, pageInfoField, pageInfoDirection);
+        LOGGER.info("Found " + companyPageInfo.getTotalElements() + " companies");
         return companyRepository.findAll(pageInfoPage, pageInfoSize, pageInfoField, pageInfoDirection);
     }
 
@@ -87,12 +94,11 @@ public final class CompanyDomainService implements CompanyService {
             @Nonnull PageInfoDirection pageInfoDirection,
             @Nonnull Keyword keyword
     ) {
-        Assert.field("Page", pageInfoPage).notNull();
-        Assert.field("Size", pageInfoSize).notNull();
-        Assert.field("Field", pageInfoField).notNull();
-        Assert.field("Direction", pageInfoDirection).notNull();
+        validatePageParameters(pageInfoPage, pageInfoSize, pageInfoField, pageInfoDirection);
         Assert.field("Keyword", keyword).notNull();
-        return companyRepository.search(pageInfoPage, pageInfoSize, pageInfoField, pageInfoDirection, keyword);
+        PageInfo<Company> companyPageInfo = companyRepository.search(pageInfoPage, pageInfoSize, pageInfoField, pageInfoDirection, keyword);
+        LOGGER.info("Found " + companyPageInfo.getTotalElements() + " companies for keyword " + keyword.text().value());
+        return companyPageInfo;
     }
 
     @Nonnull
@@ -102,6 +108,8 @@ public final class CompanyDomainService implements CompanyService {
         findCompanyById(companyId);
         validateCompany(newCompany);
         newCompany = companyRepository.update(companyId, newCompany);
+        LOGGER.info("Company updated with id " + newCompany.getId().getValue());
+        //TODO fire update company event to audit manager
         return new CompanyUpdatedEvent(newCompany, ZonedDateTime.now());
     }
 
@@ -119,7 +127,7 @@ public final class CompanyDomainService implements CompanyService {
             throw new CompanyPhoneConflictException(new String[] {phone.text().value()});
         }
 
-        Optional<Company> oldCompany = companyRepository.findCompanyByPhone(phone);
+        Optional<Company> oldCompany = companyRepository.findByPhone(phone);
         if(companyId != null && oldCompany.isPresent() && !oldCompany.get().getId().equals(companyId)) {
             throw new CompanyPhoneConflictException(new String[] {phone.text().value()});
         }
@@ -130,7 +138,7 @@ public final class CompanyDomainService implements CompanyService {
             throw new CompanyEmailConflictException(new String[] {email.text().value()});
         }
 
-        Optional<Company> oldCompany = companyRepository.findCompanyByEmail(email);
+        Optional<Company> oldCompany = companyRepository.findByEmail(email);
         if(companyId != null && oldCompany.isPresent() && !oldCompany.get().getId().equals(companyId)) {
             throw new CompanyEmailConflictException(new String[] {email.text().value()});
         }
@@ -141,7 +149,7 @@ public final class CompanyDomainService implements CompanyService {
             throw new CompanyNameConflictException(new String[] {companyName.text().value()});
         }
 
-        Optional<Company> oldCompany = companyRepository.findCompanyByCompanyName(companyName);
+        Optional<Company> oldCompany = companyRepository.findByCompanyName(companyName);
         if(companyId != null && oldCompany.isPresent() && !oldCompany.get().getId().equals(companyId)) {
             throw new CompanyNameConflictException(new String[] {companyName.text().value()});
         }
@@ -151,5 +159,16 @@ public final class CompanyDomainService implements CompanyService {
         if(Boolean.FALSE.equals(certificateTemplateRepository.existsById(certificateTemplateId))) {
             throw new CertificateTemplateNotFoundException(new String[] {certificateTemplateId.getValue().toString()});
         }
+    }
+
+    private static void validatePageParameters(
+            PageInfoPage pageInfoPage,
+            PageInfoSize pageInfoSize,
+            PageInfoField pageInfoField,
+            PageInfoDirection pageInfoDirection) {
+        Assert.field("Page", pageInfoPage).notNull();
+        Assert.field("Size", pageInfoSize).notNull();
+        Assert.field("Field", pageInfoField).notNull();
+        Assert.field("Direction", pageInfoDirection).notNull();
     }
 }

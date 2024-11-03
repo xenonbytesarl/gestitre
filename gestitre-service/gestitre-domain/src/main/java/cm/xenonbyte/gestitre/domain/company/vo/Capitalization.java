@@ -12,27 +12,26 @@ import java.util.Objects;
  * @version 1.0
  * @since 01/11/2024
  */
-public record Capitalization(Money amount, Quantity stockQuantity) {
-    public Capitalization(@Nonnull Money amount, @Nonnull Quantity stockQuantity) {
-        this.amount = Objects.requireNonNull(amount);
+public record Capitalization(NominalValue nominalValue, Quantity stockQuantity) {
+    public Capitalization(@Nonnull NominalValue nominalValue, @Nonnull Quantity stockQuantity) {
+        this.nominalValue = Objects.requireNonNull(nominalValue);
         this.stockQuantity = Objects.requireNonNull(stockQuantity);
     }
 
     @Nonnull
-    public static Capitalization of(Money capitalization, Quantity stockQuantity) {
-        Assert.field("Capitalization", capitalization)
+    public static Capitalization of(NominalValue nominalValue, Quantity stockQuantity) {
+        Assert.field("Nominative value", nominalValue)
                 .notNull()
-                .notNull(capitalization.amount())
-                .notNull(capitalization.amount())
-                .notPositive(capitalization.amount());
+                .notNull(nominalValue.amount());
+
         Assert.field("Stock", stockQuantity)
                 .notNull()
-                .notNull(capitalization.amount());
-        return new Capitalization(capitalization, stockQuantity);
+                .notNull(stockQuantity.value());
+        return new Capitalization(nominalValue, stockQuantity);
     }
 
     public Money getAmount() {
-        return new Money(amount.amount().multiply(BigDecimal.valueOf(stockQuantity.value())));
+        return new Money(nominalValue.amount().value().multiply(BigDecimal.valueOf(stockQuantity.value())));
     }
 
     @Override
@@ -40,11 +39,11 @@ public record Capitalization(Money amount, Quantity stockQuantity) {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
         Capitalization that = (Capitalization) object;
-        return Objects.equals(amount, that.amount) && Objects.equals(stockQuantity, that.stockQuantity);
+        return Objects.equals(stockQuantity, that.stockQuantity) && Objects.equals(nominalValue, that.nominalValue);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(amount, stockQuantity);
+        return Objects.hash(nominalValue, stockQuantity);
     }
 }

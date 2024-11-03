@@ -1,0 +1,38 @@
+-- Create table t_company
+create table if not exists t_company (
+    c_id UUID not null ,
+    c_created_at timestamp with time zone not null ,
+    c_updated_at timestamp with time zone,
+    c_company_name varchar(64) not null ,
+    c_company_manager_name varchar(64) not null ,
+    c_licence varchar(64) not null ,
+    c_legal_form varchar(64) not null ,
+    c_address_street varchar(128) ,
+    c_address_city varchar(64) not null ,
+    c_address_zip_code varchar(32) not null ,
+    c_address_country varchar(64) not null ,
+    c_contact_phone varchar(32) ,
+    c_contact_fax varchar(64) ,
+    c_contact_email varchar(128) not null ,
+    c_contact_name varchar(64) not null ,
+    c_activity varchar(128) ,
+    c_registration_number varchar(64) ,
+    c_website_url varchar(64) ,
+    c_isin_code varchar(64) ,
+    c_tax_number varchar(64) ,
+    c_logo_filename varchar(512) not null ,
+    c_stamp_filename varchar(512) not null ,
+    c_gross_dividend_stock_unit numeric(38,2) ,
+    c_nominal_value numeric(38,2) ,
+    c_stock_quantity bigint ,
+    c_active boolean not null ,
+    c_certificate_template_id uuid ,
+    constraint Pk_t_company_c_id primary key (c_id),
+    constraint Uk_t_company_c_company_name unique (c_company_name),
+    constraint Uk_t_company_c_contact_email unique (c_contact_email),
+    constraint Uk_t_company_c_contact_fax unique (c_contact_fax),
+    constraint Uk_t_company_c_contact_phone unique (c_contact_phone)
+);
+
+--- Foreign key constraint for t_company
+ALTER TABLE t_company ADD CONSTRAINT Fk_t_company_c_certificate_template_id FOREIGN KEY (c_certificate_template_id) REFERENCES t_company (c_id);

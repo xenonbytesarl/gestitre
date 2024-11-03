@@ -20,9 +20,9 @@ public record NetDividendStock(Money amount) {
     public static NetDividendStock of(Money netDividendStock) {
         Assert.field("NominalValue", netDividendStock)
                 .notNull()
-                .notNull(netDividendStock.amount())
-                .notNull(netDividendStock.amount())
-                .notPositive(netDividendStock.amount());
+                .notNull(netDividendStock.value())
+                .notNull(netDividendStock.value())
+                .notPositive(netDividendStock.value());
         return new NetDividendStock(netDividendStock);
     }
 

@@ -20,9 +20,9 @@ public record NominalValue(Money amount) {
     public static NominalValue of(Money nominalValue) {
         Assert.field("Nominal Value", nominalValue)
                 .notNull()
-                .notNull(nominalValue.amount())
-                .notNull(nominalValue.amount())
-                .notPositive(nominalValue.amount());
+                .notNull(nominalValue.value())
+                .notNull(nominalValue.value())
+                .notPositive(nominalValue.value());
         return new NominalValue(nominalValue);
     }
 

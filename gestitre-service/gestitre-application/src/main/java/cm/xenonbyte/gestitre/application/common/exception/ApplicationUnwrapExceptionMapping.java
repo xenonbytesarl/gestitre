@@ -10,6 +10,7 @@ import jakarta.inject.Inject;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.ws.rs.core.Response;
+import lombok.extern.slf4j.Slf4j;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
 import org.jboss.resteasy.reactive.server.UnwrapException;
 
@@ -28,7 +29,7 @@ import static jakarta.ws.rs.core.Response.Status.NOT_FOUND;
  * @version 1.0
  * @since 02/11/2024
  */
-
+@Slf4j
 @UnwrapException({BaseDomainBadException.class, BaseDomainConflictException.class, BaseDomainNotFoundException.class, ConstraintViolationException.class, Exception.class})
 public class ApplicationUnwrapExceptionMapping {
 
@@ -39,6 +40,7 @@ public class ApplicationUnwrapExceptionMapping {
 
     @ServerExceptionMapper
     public Response unwrapBaseDomainBadException(BaseDomainBadException exception) {
+        log.error(exception.getMessage(), exception);
         return Response.status(BAD_REQUEST)
                 .entity(
                     ErrorApiResponse.builder()
@@ -54,6 +56,7 @@ public class ApplicationUnwrapExceptionMapping {
 
     @ServerExceptionMapper
     public Response unwrapBaseDomainConflictException(BaseDomainConflictException exception) {
+        log.error(exception.getMessage(), exception);
         return Response.status(CONFLICT)
                 .entity(
                         ErrorApiResponse.builder()
@@ -69,6 +72,7 @@ public class ApplicationUnwrapExceptionMapping {
 
     @ServerExceptionMapper
     public Response unwrapBaseDomainNotFoundException(BaseDomainNotFoundException exception) {
+        log.error(exception.getMessage(), exception);
         return Response.status(NOT_FOUND)
                 .entity(
                         ErrorApiResponse.builder()
@@ -89,7 +93,7 @@ public class ApplicationUnwrapExceptionMapping {
                         .field(getField(constraintViolation))
                         .message(localizationService.getMessage(getMessage(constraintViolation))).build())
                 .collect(Collectors.toUnmodifiableList());
-
+        log.error(exception.getMessage(), exception);
         return Response.status(BAD_REQUEST)
                 .entity(
                         ErrorApiResponse.builder()
@@ -117,6 +121,7 @@ public class ApplicationUnwrapExceptionMapping {
 
     @ServerExceptionMapper
     public Response unwrapException(Exception exception) {
+        log.error(exception.getMessage(), exception);
         return Response.status(INTERNAL_SERVER_ERROR)
                 .entity(
                         ErrorApiResponse.builder()

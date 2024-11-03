@@ -168,10 +168,10 @@ final class CompanyDomainTest {
                 .active(Active.with(true))
                 .build();
 
-        companyRepository.save(company);
-        companyRepository.save(company1);
-        companyRepository.save(company2);
-        companyRepository.save(company3);
+        companyRepository.create(company);
+        companyRepository.create(company1);
+        companyRepository.create(company2);
+        companyRepository.create(company3);
 
         certificateTemplateId = new CertificateTemplateId(UUID.fromString("0192e83e-35ea-7df0-a1ac-9189813e8f62"));
 
