@@ -13,8 +13,6 @@ import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.SLASH;
  */
 public record StorageLocation(Text path) {
 
-    public static final String ROOT_STORAGE_PATH = System.getProperty("user.home").concat("/gestitre");
-
     public StorageLocation(@Nonnull Text path) {
         this.path = Objects.requireNonNull(path);
     }
@@ -27,8 +25,8 @@ public record StorageLocation(Text path) {
         return new StorageLocation(location);
     }
 
-    public static StorageLocation computeStoragePtah(String location) {
-        return new StorageLocation(Text.of(ROOT_STORAGE_PATH).concat(SLASH).concat(location));
+    public static StorageLocation computeStoragePtah(String root, String location) {
+        return new StorageLocation(Text.of(root).concat(SLASH).concat(location));
     }
 
     @Override

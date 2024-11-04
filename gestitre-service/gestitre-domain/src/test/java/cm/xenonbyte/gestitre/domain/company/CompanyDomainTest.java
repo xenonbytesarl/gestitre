@@ -45,8 +45,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
-import static cm.xenonbyte.gestitre.domain.company.entity.Company.DEFAULT_LOGO_PARENT_LOCATION;
-import static cm.xenonbyte.gestitre.domain.company.entity.Company.DEFAULT_STAMP_PARENT_LOCATION;
+
 import static cm.xenonbyte.gestitre.domain.company.ports.CertificateTemplateNotFoundException.CERTIFICATE_TEMPLATE_NOT_FOUND;
 import static cm.xenonbyte.gestitre.domain.company.ports.CompanyEmailConflictException.COMPANY_EMAIL_CONFLICT;
 import static cm.xenonbyte.gestitre.domain.company.ports.CompanyNameConflictException.COMPANY_NAME_CONFLICT;
@@ -65,6 +64,9 @@ final class CompanyDomainTest {
     private CompanyService companyService;
     private CertificateTemplateId certificateTemplateId;
     private CompanyId companyId;
+    private static final String ROOT_PATH = System.getProperty("user.home") + "/gestitre";
+    private static final String LOGO_PATH = "logo";
+    private static final String STAMP_PATH = "logo";
 
     @BeforeEach
     void setUp() {
@@ -219,8 +221,6 @@ final class CompanyDomainTest {
             assertThat(actual.getCreatedAt()).isNotNull();
             assertThat(actual.getCompany().getId()).isNotNull();
             assertThat(actual.getCompany().getId().getValue()).isNotNull().isInstanceOf(UUID.class);
-            assertThat(actual.getCompany().getLogoFilename()).isNotNull();
-            assertThat(actual.getCompany().getStampFilename()).isNotNull();
             assertThat(actual.getCompany().getActive()).isNotNull();
             assertThat(actual.getCompany().getActive().value()).isTrue();
             assertThat(actual.getCompany()).isNotNull();
@@ -466,8 +466,8 @@ final class CompanyDomainTest {
                                     .build()
                     )
                     .activity(Activity.of(Text.of("activity0")))
-                    .logoFilename(Filename.of(StorageLocation.computeStoragePtah(DEFAULT_LOGO_PARENT_LOCATION).path()))
-                    .stampFilename(Filename.of(StorageLocation.computeStoragePtah(DEFAULT_STAMP_PARENT_LOCATION).path()))
+                    .logoFilename(Filename.of(StorageLocation.computeStoragePtah(ROOT_PATH, LOGO_PATH).path()))
+                    .stampFilename(Filename.of(StorageLocation.computeStoragePtah(ROOT_PATH, STAMP_PATH).path()))
                     .active(Active.with(true))
                     .build();
             //Act
@@ -513,8 +513,8 @@ final class CompanyDomainTest {
                                     .build()
                     )
                     .activity(Activity.of(Text.of("activity0")))
-                    .logoFilename(Filename.of(StorageLocation.computeStoragePtah(DEFAULT_LOGO_PARENT_LOCATION).path()))
-                    .stampFilename(Filename.of(StorageLocation.computeStoragePtah(DEFAULT_STAMP_PARENT_LOCATION).path()))
+                    .logoFilename(Filename.of(StorageLocation.computeStoragePtah(ROOT_PATH, LOGO_PATH).path()))
+                    .stampFilename(Filename.of(StorageLocation.computeStoragePtah(ROOT_PATH, STAMP_PATH).path()))
                     .active(Active.with(true))
                     .build();
             //Act
@@ -547,8 +547,8 @@ final class CompanyDomainTest {
                                     .build()
                     )
                     .activity(Activity.of(Text.of("activity0")))
-                    .logoFilename(Filename.of(StorageLocation.computeStoragePtah(DEFAULT_LOGO_PARENT_LOCATION).path()))
-                    .stampFilename(Filename.of(StorageLocation.computeStoragePtah(DEFAULT_STAMP_PARENT_LOCATION).path()))
+                    .logoFilename(Filename.of(StorageLocation.computeStoragePtah(ROOT_PATH, LOGO_PATH).path()))
+                    .stampFilename(Filename.of(StorageLocation.computeStoragePtah(ROOT_PATH, STAMP_PATH).path()))
                     .active(Active.with(true))
                     .build();
             //Act
@@ -582,8 +582,8 @@ final class CompanyDomainTest {
                                     .build()
                     )
                     .activity(Activity.of(Text.of("activity0")))
-                    .logoFilename(Filename.of(StorageLocation.computeStoragePtah(DEFAULT_LOGO_PARENT_LOCATION).path()))
-                    .stampFilename(Filename.of(StorageLocation.computeStoragePtah(DEFAULT_STAMP_PARENT_LOCATION).path()))
+                    .logoFilename(Filename.of(StorageLocation.computeStoragePtah(ROOT_PATH, LOGO_PATH).path()))
+                    .stampFilename(Filename.of(StorageLocation.computeStoragePtah(ROOT_PATH, STAMP_PATH).path()))
                     .active(Active.with(true))
                     .build();
             //Act
@@ -617,8 +617,8 @@ final class CompanyDomainTest {
                                     .build()
                     )
                     .activity(Activity.of(Text.of("activity0")))
-                    .logoFilename(Filename.of(StorageLocation.computeStoragePtah(DEFAULT_LOGO_PARENT_LOCATION).path()))
-                    .stampFilename(Filename.of(StorageLocation.computeStoragePtah(DEFAULT_STAMP_PARENT_LOCATION).path()))
+                    .logoFilename(Filename.of(StorageLocation.computeStoragePtah(ROOT_PATH, LOGO_PATH).path()))
+                    .stampFilename(Filename.of(StorageLocation.computeStoragePtah(ROOT_PATH, STAMP_PATH).path()))
                     .certificateTemplateId(new CertificateTemplateId(UUID.fromString("0192e8c4-8ef6-70d7-be93-9647d0a9b5c2")))
                     .active(Active.with(true))
                     .build();

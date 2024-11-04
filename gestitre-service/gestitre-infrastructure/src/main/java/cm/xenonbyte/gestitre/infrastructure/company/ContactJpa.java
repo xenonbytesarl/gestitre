@@ -21,7 +21,7 @@ public  class ContactJpa {
     @Column(name = "c_contact_phone", unique = true, length = 32)
     private String phone;
 
-    @Column(name = "c_contact_fax", unique = true, length = 64)
+    @Column(name = "c_contact_fax", unique = true, length = 32)
     private String fax;
 
     @Column(name = "c_contact_email", nullable = false, unique = true, length = 128)

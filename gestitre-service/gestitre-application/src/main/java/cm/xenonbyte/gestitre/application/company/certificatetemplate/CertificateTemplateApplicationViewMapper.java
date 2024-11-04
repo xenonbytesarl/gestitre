@@ -1,14 +1,14 @@
-package cm.xenonbyte.gestitre.application.company;
+package cm.xenonbyte.gestitre.application.company.certificatetemplate;
 
-import cm.xenonbyte.gestitre.application.company.dto.CreateCertificateTemplateViewRequest;
-import cm.xenonbyte.gestitre.application.company.dto.CreateCertificateTemplateViewResponse;
-import cm.xenonbyte.gestitre.application.company.dto.FindByIdCertificateTemplateViewResponse;
-import cm.xenonbyte.gestitre.application.company.dto.FindCertificateTemplatesPageInfoViewResponse;
-import cm.xenonbyte.gestitre.application.company.dto.FindCertificateTemplatesViewResponse;
-import cm.xenonbyte.gestitre.application.company.dto.SearchCertificateTemplatesPageInfoViewResponse;
-import cm.xenonbyte.gestitre.application.company.dto.SearchCertificateTemplatesViewResponse;
-import cm.xenonbyte.gestitre.application.company.dto.UpdateCertificateTemplateViewRequest;
-import cm.xenonbyte.gestitre.application.company.dto.UpdateCertificateTemplateViewResponse;
+import cm.xenonbyte.gestitre.application.company.certificatetemplate.dto.CreateCertificateTemplateViewRequest;
+import cm.xenonbyte.gestitre.application.company.certificatetemplate.dto.CreateCertificateTemplateViewResponse;
+import cm.xenonbyte.gestitre.application.company.certificatetemplate.dto.FindByIdCertificateTemplateViewResponse;
+import cm.xenonbyte.gestitre.application.company.certificatetemplate.dto.FindCertificateTemplatesPageInfoViewResponse;
+import cm.xenonbyte.gestitre.application.company.certificatetemplate.dto.FindCertificateTemplatesViewResponse;
+import cm.xenonbyte.gestitre.application.company.certificatetemplate.dto.SearchCertificateTemplatesPageInfoViewResponse;
+import cm.xenonbyte.gestitre.application.company.certificatetemplate.dto.SearchCertificateTemplatesViewResponse;
+import cm.xenonbyte.gestitre.application.company.certificatetemplate.dto.UpdateCertificateTemplateViewRequest;
+import cm.xenonbyte.gestitre.application.company.certificatetemplate.dto.UpdateCertificateTemplateViewResponse;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfo;
 import cm.xenonbyte.gestitre.domain.company.entity.CertificateTemplate;
 import jakarta.annotation.Nonnull;
@@ -31,7 +31,7 @@ import java.util.List;
         componentModel = "cdi",
         injectionStrategy = InjectionStrategy.CONSTRUCTOR
 )
-public interface CertificateTemplateViewMapper {
+public interface CertificateTemplateApplicationViewMapper {
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "name", target = "name.text.value")

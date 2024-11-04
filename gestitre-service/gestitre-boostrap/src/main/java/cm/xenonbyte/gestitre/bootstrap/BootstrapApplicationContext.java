@@ -1,8 +1,13 @@
 package cm.xenonbyte.gestitre.bootstrap;
 
 import cm.xenonbyte.gestitre.domain.company.CertificateTemplateDomainService;
+import cm.xenonbyte.gestitre.domain.company.CompanyDomainService;
 import cm.xenonbyte.gestitre.domain.company.ports.primary.CertificateTemplateService;
+import cm.xenonbyte.gestitre.domain.company.ports.primary.CompanyService;
 import cm.xenonbyte.gestitre.domain.company.ports.secondary.CertificateTemplateRepository;
+import cm.xenonbyte.gestitre.domain.company.ports.secondary.CompanyRepository;
+import cm.xenonbyte.gestitre.domain.file.StorageManagerDomainService;
+import cm.xenonbyte.gestitre.domain.file.port.primary.StorageManager;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,10 +29,21 @@ public final class BootstrapApplicationContext {
     @ApplicationScoped
     public ObjectMapper objectMapper() {
         ObjectMapper mapper = new ObjectMapper();
-        //mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         mapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
         mapper.registerModule(new JavaTimeModule());
         return mapper;
+    }
+
+    @ApplicationScoped
+    public CompanyService companyService(
+            CompanyRepository companyRepository,
+            CertificateTemplateRepository certificateTemplateRepository) {
+        return new CompanyDomainService(companyRepository, certificateTemplateRepository);
+    }
+
+    @ApplicationScoped
+    public StorageManager storageManager() {
+        return new StorageManagerDomainService();
     }
 
 

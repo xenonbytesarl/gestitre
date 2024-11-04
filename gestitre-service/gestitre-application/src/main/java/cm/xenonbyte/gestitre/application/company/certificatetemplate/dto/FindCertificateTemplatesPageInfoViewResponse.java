@@ -1,6 +1,8 @@
-package cm.xenonbyte.gestitre.application.company.dto;
+package cm.xenonbyte.gestitre.application.company.certificatetemplate.dto;
 
+import cm.xenonbyte.gestitre.application.common.dto.PageInfoView;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,6 +11,8 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static cm.xenonbyte.gestitre.application.common.ApplicationConstant.NOT_EMPTY;
 
 /**
  * @author bamk
@@ -20,16 +24,9 @@ import java.util.List;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public final class FindCertificateTemplatesPageInfoViewResponse {
-    private Boolean first;
+public class FindCertificateTemplatesPageInfoViewResponse extends PageInfoView {
 
-    private Boolean last;
-
-    private Integer pageSize;
-
-    private Long totalElements;
-
-    private Integer totalPages;
     @Valid
+    @NotEmpty(message = NOT_EMPTY)
     private List<FindCertificateTemplatesViewResponse> elements = new ArrayList<>();
 }

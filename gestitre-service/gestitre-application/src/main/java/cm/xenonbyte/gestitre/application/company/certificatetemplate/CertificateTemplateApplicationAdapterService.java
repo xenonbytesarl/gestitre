@@ -1,12 +1,12 @@
-package cm.xenonbyte.gestitre.application.company;
+package cm.xenonbyte.gestitre.application.company.certificatetemplate;
 
-import cm.xenonbyte.gestitre.application.company.dto.CreateCertificateTemplateViewRequest;
-import cm.xenonbyte.gestitre.application.company.dto.CreateCertificateTemplateViewResponse;
-import cm.xenonbyte.gestitre.application.company.dto.FindByIdCertificateTemplateViewResponse;
-import cm.xenonbyte.gestitre.application.company.dto.FindCertificateTemplatesPageInfoViewResponse;
-import cm.xenonbyte.gestitre.application.company.dto.SearchCertificateTemplatesPageInfoViewResponse;
-import cm.xenonbyte.gestitre.application.company.dto.UpdateCertificateTemplateViewRequest;
-import cm.xenonbyte.gestitre.application.company.dto.UpdateCertificateTemplateViewResponse;
+import cm.xenonbyte.gestitre.application.company.certificatetemplate.dto.CreateCertificateTemplateViewRequest;
+import cm.xenonbyte.gestitre.application.company.certificatetemplate.dto.CreateCertificateTemplateViewResponse;
+import cm.xenonbyte.gestitre.application.company.certificatetemplate.dto.FindByIdCertificateTemplateViewResponse;
+import cm.xenonbyte.gestitre.application.company.certificatetemplate.dto.FindCertificateTemplatesPageInfoViewResponse;
+import cm.xenonbyte.gestitre.application.company.certificatetemplate.dto.SearchCertificateTemplatesPageInfoViewResponse;
+import cm.xenonbyte.gestitre.application.company.certificatetemplate.dto.UpdateCertificateTemplateViewRequest;
+import cm.xenonbyte.gestitre.application.company.certificatetemplate.dto.UpdateCertificateTemplateViewResponse;
 import cm.xenonbyte.gestitre.domain.common.vo.Keyword;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfo;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoDirection;
@@ -31,37 +31,37 @@ import java.util.UUID;
  * @since 02/11/2024
  */
 @ApplicationScoped
-public final class CertificateTemplateApplicationServiceAdapter implements CertificateTemplateApplicationAdapter {
+public final class CertificateTemplateApplicationAdapterService implements CertificateTemplateApplicationAdapter {
 
     private final CertificateTemplateService certificateTemplateService;
-    private final CertificateTemplateViewMapper certificateTemplateViewMapper;
+    private final CertificateTemplateApplicationViewMapper certificateTemplateApplicationViewMapper;
 
-    public CertificateTemplateApplicationServiceAdapter(
+    public CertificateTemplateApplicationAdapterService(
             @Nonnull final CertificateTemplateService certificateTemplateService,
-            @Nonnull final CertificateTemplateViewMapper certificateTemplateViewMapper
+            @Nonnull final CertificateTemplateApplicationViewMapper certificateTemplateApplicationViewMapper
     ) {
         this.certificateTemplateService = Objects.requireNonNull(certificateTemplateService);
-        this.certificateTemplateViewMapper = Objects.requireNonNull(certificateTemplateViewMapper);
+        this.certificateTemplateApplicationViewMapper = Objects.requireNonNull(certificateTemplateApplicationViewMapper);
     }
 
     @Override
     public CreateCertificateTemplateViewResponse createCertificateTemplate(CreateCertificateTemplateViewRequest createCertificateTemplateViewRequest) {
         CertificateTemplateCreatedEvent certificateTemplateCreatedEvent = certificateTemplateService.createCertificate(
-                certificateTemplateViewMapper.toCertificateTemplate(createCertificateTemplateViewRequest));
-        return  certificateTemplateViewMapper.toCreateCertificateTemplateViewResponse(certificateTemplateCreatedEvent.getCertificateTemplate());
+                certificateTemplateApplicationViewMapper.toCertificateTemplate(createCertificateTemplateViewRequest));
+        return  certificateTemplateApplicationViewMapper.toCreateCertificateTemplateViewResponse(certificateTemplateCreatedEvent.getCertificateTemplate());
     }
 
     @Override
     public FindByIdCertificateTemplateViewResponse findCertificateTemplateById(UUID certificateTemplateId) {
         CertificateTemplate certificateTemplate = certificateTemplateService.findCertificateById(new CertificateTemplateId(certificateTemplateId));
-        return certificateTemplateViewMapper.toFindByIdCertificateTemplateViewResponse(certificateTemplate);
+        return certificateTemplateApplicationViewMapper.toFindByIdCertificateTemplateViewResponse(certificateTemplate);
     }
 
     @Override
     public FindCertificateTemplatesPageInfoViewResponse findCertificateTemplates(Integer page, Integer size, String field, String direction) {
         PageInfo<CertificateTemplate> pageInfoCertificateTemplate = certificateTemplateService.findCertificates(
                 PageInfoPage.of(page), PageInfoSize.of(size), PageInfoField.of(Text.of(field)), PageInfoDirection.valueOf(direction));
-        return certificateTemplateViewMapper.toFindCertificateTemplatesPageInfoViewResponse(pageInfoCertificateTemplate);
+        return certificateTemplateApplicationViewMapper.toFindCertificateTemplatesPageInfoViewResponse(pageInfoCertificateTemplate);
     }
 
     @Nonnull
@@ -69,13 +69,13 @@ public final class CertificateTemplateApplicationServiceAdapter implements Certi
     public SearchCertificateTemplatesPageInfoViewResponse searchCertificateTemplates(Integer page, Integer size, String field, String direction, String keyword) {
         PageInfo<CertificateTemplate> pageInfoCertificateTemplate = certificateTemplateService.searchCertificates(
                 PageInfoPage.of(page), PageInfoSize.of(size), PageInfoField.of(Text.of(field)), PageInfoDirection.valueOf(direction), Keyword.of(Text.of(keyword)));
-        return certificateTemplateViewMapper.toSearchCertificateTemplatesPageInfoViewResponse(pageInfoCertificateTemplate);
+        return certificateTemplateApplicationViewMapper.toSearchCertificateTemplatesPageInfoViewResponse(pageInfoCertificateTemplate);
     }
 
     @Nonnull
     @Override
     public UpdateCertificateTemplateViewResponse updateCertificateTemplate(UUID certificateTemplateId, UpdateCertificateTemplateViewRequest updateCertificateTemplateViewRequest) {
-        CertificateTemplateUpdateEvent certificateTemplateUpdateEvent = certificateTemplateService.updateCertificates(new CertificateTemplateId(certificateTemplateId), certificateTemplateViewMapper.toCertificateTemplate(updateCertificateTemplateViewRequest));
-        return certificateTemplateViewMapper.toUpdateCertificateTemplateViewResponse(certificateTemplateUpdateEvent.getCertificateTemplate());
+        CertificateTemplateUpdateEvent certificateTemplateUpdateEvent = certificateTemplateService.updateCertificates(new CertificateTemplateId(certificateTemplateId), certificateTemplateApplicationViewMapper.toCertificateTemplate(updateCertificateTemplateViewRequest));
+        return certificateTemplateApplicationViewMapper.toUpdateCertificateTemplateViewResponse(certificateTemplateUpdateEvent.getCertificateTemplate());
     }
 }

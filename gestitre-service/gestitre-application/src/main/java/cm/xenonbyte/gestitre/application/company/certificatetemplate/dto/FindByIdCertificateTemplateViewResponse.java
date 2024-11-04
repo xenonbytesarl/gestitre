@@ -1,4 +1,4 @@
-package cm.xenonbyte.gestitre.application.company.dto;
+package cm.xenonbyte.gestitre.application.company.certificatetemplate.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,5 +14,4 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @SuperBuilder
 @NoArgsConstructor
-public final class SearchCertificateTemplatesViewResponse extends CertificateTemplateView {
-}
+public class FindByIdCertificateTemplateViewResponse extends CertificateTemplateViewResponse { }

@@ -4,13 +4,10 @@ import cm.xenonbyte.gestitre.domain.common.entity.BaseEntity;
 import cm.xenonbyte.gestitre.domain.common.validation.Assert;
 import cm.xenonbyte.gestitre.domain.common.vo.Active;
 import cm.xenonbyte.gestitre.domain.common.vo.Filename;
-import cm.xenonbyte.gestitre.domain.common.vo.StorageLocation;
-import cm.xenonbyte.gestitre.domain.company.vo.CertificateTemplateId;
-import cm.xenonbyte.gestitre.domain.company.vo.CompanyId;
-import cm.xenonbyte.gestitre.domain.company.vo.address.Address;
-import cm.xenonbyte.gestitre.domain.company.vo.contact.Contact;
 import cm.xenonbyte.gestitre.domain.company.vo.Activity;
 import cm.xenonbyte.gestitre.domain.company.vo.Capitalization;
+import cm.xenonbyte.gestitre.domain.company.vo.CertificateTemplateId;
+import cm.xenonbyte.gestitre.domain.company.vo.CompanyId;
 import cm.xenonbyte.gestitre.domain.company.vo.CompanyManagerName;
 import cm.xenonbyte.gestitre.domain.company.vo.CompanyName;
 import cm.xenonbyte.gestitre.domain.company.vo.GrossDividendStockUnit;
@@ -24,6 +21,8 @@ import cm.xenonbyte.gestitre.domain.company.vo.Quantity;
 import cm.xenonbyte.gestitre.domain.company.vo.RegistrationNumber;
 import cm.xenonbyte.gestitre.domain.company.vo.TaxNumber;
 import cm.xenonbyte.gestitre.domain.company.vo.WebSiteUrl;
+import cm.xenonbyte.gestitre.domain.company.vo.address.Address;
+import cm.xenonbyte.gestitre.domain.company.vo.contact.Contact;
 
 import java.util.Arrays;
 import java.util.UUID;
@@ -34,9 +33,6 @@ import java.util.UUID;
  * @since 01/11/2024
  */
 public final class Company extends BaseEntity<CompanyId> {
-
-    public static final String DEFAULT_LOGO_PARENT_LOCATION = "/logo/logo.png";
-    public static final String DEFAULT_STAMP_PARENT_LOCATION = "/stamp/stamp.png";
 
     private final CompanyName companyName;
     private final CompanyManagerName companyManagerName;
@@ -57,7 +53,7 @@ public final class Company extends BaseEntity<CompanyId> {
     private NominalValue nominalValue;
     private Capitalization capitalization;
     private Quantity stockQuantity;
-    private IrcmRetain ircmRetainAmount;
+    private IrcmRetain ircmRetain;
     private Active active;
 
     public Company(CompanyName companyName, CompanyManagerName companyManagerName,
@@ -91,7 +87,7 @@ public final class Company extends BaseEntity<CompanyId> {
         nominalValue = builder.nominalValue;
         capitalization = builder.capitalization;
         stockQuantity = builder.stockQuantity;
-        ircmRetainAmount = builder.ircmRetainAmount;
+        ircmRetain = builder.ircmRetain;
         active = builder.active;
     }
 
@@ -175,8 +171,8 @@ public final class Company extends BaseEntity<CompanyId> {
         return stockQuantity;
     }
 
-    public IrcmRetain getIrcmRetainAmount() {
-        return ircmRetainAmount;
+    public IrcmRetain getIrcmRetain() {
+        return ircmRetain;
     }
 
     public Active getActive() {
@@ -185,8 +181,6 @@ public final class Company extends BaseEntity<CompanyId> {
 
     public void initializeDefaultValues() {
         setId(new CompanyId(UUID.randomUUID()));
-        this.logoFilename = Filename.of(StorageLocation.computeStoragePtah(DEFAULT_LOGO_PARENT_LOCATION).path());
-        this.stampFilename = Filename.of(StorageLocation.computeStoragePtah(DEFAULT_STAMP_PARENT_LOCATION).path());
         this.active = Active.with(true);
     }
 
@@ -236,7 +230,7 @@ public final class Company extends BaseEntity<CompanyId> {
         private NominalValue nominalValue;
         private Capitalization capitalization;
         private Quantity stockQuantity;
-        private IrcmRetain ircmRetainAmount;
+        private IrcmRetain ircmRetain;
         private Active active;
 
         private Builder() {
@@ -342,8 +336,8 @@ public final class Company extends BaseEntity<CompanyId> {
             return this;
         }
 
-        public Builder ircmRetainAmount(IrcmRetain val) {
-            ircmRetainAmount = val;
+        public Builder ircmRetain(IrcmRetain val) {
+            ircmRetain = val;
             return this;
         }
 

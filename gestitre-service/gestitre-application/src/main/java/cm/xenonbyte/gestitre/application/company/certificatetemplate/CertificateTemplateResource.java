@@ -1,9 +1,9 @@
-package cm.xenonbyte.gestitre.application.company;
+package cm.xenonbyte.gestitre.application.company.certificatetemplate;
 
 import cm.xenonbyte.gestitre.application.common.dto.SuccessApiResponse;
 import cm.xenonbyte.gestitre.application.common.in18.LocalizationService;
-import cm.xenonbyte.gestitre.application.company.dto.CreateCertificateTemplateViewRequest;
-import cm.xenonbyte.gestitre.application.company.dto.UpdateCertificateTemplateViewRequest;
+import cm.xenonbyte.gestitre.application.company.certificatetemplate.dto.CreateCertificateTemplateViewRequest;
+import cm.xenonbyte.gestitre.application.company.certificatetemplate.dto.UpdateCertificateTemplateViewRequest;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
@@ -20,6 +20,7 @@ import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
+import static cm.xenonbyte.gestitre.application.common.ApplicationConstant.CONTENT;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.CREATED;
 import static jakarta.ws.rs.core.Response.Status.OK;
@@ -38,7 +39,6 @@ public class CertificateTemplateResource {
     private static final String CERTIFICATE_TEMPLATE_CREATED_SUCCESSFULLY = "CertificateTemplateResource.1";
     private static final String CERTIFICATE_TEMPLATE_FIND_SUCCESSFULLY = "CertificateTemplateResource.2";
     private static final String CERTIFICATE_TEMPLATES_FIND_SUCCESSFULLY = "CertificateTemplateResource.3";
-    private static final String CONTENT = "content";
     private static final String CERTIFICATE_TEMPLATE_UPDATED_SUCCESSFULLY = "CertificateTemplateResource.4";
 
 

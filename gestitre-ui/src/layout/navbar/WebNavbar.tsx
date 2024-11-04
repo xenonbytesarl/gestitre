@@ -52,7 +52,7 @@ const WebNavbar = () => {
                         <img
                             src={`${language.name === 'fr' ? getImageUrl('/images/french.png') : getImageUrl('/images/english.png')}`}
                             alt="..."
-                            className="pageInfoSize-6 object-cover rounded-full"/>
+                            className="size-6 object-cover rounded-full"/>
                     </span>
                 </div>
                 <div
@@ -60,13 +60,13 @@ const WebNavbar = () => {
                     <div onClick={(event) => handleChangeLanguage(event, {name: 'en'})}
                          className="flex flex-row justify-start items-center gap-2 text-secondary-500 p-2 text-sm hover:text-primary-foreground hover:bg-gradient-to-r hover:from-primary hover:to-primary hover:transition-all hover:ease-in-out hover:duration-300 ">
                         <img src={getImageUrl('/images/english.png')} alt="..."
-                             className="pageInfoSize-6 object-cover rounded-full"/>
+                             className="size-6 object-cover rounded-full"/>
                         <span>English</span>
                     </div>
                     <div onClick={(event) => handleChangeLanguage(event, {name: 'fr'})}
                          className="flex flex-row justify-start items-center gap-2 text-secondary-500 p-2 text-sm  rounded-b-lg hover:text-primary-foreground hover:bg-gradient-to-r hover:from-primary hover:to-primary hover:transition-all hover:ease-in-out hover:duration-300">
                         <img src={getImageUrl('/images/french.png')} alt="..."
-                             className="pageInfoSize-6 object-cover rounded-full"/>
+                             className="size-6 object-cover rounded-full"/>
                         French
                     </div>
                 </div>

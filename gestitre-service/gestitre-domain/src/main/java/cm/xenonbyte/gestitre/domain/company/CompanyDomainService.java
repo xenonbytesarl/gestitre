@@ -2,11 +2,11 @@ package cm.xenonbyte.gestitre.domain.company;
 
 import cm.xenonbyte.gestitre.domain.common.annotation.DomainService;
 import cm.xenonbyte.gestitre.domain.common.validation.Assert;
+import cm.xenonbyte.gestitre.domain.common.vo.Keyword;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfo;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoDirection;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoField;
-import cm.xenonbyte.gestitre.domain.common.vo.Keyword;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoPage;
-import cm.xenonbyte.gestitre.domain.common.vo.PageInfo;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoSize;
 import cm.xenonbyte.gestitre.domain.company.entity.Company;
 import cm.xenonbyte.gestitre.domain.company.event.CompanyCreatedEvent;
@@ -123,14 +123,16 @@ public final class CompanyDomainService implements CompanyService {
     }
 
     private void validateCompanyPhone(CompanyId companyId, Phone phone) {
-        if(companyId == null && companyRepository.existsByPhone(phone)) {
-            throw new CompanyPhoneConflictException(new String[] {phone.text().value()});
-        }
+       if(phone != null) {
+           if(companyId == null && companyRepository.existsByPhone(phone)) {
+               throw new CompanyPhoneConflictException(new String[] {phone.text().value()});
+           }
 
-        Optional<Company> oldCompany = companyRepository.findByPhone(phone);
-        if(companyId != null && oldCompany.isPresent() && !oldCompany.get().getId().equals(companyId)) {
-            throw new CompanyPhoneConflictException(new String[] {phone.text().value()});
-        }
+           Optional<Company> oldCompany = companyRepository.findByPhone(phone);
+           if(companyId != null && oldCompany.isPresent() && !oldCompany.get().getId().equals(companyId)) {
+               throw new CompanyPhoneConflictException(new String[] {phone.text().value()});
+           }
+       }
     }
 
     private void validateCompanyEmail(CompanyId companyId, Email email) {

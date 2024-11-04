@@ -38,8 +38,8 @@ public record Image(Text name, InputStream content) {
         return new Image(name, content);
     }
 
-    public Image computeImageName(String rootTypePath) {
-        Text computedFileName = StorageLocation.computeStoragePtah(rootTypePath).path()
+    public Image computeImageName(String rootPath, String targetPath) {
+        Text computedFileName = StorageLocation.computeStoragePtah(rootPath, targetPath).path()
                 .concat(SLASH)
                 .concat(
                         ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSSZ"))

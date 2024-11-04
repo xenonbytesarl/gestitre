@@ -67,10 +67,10 @@ public class CompanyJpa extends Audit {
     @Column(name = "c_tax_number",  length = 64)
     private String taxNumber;
 
-    @Column(name = "c_logo_filename", nullable = false,  length = 512)
+    @Column(name = "c_logo_filename", length = 512)
     private String logoFilename;
 
-    @Column(name = "c_stamp_filename", nullable = false,  length = 512)
+    @Column(name = "c_stamp_filename", length = 512)
     private String stampFilename;
 
     @Column(name = "c_gross_dividend_stock_unit")
