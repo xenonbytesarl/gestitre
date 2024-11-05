@@ -27,6 +27,7 @@ import cm.xenonbyte.gestitre.infrastructure.company.CompanyJpaMapper;
 import cm.xenonbyte.gestitre.infrastructure.company.CompanyJpaRepository;
 import cm.xenonbyte.gestitre.infrastructure.company.CompanyJpaRepositoryAdapter;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.TestProfile;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,6 +44,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @since 03/11/2024
  */
 @QuarkusTest
+@TestProfile(ITProfile.class)
 final class CompanyJpaRepositoryAdapterIT {
 
     @Inject

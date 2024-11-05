@@ -15,6 +15,7 @@ import cm.xenonbyte.gestitre.infrastructure.company.certificatetemplate.Certific
 import cm.xenonbyte.gestitre.infrastructure.company.certificatetemplate.CertificateTemplateJpaRepository;
 import cm.xenonbyte.gestitre.infrastructure.company.certificatetemplate.CertificateTemplateJpaRepositoryAdapter;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.TestProfile;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,6 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @since 01/11/2024
  */
 @QuarkusTest
+@TestProfile(ITProfile.class)
 final class CertificateTemplateJpaRepositoryIT {
 
     @Inject
@@ -87,6 +89,28 @@ final class CertificateTemplateJpaRepositoryIT {
         Boolean actual = certificateTemplateJpaRepositoryAdapter.existsByName(name);
         //Then
         assertThat(actual).isFalse();
+
+    }
+
+    @Test
+    void should_not_empty_when_check_certificate_with_existing_name() {
+        //Given
+        Name name = Name.of(Text.of("certificate Template 1"));
+        //Act
+        Optional<CertificateTemplate> actual = certificateTemplateJpaRepositoryAdapter.findByName(name);
+        //Then
+        assertThat(actual).isNotEmpty();
+
+    }
+
+    @Test
+    void should_empty_when_check_certificate_with_existing_name() {
+        //Given
+        Name name = Name.of(Text.of("xxxxx"));
+        //Act
+        Optional<CertificateTemplate> actual = certificateTemplateJpaRepositoryAdapter.findByName(name);
+        //Then
+        assertThat(actual).isEmpty();
 
     }
 

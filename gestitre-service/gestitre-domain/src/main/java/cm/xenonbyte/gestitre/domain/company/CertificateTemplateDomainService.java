@@ -21,6 +21,7 @@ import jakarta.annotation.Nonnull;
 
 import java.time.ZonedDateTime;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 /**
@@ -54,7 +55,7 @@ public final class CertificateTemplateDomainService implements CertificateTempla
     @Override
     public CertificateTemplate findCertificateById(@Nonnull CertificateTemplateId certificateTemplateId) {
         CertificateTemplate certificateTemplate = certificateTemplateRepository.findById(certificateTemplateId).orElseThrow(
-                () -> new CertificateTemplateNotFoundException(new String[]{certificateTemplateId.toString()})
+                () -> new CertificateTemplateNotFoundException(new String[]{certificateTemplateId.getValue().toString()})
         );
         LOGGER.info("Certificate template found with id " + certificateTemplateId.getValue());
         return certificateTemplate;
@@ -111,6 +112,11 @@ public final class CertificateTemplateDomainService implements CertificateTempla
 
     private void validateCertificateName(CertificateTemplateId certificateTemplateId, Name name) {
         if(certificateTemplateId == null && certificateTemplateRepository.existsByName(name)) {
+            throw new CertificateTemplateNameConflictException(new String[] {name.text().value()});
+        }
+
+        Optional<CertificateTemplate> oldCertificateTemplate = certificateTemplateRepository.findByName(name);
+        if(certificateTemplateId != null && oldCertificateTemplate.isPresent() && !oldCertificateTemplate.get().getId().equals(certificateTemplateId)) {
             throw new CertificateTemplateNameConflictException(new String[] {name.text().value()});
         }
     }

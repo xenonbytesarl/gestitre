@@ -6,11 +6,20 @@ package cm.xenonbyte.gestitre.application.common;
  * @since 02/11/2024
  */
 public final class ApplicationConstant {
+
+    public static final String ROOT_API_PATH = "/api/v1";
+    public static final String CERTIFICATE_TEMPLATE_API_PATH = ROOT_API_PATH + "/certificate-templates";
+    public static final String COMPANY_API_PATH = ROOT_API_PATH + "/companies";
     public static final String CONTENT = "content";
-    public static final String NOT_EMPTY = "NotEmpty";
-    public static final String NOT_BLANK = "NotBlank";
-    public static final String MAX_SIZE = "NotNull";
-    public static final String EMAIL = "Email";
-    public static final String NOT_NULL = "NotNull";
-    public static final String POSITIVE_OR_ZERO = "PositiveOrZero";
+
+    public static final String NOT_EMPTY = "ApplicationConstant.NotEmpty";
+    public static final String NOT_BLANK = "ApplicationConstant.NotBlank";
+    public static final String MAX_SIZE = "ApplicationConstant.MaxSize";
+    public static final String MIN_SIZE = "ApplicationConstant.MinSize";
+    public static final String MIN_MAX_SIZE = "ApplicationConstant.MinMaxSize";
+    public static final String EMAIL = "ApplicationConstant.Email";
+    public static final String NOT_NULL = "ApplicationConstant.NotNull";
+    public static final String POSITIVE_OR_ZERO = "ApplicationConstant.PositiveOrZero";
+
+    public static final String FR_LANGUAGE = "fr";
 }

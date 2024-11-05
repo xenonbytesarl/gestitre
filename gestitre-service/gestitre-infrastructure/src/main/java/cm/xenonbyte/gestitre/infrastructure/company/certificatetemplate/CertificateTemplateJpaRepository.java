@@ -1,10 +1,10 @@
 package cm.xenonbyte.gestitre.infrastructure.company.certificatetemplate;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
+import io.quarkus.panache.common.Parameters;
 import jakarta.enterprise.context.ApplicationScoped;
 
-
-
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -17,5 +17,9 @@ public final class CertificateTemplateJpaRepository implements PanacheRepository
 
     public Boolean existsByName(String name) {
         return find("name", name).count() > 0;
+    }
+
+    public Optional<CertificateTemplateJpa> findByName(String name) {
+        return find("lower(name) = :name", Parameters.with("name", name.toLowerCase())).firstResultOptional();
     }
 }

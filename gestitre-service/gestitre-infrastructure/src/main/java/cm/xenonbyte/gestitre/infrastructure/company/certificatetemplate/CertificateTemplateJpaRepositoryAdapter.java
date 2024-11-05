@@ -149,4 +149,10 @@ public final class CertificateTemplateJpaRepositoryAdapter implements Certificat
         certificateTemplateJpaMapper.copyNewToOldCertificateTemplateJpa(newCertificateTemplateJpa, oldCertificateTemplateJpa);
         return certificateTemplateJpaMapper.toCertificateTemplate(oldCertificateTemplateJpa);
     }
+
+    @Override
+    public Optional<CertificateTemplate> findByName(@Nonnull Name name) {
+        return certificateTemplateJpaRepository.findByName(name.text().value())
+                .map(certificateTemplateJpaMapper::toCertificateTemplate);
+    }
 }

@@ -1,13 +1,13 @@
 package cm.xenonbyte.gestitre.application.company.certificatetemplate;
 
 import cm.xenonbyte.gestitre.application.common.dto.SuccessApiResponse;
-import cm.xenonbyte.gestitre.application.common.in18.LocalizationService;
 import cm.xenonbyte.gestitre.application.company.certificatetemplate.dto.CreateCertificateTemplateViewRequest;
 import cm.xenonbyte.gestitre.application.company.certificatetemplate.dto.UpdateCertificateTemplateViewRequest;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
@@ -20,10 +20,13 @@ import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
+import static cm.xenonbyte.gestitre.application.common.ApplicationConstant.CERTIFICATE_TEMPLATE_API_PATH;
 import static cm.xenonbyte.gestitre.application.common.ApplicationConstant.CONTENT;
+import static cm.xenonbyte.gestitre.application.common.in18.LocalizationUtil.getMessage;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.CREATED;
 import static jakarta.ws.rs.core.Response.Status.OK;
+import static java.util.Locale.forLanguageTag;
 import static java.util.Map.of;
 
 /**
@@ -33,30 +36,30 @@ import static java.util.Map.of;
  * @since 02/11/2024
  */
 
-@Path("/api/v1/certificate-templates")
+@Path(CERTIFICATE_TEMPLATE_API_PATH)
 public class CertificateTemplateResource {
 
-    private static final String CERTIFICATE_TEMPLATE_CREATED_SUCCESSFULLY = "CertificateTemplateResource.1";
-    private static final String CERTIFICATE_TEMPLATE_FIND_SUCCESSFULLY = "CertificateTemplateResource.2";
-    private static final String CERTIFICATE_TEMPLATES_FIND_SUCCESSFULLY = "CertificateTemplateResource.3";
-    private static final String CERTIFICATE_TEMPLATE_UPDATED_SUCCESSFULLY = "CertificateTemplateResource.4";
+    public static final String CERTIFICATE_TEMPLATE_CREATED_SUCCESSFULLY = "CertificateTemplateResource.1";
+    public static final String CERTIFICATE_TEMPLATE_FIND_SUCCESSFULLY = "CertificateTemplateResource.2";
+    public static final String CERTIFICATE_TEMPLATES_FIND_SUCCESSFULLY = "CertificateTemplateResource.3";
+    public static final String CERTIFICATE_TEMPLATE_UPDATED_SUCCESSFULLY = "CertificateTemplateResource.4";
 
 
     private final CertificateTemplateApplicationAdapter certificateTemplateApplicationAdapter;
-    private final LocalizationService localizationService;
 
     public CertificateTemplateResource(
-            @Nonnull final CertificateTemplateApplicationAdapter certificateTemplateApplicationAdapter,
-            @Nonnull final LocalizationService localizationService) {
+            @Nonnull final CertificateTemplateApplicationAdapter certificateTemplateApplicationAdapter) {
         this.certificateTemplateApplicationAdapter = Objects.requireNonNull(certificateTemplateApplicationAdapter);
-        this.localizationService = Objects.requireNonNull(localizationService);
     }
 
 
     @POST
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response createCertificateTemplate(@Valid CreateCertificateTemplateViewRequest createCertificateTemplateViewRequest) {
+    public Response createCertificateTemplate(
+            @HeaderParam("Accept-Language") String acceptLanguage,
+            @Valid CreateCertificateTemplateViewRequest createCertificateTemplateViewRequest
+    ) {
         return Response.status(CREATED)
                 .entity(
                     SuccessApiResponse.builder()
@@ -64,7 +67,7 @@ public class CertificateTemplateResource {
                         .status(CREATED.name())
                         .code(CREATED.getStatusCode())
                         .timestamp(ZonedDateTime.now())
-                        .message(localizationService.getMessage(CERTIFICATE_TEMPLATE_CREATED_SUCCESSFULLY))
+                        .message(getMessage(CERTIFICATE_TEMPLATE_CREATED_SUCCESSFULLY, forLanguageTag(acceptLanguage)))
                         .data(of(CONTENT, certificateTemplateApplicationAdapter.createCertificateTemplate(createCertificateTemplateViewRequest)))
                         .build()
                 )
@@ -74,7 +77,9 @@ public class CertificateTemplateResource {
     @GET
     @Path("/{id}")
     @Produces(APPLICATION_JSON)
-    public Response findCertificateTemplateById(@PathParam("id") UUID certificateTemplateId) {
+    public Response findCertificateTemplateById(
+            @HeaderParam("Accept-Language") String acceptLanguage,
+            @PathParam("id") UUID certificateTemplateId) {
         return Response.status(OK)
                 .entity(
                     SuccessApiResponse.builder()
@@ -82,7 +87,7 @@ public class CertificateTemplateResource {
                         .status(OK.name())
                         .code(OK.getStatusCode())
                         .timestamp(ZonedDateTime.now())
-                        .message(localizationService.getMessage(CERTIFICATE_TEMPLATE_FIND_SUCCESSFULLY))
+                        .message(getMessage(CERTIFICATE_TEMPLATE_FIND_SUCCESSFULLY, forLanguageTag(acceptLanguage)))
                         .data(of(CONTENT, certificateTemplateApplicationAdapter.findCertificateTemplateById(certificateTemplateId)))
                 )
                 .build();
@@ -91,6 +96,7 @@ public class CertificateTemplateResource {
     @GET
     @Produces(APPLICATION_JSON)
     public Response findCertificateTemplates(
+            @HeaderParam("Accept-Language") String acceptLanguage,
             @QueryParam("page") Integer page,
             @QueryParam("size") Integer size,
             @QueryParam("field") String field,
@@ -102,7 +108,7 @@ public class CertificateTemplateResource {
                                 .status(OK.name())
                                 .code(OK.getStatusCode())
                                 .timestamp(ZonedDateTime.now())
-                                .message(localizationService.getMessage(CERTIFICATE_TEMPLATES_FIND_SUCCESSFULLY))
+                                .message(getMessage(CERTIFICATE_TEMPLATES_FIND_SUCCESSFULLY, forLanguageTag(acceptLanguage)))
                                 .data(of(CONTENT, certificateTemplateApplicationAdapter.findCertificateTemplates(page, size, field, direction)))
                 )
                 .build();
@@ -113,6 +119,7 @@ public class CertificateTemplateResource {
     @Path("/search")
     @Produces(APPLICATION_JSON)
     public Response searchCertificateTemplates(
+            @HeaderParam("Accept-Language") String acceptLanguage,
             @QueryParam("page") Integer page,
             @QueryParam("size") Integer size,
             @QueryParam("field") String field,
@@ -126,7 +133,7 @@ public class CertificateTemplateResource {
                                 .status(OK.name())
                                 .code(OK.getStatusCode())
                                 .timestamp(ZonedDateTime.now())
-                                .message(localizationService.getMessage(CERTIFICATE_TEMPLATES_FIND_SUCCESSFULLY))
+                                .message(getMessage(CERTIFICATE_TEMPLATES_FIND_SUCCESSFULLY, forLanguageTag(acceptLanguage)))
                                 .data(of(CONTENT, certificateTemplateApplicationAdapter.searchCertificateTemplates(page, size, field, direction, keyword)))
                 )
                 .build();
@@ -136,7 +143,10 @@ public class CertificateTemplateResource {
     @Path("/{certificateTemplateId}")
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response createCertificateTemplate(@PathParam("certificateTemplateId") UUID certificateTemplateId, @Valid UpdateCertificateTemplateViewRequest updateCertificateTemplateViewRequest) {
+    public Response createCertificateTemplate(
+            @HeaderParam("Accept-Language") String acceptLanguage,
+            @PathParam("certificateTemplateId") UUID certificateTemplateId,
+            @Valid UpdateCertificateTemplateViewRequest updateCertificateTemplateViewRequest) {
         return Response.status(OK)
                 .entity(
                         SuccessApiResponse.builder()
@@ -144,7 +154,7 @@ public class CertificateTemplateResource {
                                 .status(OK.name())
                                 .code(OK.getStatusCode())
                                 .timestamp(ZonedDateTime.now())
-                                .message(localizationService.getMessage(CERTIFICATE_TEMPLATE_UPDATED_SUCCESSFULLY))
+                                .message(getMessage(CERTIFICATE_TEMPLATE_UPDATED_SUCCESSFULLY, forLanguageTag(acceptLanguage)))
                                 .data(of(CONTENT, certificateTemplateApplicationAdapter.updateCertificateTemplate(certificateTemplateId, updateCertificateTemplateViewRequest)))
                                 .build()
                 )

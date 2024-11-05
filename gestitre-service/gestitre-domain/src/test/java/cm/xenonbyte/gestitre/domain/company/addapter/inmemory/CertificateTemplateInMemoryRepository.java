@@ -88,5 +88,12 @@ public final class CertificateTemplateInMemoryRepository implements CertificateT
         return newCertificateTemplate;
     }
 
+    @Override
+    public Optional<CertificateTemplate> findByName(@Nonnull Name name) {
+        return certificateTemplates.values().stream().filter(certificateTemplate ->
+                        certificateTemplate.getName().text().value().equalsIgnoreCase(name.text().value()))
+                .findFirst();
+    }
+
 
 }

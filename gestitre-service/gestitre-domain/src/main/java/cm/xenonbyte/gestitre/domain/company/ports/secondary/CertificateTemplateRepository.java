@@ -32,4 +32,6 @@ public interface CertificateTemplateRepository {
     @Nonnull PageInfo<CertificateTemplate> search(@Nonnull PageInfoPage pageInfoPage, @Nonnull PageInfoSize pageInfoSize, @Nonnull PageInfoField pageInfoField, @Nonnull PageInfoDirection pageInfoDirection, @Nonnull Keyword keyword);
 
     @Nonnull CertificateTemplate update(@Nonnull CertificateTemplateId certificateTemplateId, @Nonnull CertificateTemplate newCertificateTemplate);
+
+    Optional<CertificateTemplate> findByName(@Nonnull Name name);
 }

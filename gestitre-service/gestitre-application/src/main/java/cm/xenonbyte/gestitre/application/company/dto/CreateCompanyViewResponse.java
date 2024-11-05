@@ -14,5 +14,5 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @SuperBuilder
 @NoArgsConstructor
-public final class CreateCompanyViewResponse extends CompanyViewResponse {
+public class CreateCompanyViewResponse extends CompanyViewResponse {
 }
