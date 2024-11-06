@@ -87,13 +87,13 @@ public final class CompanyInMemoryRepository implements CompanyRepository {
     @Override
     public Boolean existsByPhone(@Nonnull Phone phone) {
         return companies.values().stream()
-                .anyMatch(company -> company.getContact().phone().text().value().equalsIgnoreCase(phone.text().value()));
+                .anyMatch(company -> company.getContact().phone() != null && company.getContact().phone().text().value().equalsIgnoreCase(phone.text().value()));
     }
 
     @Override
     public Optional<Company> findByPhone(@Nonnull Phone phone) {
         return companies.values().stream().filter(company ->
-                company.getContact().phone().text().value().replaceAll("\\s", "")
+                company.getContact().phone() != null && company.getContact().phone().text().value().replaceAll("\\s", "")
                         .equals(phone.text().value().replaceAll("\\s", ""))).
                 findFirst();
     }
@@ -122,52 +122,52 @@ public final class CompanyInMemoryRepository implements CompanyRepository {
     @Override
     public Boolean existByRegistrationNumber(@Nonnull RegistrationNumber registrationNumber) {
         return companies.values().stream().anyMatch(company ->
-                company.getRegistrationNumber().text().value().equalsIgnoreCase(registrationNumber.text().value()));
+                company.getRegistrationNumber() != null && company.getRegistrationNumber().text().value().equalsIgnoreCase(registrationNumber.text().value()));
     }
 
     @Override
     public Optional<Company> findByRegistrationNumber(@Nonnull RegistrationNumber registrationNumber) {
         return companies.values().stream().filter(company ->
-                company.getRegistrationNumber().text().value().equalsIgnoreCase(registrationNumber.text().value()))
+                company.getRegistrationNumber() != null && company.getRegistrationNumber().text().value().equalsIgnoreCase(registrationNumber.text().value()))
                 .findFirst();
     }
 
     @Override
     public Boolean existByTaxNumber(@Nonnull TaxNumber taxNumber) {
         return companies.values().stream().anyMatch(company ->
-                company.getTaxNumber().text().value().equalsIgnoreCase(taxNumber.text().value()));
+                company.getTaxNumber() != null && company.getTaxNumber().text().value().equalsIgnoreCase(taxNumber.text().value()));
     }
 
     @Override
     public Optional<Company> findByTaxNumber(@Nonnull TaxNumber taxNumber) {
         return companies.values().stream().filter(company ->
-                company.getRegistrationNumber().text().value().equalsIgnoreCase(taxNumber.text().value()))
+                company.getTaxNumber() != null && company.getTaxNumber().text().value().equalsIgnoreCase(taxNumber.text().value()))
                 .findFirst();
     }
 
     @Override
     public Boolean existByIsinCode(IsinCode isinCode) {
         return companies.values().stream().anyMatch(company ->
-                company.getIsinCode().text().value().equalsIgnoreCase(isinCode.text().value()));
+                company.getIsinCode() != null && company.getIsinCode().text().value().equalsIgnoreCase(isinCode.text().value()));
     }
 
     @Override
     public Optional<Company> findByIsinCode(@Nonnull IsinCode isinCode) {
         return companies.values().stream().filter(company ->
-                company.getIsinCode().text().value().equalsIgnoreCase(isinCode.text().value()))
+                company.getIsinCode() != null && company.getIsinCode().text().value().equalsIgnoreCase(isinCode.text().value()))
                 .findFirst();
     }
 
     @Override
     public Boolean existByWebSiteUrl(@Nonnull WebSiteUrl webSiteUrl) {
         return companies.values().stream().anyMatch(company ->
-                company.getWebSiteUrl().text().value().equalsIgnoreCase(webSiteUrl.text().value()));
+                company.getWebSiteUrl() != null && company.getWebSiteUrl().text().value().equalsIgnoreCase(webSiteUrl.text().value()));
     }
 
     @Override
     public Optional<Company> findByWebSiteUrl(@Nonnull WebSiteUrl webSiteUrl) {
         return companies.values().stream().filter(company ->
-                company.getWebSiteUrl().text().value().equalsIgnoreCase(webSiteUrl.text().value()))
+                company.getWebSiteUrl() != null && company.getWebSiteUrl().text().value().equalsIgnoreCase(webSiteUrl.text().value()))
                 .findFirst();
     }
 }

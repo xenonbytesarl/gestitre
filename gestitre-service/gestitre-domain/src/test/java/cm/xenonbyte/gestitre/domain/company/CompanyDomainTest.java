@@ -27,6 +27,10 @@ import cm.xenonbyte.gestitre.domain.company.ports.secondary.CertificateTemplateR
 import cm.xenonbyte.gestitre.domain.company.ports.secondary.CompanyRepository;
 import cm.xenonbyte.gestitre.domain.company.vo.CertificateTemplateId;
 import cm.xenonbyte.gestitre.domain.company.vo.CompanyId;
+import cm.xenonbyte.gestitre.domain.company.vo.IsinCode;
+import cm.xenonbyte.gestitre.domain.company.vo.RegistrationNumber;
+import cm.xenonbyte.gestitre.domain.company.vo.TaxNumber;
+import cm.xenonbyte.gestitre.domain.company.vo.WebSiteUrl;
 import cm.xenonbyte.gestitre.domain.company.vo.address.Address;
 import cm.xenonbyte.gestitre.domain.company.vo.address.City;
 import cm.xenonbyte.gestitre.domain.company.vo.address.Country;
@@ -46,6 +50,10 @@ import org.junit.jupiter.api.Test;
 import java.util.UUID;
 
 
+import static cm.xenonbyte.gestitre.domain.company.CompanyIsinCodeConflictException.COMPANY_ISIN_CODE_CONFLICT;
+import static cm.xenonbyte.gestitre.domain.company.CompanyRegistrationNumberConflictException.COMPANY_REGISTRATION_NUMBER_CONFLICT;
+import static cm.xenonbyte.gestitre.domain.company.CompanyTaxNumberConflictException.COMPANY_TAX_NUMBER_CONFLICT;
+import static cm.xenonbyte.gestitre.domain.company.CompanyWebSiteUrlConflictException.COMPANY_WEB_SITE_URL_CONFLICT;
 import static cm.xenonbyte.gestitre.domain.company.ports.CertificateTemplateNotFoundException.CERTIFICATE_TEMPLATE_NOT_FOUND;
 import static cm.xenonbyte.gestitre.domain.company.ports.CompanyEmailConflictException.COMPANY_EMAIL_CONFLICT;
 import static cm.xenonbyte.gestitre.domain.company.ports.CompanyNameConflictException.COMPANY_NAME_CONFLICT;
@@ -81,6 +89,7 @@ final class CompanyDomainTest {
                 .companyManagerName(CompanyManagerName.of(Text.of("Company manager name")))
                 .licence(Licence.MONTH_12)
                 .legalForm(LegalForm.SA)
+
                 .address(
                         Address.of(
                                 ZipCode.of(Text.of("360")),
@@ -104,6 +113,10 @@ final class CompanyDomainTest {
                 .companyManagerName(CompanyManagerName.of(Text.of("Company manager name1")))
                 .licence(Licence.MONTH_12)
                 .legalForm(LegalForm.SA)
+                .taxNumber(TaxNumber.of(Text.of("TNHSGS4521")))
+                .registrationNumber(RegistrationNumber.of(Text.of("RN1646166156")))
+                .isinCode(IsinCode.of(Text.of("IC45214")))
+                .webSiteUrl(WebSiteUrl.of(Text.of("http://company.com")))
                 .address(
                         Address.of(
                                 ZipCode.of(Text.of("361")),
@@ -319,6 +332,135 @@ final class CompanyDomainTest {
         assertThatThrownBy(() -> companyService.createCompany(company))
                 .isInstanceOf(CompanyPhoneConflictException.class)
                 .hasMessage(COMPANY_PHONE_CONFLICT);
+    }
+
+    @Test
+    void should_fail_when_create_company_with_duplicate_tax_number() {
+        //Given
+        Company company = Company
+                .builder()
+                .companyName(CompanyName.of(Text.of("Company name y")))
+                .companyManagerName(CompanyManagerName.of(Text.of("Company manager namey")))
+                .licence(Licence.MONTH_12)
+                .legalForm(LegalForm.SA)
+                .taxNumber(TaxNumber.of(Text.of("TNHSGS4521")))
+                .address(
+                        Address.of(
+                                ZipCode.of(Text.of("360")),
+                                City.of(Text.of("Cityy")),
+                                Country.of(Text.of("Countryy"))
+                        )
+                )
+                .contact(
+                        Contact.builder()
+                                .phone(Phone.of(Text.of("698 254 785")))
+                                .name(Name.of(Text.of("Namey")))
+                                .email(Email.of( Text.of("emaily@email.test")))
+                                .build()
+                )
+                .activity(Activity.of(Text.of("activityy")))
+                .build();
+        //Act + Then
+        assertThatThrownBy(() -> companyService.createCompany(company))
+                .isInstanceOf(CompanyTaxNumberConflictException.class)
+                .hasMessage(COMPANY_TAX_NUMBER_CONFLICT);
+    }
+
+    @Test
+    void should_fail_when_create_company_with_duplicate_registration_number() {
+        //Given
+        Company company = Company
+                .builder()
+                .companyName(CompanyName.of(Text.of("Company name y")))
+                .companyManagerName(CompanyManagerName.of(Text.of("Company manager namey")))
+                .licence(Licence.MONTH_12)
+                .legalForm(LegalForm.SA)
+                .registrationNumber(RegistrationNumber.of(Text.of("RN1646166156")))
+                .address(
+                        Address.of(
+                                ZipCode.of(Text.of("360")),
+                                City.of(Text.of("Cityy")),
+                                Country.of(Text.of("Countryy"))
+                        )
+                )
+                .contact(
+                        Contact.builder()
+                                .phone(Phone.of(Text.of("698 254 785")))
+                                .name(Name.of(Text.of("Namey")))
+                                .email(Email.of( Text.of("emaily@email.test")))
+                                .build()
+                )
+                .activity(Activity.of(Text.of("activityy")))
+                .build();
+        //Act + Then
+        assertThatThrownBy(() -> companyService.createCompany(company))
+                .isInstanceOf(CompanyRegistrationNumberConflictException.class)
+                .hasMessage(COMPANY_REGISTRATION_NUMBER_CONFLICT);
+    }
+
+    @Test
+    void should_fail_when_create_company_with_duplicate_isin_code() {
+        //Given
+        Company company = Company
+                .builder()
+                .companyName(CompanyName.of(Text.of("Company name y")))
+                .companyManagerName(CompanyManagerName.of(Text.of("Company manager namey")))
+                .licence(Licence.MONTH_12)
+                .legalForm(LegalForm.SA)
+                .isinCode(IsinCode.of(Text.of("IC45214")))
+                .address(
+                        Address.of(
+                                ZipCode.of(Text.of("360")),
+                                City.of(Text.of("Cityy")),
+                                Country.of(Text.of("Countryy"))
+                        )
+                )
+                .contact(
+                        Contact.builder()
+                                .phone(Phone.of(Text.of("698 254 785")))
+                                .name(Name.of(Text.of("Namey")))
+                                .email(Email.of( Text.of("emaily@email.test")))
+                                .build()
+                )
+                .activity(Activity.of(Text.of("activityy")))
+                .build();
+        //Act + Then
+        assertThatThrownBy(() -> companyService.createCompany(company))
+                .isInstanceOf(CompanyIsinCodeConflictException.class)
+                .hasMessage(COMPANY_ISIN_CODE_CONFLICT);
+    }
+
+
+    @Test
+    void should_fail_when_create_company_with_duplicate_website_url() {
+        //Given
+        Company company = Company
+                .builder()
+                .companyName(CompanyName.of(Text.of("Company name y")))
+                .companyManagerName(CompanyManagerName.of(Text.of("Company manager namey")))
+                .licence(Licence.MONTH_12)
+                .legalForm(LegalForm.SA)
+                .webSiteUrl(WebSiteUrl.of(Text.of("http://company.com")))
+                .address(
+                        Address.of(
+                                ZipCode.of(Text.of("360")),
+                                City.of(Text.of("Cityy")),
+                                Country.of(Text.of("Countryy"))
+                        )
+                )
+                .contact(
+                        Contact.builder()
+                                .phone(Phone.of(Text.of("698 254 785")))
+                                .name(Name.of(Text.of("Namey")))
+                                .email(Email.of( Text.of("emaily@email.test")))
+                                .build()
+                )
+                .activity(Activity.of(Text.of("activityy")))
+                .build();
+        //Act + Then
+        assertThatThrownBy(() -> companyService.createCompany(company))
+                .isInstanceOf(CompanyWebSiteUrlConflictException.class)
+                .hasMessage(COMPANY_WEB_SITE_URL_CONFLICT);
     }
 
     @Test
@@ -590,6 +732,150 @@ final class CompanyDomainTest {
             assertThatThrownBy(() -> companyService.updateCompany(companyId, company))
                     .isInstanceOf(CompanyPhoneConflictException.class)
                     .hasMessage(COMPANY_PHONE_CONFLICT);
+
+        }
+
+        @Test
+        void should_fail_when_update_company_by_with_existing_tax_number() {
+            //Given
+            Company company = Company.builder()
+                    .id(companyId)
+                    .companyName(CompanyName.of(Text.of("Company name 0")))
+                    .companyManagerName(CompanyManagerName.of(Text.of("Company manager name update")))
+                    .licence(Licence.MONTH_12)
+                    .legalForm(LegalForm.SA)
+                    .taxNumber(TaxNumber.of(Text.of("TNHSGS4521")))
+                    .address(
+                            Address.of(
+                                    ZipCode.of(Text.of("360")),
+                                    City.of(Text.of("City0Update")),
+                                    Country.of(Text.of("Country0Update"))
+                            )
+                    )
+                    .contact(
+                            Contact.builder()
+                                    .phone(Phone.of(Text.of("698 254 786")))
+                                    .name(Name.of(Text.of("Name0Update")))
+                                    .email(Email.of( Text.of("email0@email.test")))
+                                    .build()
+                    )
+                    .activity(Activity.of(Text.of("activity0")))
+                    .logoFilename(Filename.of(StorageLocation.computeStoragePtah(ROOT_PATH, LOGO_PATH).path()))
+                    .stampFilename(Filename.of(StorageLocation.computeStoragePtah(ROOT_PATH, STAMP_PATH).path()))
+                    .active(Active.with(true))
+                    .build();
+            //Act
+            assertThatThrownBy(() -> companyService.updateCompany(companyId, company))
+                    .isInstanceOf(CompanyTaxNumberConflictException.class)
+                    .hasMessage(COMPANY_TAX_NUMBER_CONFLICT);
+
+        }
+
+        @Test
+        void should_fail_when_update_company_by_with_existing_registration_number() {
+            //Given
+            Company company = Company.builder()
+                    .id(companyId)
+                    .companyName(CompanyName.of(Text.of("Company name 0")))
+                    .companyManagerName(CompanyManagerName.of(Text.of("Company manager name update")))
+                    .licence(Licence.MONTH_12)
+                    .legalForm(LegalForm.SA)
+                    .registrationNumber(RegistrationNumber.of(Text.of("RN1646166156")))
+                    .address(
+                            Address.of(
+                                    ZipCode.of(Text.of("360")),
+                                    City.of(Text.of("City0Update")),
+                                    Country.of(Text.of("Country0Update"))
+                            )
+                    )
+                    .contact(
+                            Contact.builder()
+                                    .phone(Phone.of(Text.of("698 254 786")))
+                                    .name(Name.of(Text.of("Name0Update")))
+                                    .email(Email.of( Text.of("email0@email.test")))
+                                    .build()
+                    )
+                    .activity(Activity.of(Text.of("activity0")))
+                    .logoFilename(Filename.of(StorageLocation.computeStoragePtah(ROOT_PATH, LOGO_PATH).path()))
+                    .stampFilename(Filename.of(StorageLocation.computeStoragePtah(ROOT_PATH, STAMP_PATH).path()))
+                    .active(Active.with(true))
+                    .build();
+            //Act
+            assertThatThrownBy(() -> companyService.updateCompany(companyId, company))
+                    .isInstanceOf(CompanyRegistrationNumberConflictException.class)
+                    .hasMessage(COMPANY_REGISTRATION_NUMBER_CONFLICT);
+
+        }
+
+        @Test
+        void should_fail_when_update_company_by_with_existing_isin_code() {
+            //Given
+            Company company = Company.builder()
+                    .id(companyId)
+                    .companyName(CompanyName.of(Text.of("Company name 0")))
+                    .companyManagerName(CompanyManagerName.of(Text.of("Company manager name update")))
+                    .licence(Licence.MONTH_12)
+                    .legalForm(LegalForm.SA)
+                    .isinCode(IsinCode.of(Text.of("IC45214")))
+                    .address(
+                            Address.of(
+                                    ZipCode.of(Text.of("360")),
+                                    City.of(Text.of("City0Update")),
+                                    Country.of(Text.of("Country0Update"))
+                            )
+                    )
+                    .contact(
+                            Contact.builder()
+                                    .phone(Phone.of(Text.of("698 254 786")))
+                                    .name(Name.of(Text.of("Name0Update")))
+                                    .email(Email.of( Text.of("email0@email.test")))
+                                    .build()
+                    )
+                    .activity(Activity.of(Text.of("activity0")))
+                    .logoFilename(Filename.of(StorageLocation.computeStoragePtah(ROOT_PATH, LOGO_PATH).path()))
+                    .stampFilename(Filename.of(StorageLocation.computeStoragePtah(ROOT_PATH, STAMP_PATH).path()))
+                    .active(Active.with(true))
+                    .build();
+            //Act
+            assertThatThrownBy(() -> companyService.updateCompany(companyId, company))
+                    .isInstanceOf(CompanyIsinCodeConflictException.class)
+                    .hasMessage(COMPANY_ISIN_CODE_CONFLICT);
+
+        }
+
+        @Test
+        void should_fail_when_update_company_by_with_website_url_code() {
+            //Given
+            Company company = Company.builder()
+                    .id(companyId)
+                    .companyName(CompanyName.of(Text.of("Company name 0")))
+                    .companyManagerName(CompanyManagerName.of(Text.of("Company manager name update")))
+                    .licence(Licence.MONTH_12)
+                    .legalForm(LegalForm.SA)
+                    .webSiteUrl(WebSiteUrl.of(Text.of("http://company.com")))
+                    .address(
+                            Address.of(
+                                    ZipCode.of(Text.of("360")),
+                                    City.of(Text.of("City0Update")),
+                                    Country.of(Text.of("Country0Update"))
+                            )
+                    )
+                    .contact(
+                            Contact.builder()
+                                    .phone(Phone.of(Text.of("698 254 786")))
+                                    .name(Name.of(Text.of("Name0Update")))
+                                    .email(Email.of( Text.of("email0@email.test")))
+                                    .build()
+                    )
+                    .activity(Activity.of(Text.of("activity0")))
+                    .logoFilename(Filename.of(StorageLocation.computeStoragePtah(ROOT_PATH, LOGO_PATH).path()))
+                    .stampFilename(Filename.of(StorageLocation.computeStoragePtah(ROOT_PATH, STAMP_PATH).path()))
+                    .active(Active.with(true))
+                    .build();
+            //Act
+            assertThatThrownBy(() -> companyService.updateCompany(companyId, company))
+                    .isInstanceOf(CompanyWebSiteUrlConflictException.class)
+                    .hasMessage(COMPANY_WEB_SITE_URL_CONFLICT);
 
         }
 
