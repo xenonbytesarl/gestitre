@@ -102,7 +102,7 @@ public final class Assert {
                 Integer.parseInt(target.replaceAll("\\s", ""));
                 return this;
             } catch (NumberFormatException nfe) {
-                throw InvalidFieldBadException.forNumberValue(field);
+                throw InvalidFieldBadException.forNumberValue(target, field);
             }
         }
 

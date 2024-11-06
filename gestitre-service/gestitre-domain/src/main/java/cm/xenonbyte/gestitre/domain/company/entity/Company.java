@@ -182,6 +182,10 @@ public final class Company extends BaseEntity<CompanyId> {
     public void initializeDefaultValues() {
         setId(new CompanyId(UUID.randomUUID()));
         this.active = Active.with(true);
+
+        if(nominalValue != null && stockQuantity != null) {
+            capitalization = Capitalization.of(nominalValue, stockQuantity);
+        }
     }
 
     public void validateMandatoryFields() {

@@ -10,6 +10,10 @@ import cm.xenonbyte.gestitre.domain.company.entity.Company;
 import cm.xenonbyte.gestitre.domain.company.ports.secondary.CompanyRepository;
 import cm.xenonbyte.gestitre.domain.company.vo.CompanyId;
 import cm.xenonbyte.gestitre.domain.company.vo.CompanyName;
+import cm.xenonbyte.gestitre.domain.company.vo.IsinCode;
+import cm.xenonbyte.gestitre.domain.company.vo.RegistrationNumber;
+import cm.xenonbyte.gestitre.domain.company.vo.TaxNumber;
+import cm.xenonbyte.gestitre.domain.company.vo.WebSiteUrl;
 import cm.xenonbyte.gestitre.domain.company.vo.contact.Email;
 import cm.xenonbyte.gestitre.domain.company.vo.contact.Phone;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
@@ -165,5 +169,49 @@ public final class CompanyJpaRepositoryAdapter implements CompanyRepository {
         CompanyJpa newCompanyJpa = companyJpaMapper.toCompanyJpa(newCompany);
         companyJpaMapper.copyNewToOldCompanyJpa(newCompanyJpa, oldCompanyJpa);
         return companyJpaMapper.toCompany(oldCompanyJpa);
+    }
+
+    @Override
+    public Boolean existByRegistrationNumber(@Nonnull RegistrationNumber registrationNumber) {
+        return companyJpaRepository.existsByRegistrationNumber(registrationNumber.text().value());
+    }
+
+    @Override
+    public Optional<Company> findByRegistrationNumber(@Nonnull RegistrationNumber registrationNumber) {
+        return companyJpaRepository.findByRegistrationNumber(registrationNumber.text().value())
+                .map(companyJpaMapper::toCompany);
+    }
+
+    @Override
+    public Boolean existByTaxNumber(@Nonnull TaxNumber taxNumber) {
+        return companyJpaRepository.existsTaxNumber(taxNumber.text().value());
+    }
+
+    @Override
+    public Optional<Company> findByTaxNumber(@Nonnull TaxNumber taxNumber) {
+        return companyJpaRepository.findTaxNumber(taxNumber.text().value())
+                .map(companyJpaMapper::toCompany);
+    }
+
+    @Override
+    public Boolean existByIsinCode(IsinCode isinCode) {
+        return companyJpaRepository.existsByIsinCode(isinCode.text().value());
+    }
+
+    @Override
+    public Optional<Company> findByIsinCode(@Nonnull IsinCode isinCode) {
+        return companyJpaRepository.findByIsinCode(isinCode.text().value())
+                .map(companyJpaMapper::toCompany);
+    }
+
+    @Override
+    public Boolean existByWebSiteUrl(@Nonnull WebSiteUrl webSiteUrl) {
+        return companyJpaRepository.existsByWebSiteUrl(webSiteUrl.text().value());
+    }
+
+    @Override
+    public Optional<Company> findByWebSiteUrl(@Nonnull WebSiteUrl webSiteUrl) {
+        return companyJpaRepository.findByWebSiteUrl(webSiteUrl.text().value())
+                .map(companyJpaMapper::toCompany);
     }
 }

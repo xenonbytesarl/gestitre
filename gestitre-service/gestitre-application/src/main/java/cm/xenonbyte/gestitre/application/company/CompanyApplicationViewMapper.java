@@ -55,8 +55,8 @@ public interface CompanyApplicationViewMapper {
 
     @Named("createCompanyViewRequestToContact")
     @BeanMapping(ignoreByDefault = true)
-    @Mapping(expression = "java(contactView.getPhone() == null || contactView.getPhone().isEmpty()? null: cm.xenonbyte.gestitre.domain.company.vo.contact.Phone.of(cm.xenonbyte.gestitre.domain.common.vo.Text.of(contactView.getPhone())))", target="contact.phone")
-    @Mapping(expression = "java(contactView.getFax() == null || contactView.getFax().isEmpty()? null: cm.xenonbyte.gestitre.domain.company.vo.contact.Fax.of(cm.xenonbyte.gestitre.domain.common.vo.Text.of(contactView.getFax())))", target="contact.fax")
+    @Mapping(expression = "java(contactView.getPhone() == null || contactView.getPhone().isEmpty()? null: cm.xenonbyte.gestitre.domain.company.vo.contact.Phone.of(cm.xenonbyte.gestitre.domain.common.vo.Text.of(contactView.getPhone())))", target="phone")
+    @Mapping(expression = "java(contactView.getFax() == null || contactView.getFax().isEmpty()? null: cm.xenonbyte.gestitre.domain.company.vo.contact.Fax.of(cm.xenonbyte.gestitre.domain.common.vo.Text.of(contactView.getFax())))", target="fax")
     @Mapping(source = "email", target="email.text.value")
     @Mapping(source = "name", target="name.text.value")
     @Nonnull Contact toContact(@Nonnull @Valid ContactView contactView);

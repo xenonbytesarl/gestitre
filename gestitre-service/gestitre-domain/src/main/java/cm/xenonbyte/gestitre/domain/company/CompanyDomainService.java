@@ -22,6 +22,10 @@ import cm.xenonbyte.gestitre.domain.company.ports.secondary.CompanyRepository;
 import cm.xenonbyte.gestitre.domain.company.vo.CertificateTemplateId;
 import cm.xenonbyte.gestitre.domain.company.vo.CompanyId;
 import cm.xenonbyte.gestitre.domain.company.vo.CompanyName;
+import cm.xenonbyte.gestitre.domain.company.vo.IsinCode;
+import cm.xenonbyte.gestitre.domain.company.vo.RegistrationNumber;
+import cm.xenonbyte.gestitre.domain.company.vo.TaxNumber;
+import cm.xenonbyte.gestitre.domain.company.vo.WebSiteUrl;
 import cm.xenonbyte.gestitre.domain.company.vo.contact.Email;
 import cm.xenonbyte.gestitre.domain.company.vo.contact.Phone;
 import jakarta.annotation.Nonnull;
@@ -117,8 +121,65 @@ public final class CompanyDomainService implements CompanyService {
         validateCompanyName(company.getId(), company.getCompanyName());
         validateCompanyEmail(company.getId(), company.getContact().email());
         validateCompanyPhone(company.getId(), company.getContact().phone());
+        validateRegistrationNumber(company.getId(), company.getRegistrationNumber());
+        validateTaxNumber(company.getId(), company.getTaxNumber());
+        validateIsinCode(company.getId(), company.getIsinCode());
+        validateWebSiteUrl(company.getId(), company.getWebSiteUrl());
+
         if(company.getCertificateTemplateId() != null) {
             validateCertificateTemplate(company.getCertificateTemplateId());
+        }
+    }
+
+    private void validateRegistrationNumber(CompanyId companyId, RegistrationNumber registrationNumber) {
+        if(registrationNumber != null) {
+            if(companyId == null && companyRepository.existByRegistrationNumber(registrationNumber)) {
+                throw new CompanyRegistrationNumberConflictException(new String[] {registrationNumber.text().value()});
+            }
+
+            Optional<Company> oldCompany = companyRepository.findByRegistrationNumber(registrationNumber);
+            if(companyId != null && oldCompany.isPresent() && !oldCompany.get().getId().equals(companyId)) {
+                throw new CompanyRegistrationNumberConflictException(new String[] {registrationNumber.text().value()});
+            }
+        }
+    }
+
+    private void validateTaxNumber(CompanyId companyId, TaxNumber taxNumber) {
+        if(taxNumber != null) {
+            if(companyId == null && companyRepository.existByTaxNumber(taxNumber)) {
+                throw new CompanyTaxNumberConflictException(new String[] {taxNumber.text().value()});
+            }
+
+            Optional<Company> oldCompany = companyRepository.findByTaxNumber(taxNumber);
+            if(companyId != null && oldCompany.isPresent() && !oldCompany.get().getId().equals(companyId)) {
+                throw new CompanyTaxNumberConflictException(new String[] {taxNumber.text().value()});
+            }
+        }
+    }
+
+    private void validateIsinCode(CompanyId companyId, IsinCode isinCode) {
+        if(isinCode != null) {
+            if(companyId == null && companyRepository.existByIsinCode(isinCode)) {
+                throw new CompanyIsinCodeConflictException(new String[] {isinCode.text().value()});
+            }
+
+            Optional<Company> oldCompany = companyRepository.findByIsinCode(isinCode);
+            if(companyId != null && oldCompany.isPresent() && !oldCompany.get().getId().equals(companyId)) {
+                throw new CompanyIsinCodeConflictException(new String[] {isinCode.text().value()});
+            }
+        }
+    }
+
+    private void validateWebSiteUrl(CompanyId companyId, WebSiteUrl webSiteUrl) {
+        if(webSiteUrl != null) {
+            if(companyId == null && companyRepository.existByWebSiteUrl(webSiteUrl)) {
+                throw new CompanyWebSiteUrlConflictException(new String[] {webSiteUrl.text().value()});
+            }
+
+            Optional<Company> oldCompany = companyRepository.findByWebSiteUrl(webSiteUrl);
+            if(companyId != null && oldCompany.isPresent() && !oldCompany.get().getId().equals(companyId)) {
+                throw new CompanyWebSiteUrlConflictException(new String[] {webSiteUrl.text().value()});
+            }
         }
     }
 

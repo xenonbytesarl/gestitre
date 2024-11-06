@@ -37,4 +37,36 @@ public final class CompanyJpaRepository implements PanacheRepositoryBase<Company
     public Optional<CompanyJpa> findCompanyName(String companyName) {
         return find("companyName", companyName).firstResultOptional();
     }
+
+    public Boolean existsByRegistrationNumber(String registrationNumber) {
+        return find("registrationNumber", registrationNumber).count() > 0;
+    }
+
+    public Boolean existsTaxNumber(String taxNumber) {
+        return find("taxNumber", taxNumber).count() > 0;
+    }
+
+    public Boolean existsByIsinCode(String isinCode) {
+        return find("isinCode", isinCode).count() > 0;
+    }
+
+    public Boolean existsByWebSiteUrl(String webSiteUrl) {
+        return find("webSiteUrl", webSiteUrl).count() > 0;
+    }
+
+    public Optional<CompanyJpa> findByRegistrationNumber(String registrationNumber) {
+        return find("registrationNumber", registrationNumber).firstResultOptional();
+    }
+
+    public Optional<CompanyJpa> findTaxNumber(String taxNumber) {
+        return find("taxNumber", taxNumber).firstResultOptional();
+    }
+
+    public Optional<CompanyJpa> findByIsinCode(String isinCode) {
+        return find("isinCode", isinCode).firstResultOptional();
+    }
+
+    public Optional<CompanyJpa> findByWebSiteUrl(String webSiteUrl) {
+        return find("webSiteUrl", webSiteUrl).firstResultOptional();
+    }
 }

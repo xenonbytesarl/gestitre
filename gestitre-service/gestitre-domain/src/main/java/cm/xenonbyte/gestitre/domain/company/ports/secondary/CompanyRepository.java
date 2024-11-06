@@ -9,6 +9,10 @@ import cm.xenonbyte.gestitre.domain.common.vo.PageInfoSize;
 import cm.xenonbyte.gestitre.domain.company.entity.Company;
 import cm.xenonbyte.gestitre.domain.company.vo.CompanyId;
 import cm.xenonbyte.gestitre.domain.company.vo.CompanyName;
+import cm.xenonbyte.gestitre.domain.company.vo.IsinCode;
+import cm.xenonbyte.gestitre.domain.company.vo.RegistrationNumber;
+import cm.xenonbyte.gestitre.domain.company.vo.TaxNumber;
+import cm.xenonbyte.gestitre.domain.company.vo.WebSiteUrl;
 import cm.xenonbyte.gestitre.domain.company.vo.contact.Email;
 import cm.xenonbyte.gestitre.domain.company.vo.contact.Phone;
 import jakarta.annotation.Nonnull;
@@ -43,4 +47,20 @@ public interface CompanyRepository {
     Optional<Company> findByCompanyName(@Nonnull CompanyName companyName);
 
     @Nonnull Company update(@Nonnull CompanyId companyId, @Nonnull Company newCompany);
+
+    Boolean existByRegistrationNumber(@Nonnull RegistrationNumber registrationNumber);
+
+    Optional<Company> findByRegistrationNumber(@Nonnull RegistrationNumber registrationNumber);
+
+    Boolean existByTaxNumber(@Nonnull TaxNumber taxNumber);
+
+    Optional<Company> findByTaxNumber(@Nonnull TaxNumber taxNumber);
+
+    Boolean existByIsinCode(IsinCode isinCode);
+
+    Optional<Company> findByIsinCode(@Nonnull IsinCode isinCode);
+
+    Boolean existByWebSiteUrl(@Nonnull WebSiteUrl webSiteUrl);
+
+    Optional<Company> findByWebSiteUrl(@Nonnull WebSiteUrl webSiteUrl);
 }

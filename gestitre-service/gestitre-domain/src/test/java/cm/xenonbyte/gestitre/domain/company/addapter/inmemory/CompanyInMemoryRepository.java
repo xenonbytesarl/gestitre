@@ -10,6 +10,10 @@ import cm.xenonbyte.gestitre.domain.company.entity.Company;
 import cm.xenonbyte.gestitre.domain.company.vo.CompanyId;
 import cm.xenonbyte.gestitre.domain.company.vo.CompanyName;
 import cm.xenonbyte.gestitre.domain.company.ports.secondary.CompanyRepository;
+import cm.xenonbyte.gestitre.domain.company.vo.IsinCode;
+import cm.xenonbyte.gestitre.domain.company.vo.RegistrationNumber;
+import cm.xenonbyte.gestitre.domain.company.vo.TaxNumber;
+import cm.xenonbyte.gestitre.domain.company.vo.WebSiteUrl;
 import cm.xenonbyte.gestitre.domain.company.vo.contact.Email;
 import cm.xenonbyte.gestitre.domain.company.vo.contact.Phone;
 import jakarta.annotation.Nonnull;
@@ -113,5 +117,57 @@ public final class CompanyInMemoryRepository implements CompanyRepository {
     public Company update(@Nonnull CompanyId companyId, @Nonnull Company newCompany) {
         companies.replace(companyId, newCompany);
         return newCompany;
+    }
+
+    @Override
+    public Boolean existByRegistrationNumber(@Nonnull RegistrationNumber registrationNumber) {
+        return companies.values().stream().anyMatch(company ->
+                company.getRegistrationNumber().text().value().equalsIgnoreCase(registrationNumber.text().value()));
+    }
+
+    @Override
+    public Optional<Company> findByRegistrationNumber(@Nonnull RegistrationNumber registrationNumber) {
+        return companies.values().stream().filter(company ->
+                company.getRegistrationNumber().text().value().equalsIgnoreCase(registrationNumber.text().value()))
+                .findFirst();
+    }
+
+    @Override
+    public Boolean existByTaxNumber(@Nonnull TaxNumber taxNumber) {
+        return companies.values().stream().anyMatch(company ->
+                company.getTaxNumber().text().value().equalsIgnoreCase(taxNumber.text().value()));
+    }
+
+    @Override
+    public Optional<Company> findByTaxNumber(@Nonnull TaxNumber taxNumber) {
+        return companies.values().stream().filter(company ->
+                company.getRegistrationNumber().text().value().equalsIgnoreCase(taxNumber.text().value()))
+                .findFirst();
+    }
+
+    @Override
+    public Boolean existByIsinCode(IsinCode isinCode) {
+        return companies.values().stream().anyMatch(company ->
+                company.getIsinCode().text().value().equalsIgnoreCase(isinCode.text().value()));
+    }
+
+    @Override
+    public Optional<Company> findByIsinCode(@Nonnull IsinCode isinCode) {
+        return companies.values().stream().filter(company ->
+                company.getIsinCode().text().value().equalsIgnoreCase(isinCode.text().value()))
+                .findFirst();
+    }
+
+    @Override
+    public Boolean existByWebSiteUrl(@Nonnull WebSiteUrl webSiteUrl) {
+        return companies.values().stream().anyMatch(company ->
+                company.getWebSiteUrl().text().value().equalsIgnoreCase(webSiteUrl.text().value()));
+    }
+
+    @Override
+    public Optional<Company> findByWebSiteUrl(@Nonnull WebSiteUrl webSiteUrl) {
+        return companies.values().stream().filter(company ->
+                company.getWebSiteUrl().text().value().equalsIgnoreCase(webSiteUrl.text().value()))
+                .findFirst();
     }
 }

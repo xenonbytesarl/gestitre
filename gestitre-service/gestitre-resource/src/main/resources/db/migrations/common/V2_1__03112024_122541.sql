@@ -29,10 +29,14 @@ create table if not exists t_company (
     c_certificate_template_id uuid ,
     constraint Pk_t_company_c_id primary key (c_id),
     constraint Uk_t_company_c_company_name unique (c_company_name),
+    constraint Uk_t_company_c_tax_number unique (c_tax_number),
+    constraint Uk_t_company_c_isin_code unique (c_isin_code),
+    constraint Uk_t_company_c_website_url unique (c_website_url),
+    constraint Uk_t_company_c_registration_number unique (c_registration_number),
     constraint Uk_t_company_c_contact_email unique (c_contact_email),
     constraint Uk_t_company_c_contact_fax unique (c_contact_fax),
     constraint Uk_t_company_c_contact_phone unique (c_contact_phone)
 );
 
 --- Foreign key constraint for t_company
-ALTER TABLE t_company ADD CONSTRAINT Fk_t_company_c_certificate_template_id FOREIGN KEY (c_certificate_template_id) REFERENCES t_company (c_id);
+ALTER TABLE t_company ADD CONSTRAINT Fk_t_company_c_certificate_template_id FOREIGN KEY (c_certificate_template_id) REFERENCES t_certificate_template (c_id);

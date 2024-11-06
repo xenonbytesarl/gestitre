@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 
+import static cm.xenonbyte.gestitre.application.common.ApplicationConstant.COMPANY_API_PATH;
 import static cm.xenonbyte.gestitre.application.common.ApplicationConstant.CONTENT;
 import static cm.xenonbyte.gestitre.application.common.in18.LocalizationUtil.getMessage;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -30,10 +31,10 @@ import static java.util.Map.of;
  * @version 1.0
  * @since 04/11/2024
  */
-@Path("/api/v1/companies")
+@Path(COMPANY_API_PATH)
 public class CompanyResource {
 
-    private static final String COMPANY_CREATED_SUCCESSFULLY = "CompanyResource.1";
+    public static final String COMPANY_CREATED_SUCCESSFULLY = "CompanyResource.1";
 
     private final CompanyApplicationAdapterService companyApplicationAdapterService;
 
