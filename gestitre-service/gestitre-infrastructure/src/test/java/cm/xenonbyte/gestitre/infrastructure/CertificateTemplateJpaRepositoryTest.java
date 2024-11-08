@@ -33,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @QuarkusTest
 @TestProfile(ITProfile.class)
-final class CertificateTemplateJpaRepositoryIT {
+final class CertificateTemplateJpaRepositoryTest {
 
     @Inject
     CertificateTemplateJpaRepository certificateTemplateJpaRepository;

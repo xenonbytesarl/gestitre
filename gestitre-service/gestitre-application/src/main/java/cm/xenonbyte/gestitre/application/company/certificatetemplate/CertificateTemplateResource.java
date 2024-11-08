@@ -75,11 +75,11 @@ public class CertificateTemplateResource {
     }
 
     @GET
-    @Path("/{id}")
+    @Path("/{certificateTemplateId}")
     @Produces(APPLICATION_JSON)
     public Response findCertificateTemplateById(
             @HeaderParam("Accept-Language") String acceptLanguage,
-            @PathParam("id") UUID certificateTemplateId) {
+            @PathParam("certificateTemplateId") UUID certificateTemplateId) {
         return Response.status(OK)
                 .entity(
                     SuccessApiResponse.builder()

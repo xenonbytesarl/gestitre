@@ -35,7 +35,7 @@ import static org.hamcrest.Matchers.notNullValue;
  */
 @QuarkusTest
 @TestProfile(ITProfile.class)
-final class CertificateTemplateIT {
+final class CertificateTemplateTest {
 
 
 

@@ -45,7 +45,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @QuarkusTest
 @TestProfile(ITProfile.class)
-final class CompanyJpaRepositoryAdapterIT {
+final class CompanyJpaRepositoryAdapterTest {
 
     @Inject
     CompanyJpaRepository companyJpaRepository;

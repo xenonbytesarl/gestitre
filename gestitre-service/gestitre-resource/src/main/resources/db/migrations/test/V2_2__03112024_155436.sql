@@ -9,3 +9,10 @@ insert into t_company (c_id, c_created_at, c_company_name, c_company_manager_nam
 insert into t_company (c_id, c_created_at, c_company_name, c_company_manager_name, c_licence, c_legal_form, c_address_city, c_address_zip_code, c_address_country, c_contact_email, c_contact_name, c_logo_filename, c_stamp_filename, c_active, c_contact_phone, c_tax_number, c_registration_number, c_isin_code, c_website_url) VALUES
     ('0192ff21-d672-7550-b9c9-fa2acff54e11', current_timestamp,  'Company Name z', 'Company Manager Name z', 'MONTH_36', 'EI', 'City z', '309', 'Country z', 'emailz@gmail.com', 'Name z', './gestitre/logo/logoy.png', './gestitre/stamp/stampz.png', true,
      '645 254 237', 'TN863534', 'RN73983773', 'CIJKBCDJ98389', 'https://company.com');
+
+
+insert into t_company (c_id, c_created_at, c_company_name, c_company_manager_name, c_licence, c_legal_form, c_address_city, c_address_zip_code, c_address_country, c_contact_email, c_contact_name, c_logo_filename, c_stamp_filename, c_active, c_contact_phone, c_tax_number, c_registration_number, c_isin_code, c_website_url) VALUES
+    ('01930d8c-cee8-7851-869d-a21161ac37bc', current_timestamp,  'Company Name u', 'Company Manager Name u', 'MONTH_36', 'EI', 'City u', '309', 'Country u', 'emailu@gmail.com', 'Name u', './gestitre/logo/logou.png', './gestitre/stamp/stampu.png', true,
+     '645 254 287', 'TN95929949', 'RN24921492', 'CIKDHET444651', 'https://companu.com');
+
+
