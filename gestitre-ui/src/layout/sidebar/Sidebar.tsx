@@ -1,6 +1,26 @@
 import {useTranslation} from "react-i18next";
+import {useLocation} from "react-router-dom";
+import {SidebarMenuModel} from "@/layout/sidebar/SidebarMenuModel.ts";
+import {useDispatch, useSelector} from "react-redux";
+import {selectSidebarMenu, selectSidebarMenus} from "@/layout/sidebar/SidebarSlice.tsx";
+import {RootDispatch} from "@/Store.ts";
+import {useEffect} from "react";
+import SidebarMenu from "@/layout/sidebar/SidebarMenu.tsx";
 
 const Sidebar = () => {
+
+    const location = useLocation();
+
+    const sidebarMenus: SidebarMenuModel[] = useSelector(selectSidebarMenus);
+
+    const dispatch = useDispatch<RootDispatch>();
+
+    useEffect(() => {
+        dispatch(selectSidebarMenu("/" + location.pathname.split("/")[1]));
+    }, [location])
+
+
+
     const {t} = useTranslation(['home']);
     return (
         <div className="fixed flex flex-col justify-start items-start bg-gradient-to-br from-primary/90 to-primary/85 text-primary-foreground h-screen w-80">
@@ -13,61 +33,18 @@ const Sidebar = () => {
                     </p>
                 </div>
                 <div className="flex flex-col justify-start items-start w-full">
-                    <p className="py-5 border-t-2 w-full border-primary-foreground/40 cursor-pointer hover:bg-gradient-to-r hover:from-primary-foreground/50 hover:to-primary-foreground/50 hover:text-primary hover:transition hover:duration-300 hover:ease-in-out">
-                        <p className="flex flex-row justify-start gap-2 pl-3">
-                            <span className="material-symbols-outlined">space_dashboard</span>
-                            <span>{t('sidebar_menu_information')}</span>
-                        </p>
-                    </p>
-                    <p className="py-5 border-t-2 w-full border-primary-foreground/40 cursor-pointer hover:bg-gradient-to-r hover:from-primary-foreground/50 hover:to-primary-foreground/50 hover:text-primary hover:transition hover:duration-300 hover:ease-in-out">
-                        <p className="flex flex-row justify-start gap-2 pl-3">
-                            <span className="material-symbols-outlined">groups</span>
-                            <span>{t('sidebar_menu_shareholder')}</span>
-                        </p>
-                    </p>
-                    <p className="py-5 border-t-2 w-full border-primary-foreground/40 cursor-pointer hover:bg-gradient-to-r hover:from-primary-foreground/50 hover:to-primary-foreground/50 hover:text-primary hover:transition hover:duration-300 hover:ease-in-out">
-                        <p className="flex flex-row justify-start gap-2 pl-3">
-                            <span className="material-symbols-outlined">sync_alt</span>
-                            <span>{t('sidebar_menu_movement')}</span>
-                        </p>
-                    </p>
-                    <p className="py-5 border-t-2 w-full border-primary-foreground/40 cursor-pointer hover:bg-gradient-to-r hover:from-primary-foreground/50 hover:to-primary-foreground/50 hover:text-primary hover:transition hover:duration-300 hover:ease-in-out">
-                        <p className="flex flex-row justify-start gap-2 pl-3">
-                            <span className="material-symbols-outlined">account_tree</span>
-                            <span>{t('sidebar_menu_account')}</span>
-                        </p>
-                    </p>
-                    <p className="py-5 border-t-2 w-full border-primary-foreground/40 cursor-pointer hover:bg-gradient-to-r hover:from-primary-foreground/50 hover:to-primary-foreground/50 hover:text-primary hover:transition hover:duration-300 hover:ease-in-out">
-                        <p className="flex flex-row justify-start gap-2 pl-3">
-                            <span className="material-symbols-outlined">history</span>
-                            <span>{t('sidebar_menu_history')}</span>
-                        </p>
-                    </p>
-                    <p className="py-5 border-t-2 w-full border-primary-foreground/40 cursor-pointer hover:bg-gradient-to-r hover:from-primary-foreground/50 hover:to-primary-foreground/50 hover:text-primary hover:transition hover:duration-300 hover:ease-in-out">
-                        <p className="flex flex-row justify-start gap-2 pl-3">
-                            <span className="material-symbols-outlined">source_environment</span>
-                            <span>{t('sidebar_menu_company')}</span>
-                        </p>
-                    </p>
-                    <p className="py-5 border-t-2 w-full border-primary-foreground/40 cursor-pointer hover:bg-gradient-to-r hover:from-primary-foreground/50 hover:to-primary-foreground/50 hover:text-primary hover:transition hover:duration-300 hover:ease-in-out">
-                        <p className="flex flex-row justify-start gap-2 pl-3">
-                            <span className="material-symbols-outlined">history</span>
-                            <span>{t('sidebar_menu_user')}</span>
-                        </p>
-                    </p>
-                    <p className="py-5 border-y-2 w-full border-primary-foreground/40 cursor-pointer hover:bg-gradient-to-r hover:from-primary-foreground/50 hover:to-primary-foreground/50 hover:text-primary hover:transition hover:duration-300 hover:ease-in-out">
-                        <p className="flex flex-row justify-start gap-2 pl-3">
-                            <span className="material-symbols-outlined">export_notes</span>
-                            <span>{t('sidebar_menu_about')}</span>
-                        </p>
-                    </p>
+                    {
+                        sidebarMenus.map((sidebarMenu: SidebarMenuModel) => (
+                            <SidebarMenu key={sidebarMenu.label} sidebarMenu={sidebarMenu}/>
+                        ))
+                    }
+                </div>
+                </div>
+                <div className="flex flex-col justify-center items-center w-full mt-8">
+                    <img className="size-28 rounded-full" src="/images/french.png" alt="..."/>
                 </div>
             </div>
-            <div className="flex flex-col justify-center items-center w-full mt-8">
-                <img className="size-28 rounded-full" src="/images/french.png" alt="..."/>
-            </div>
-        </div>
-    );
-};
+            );
+            };
 
-export default Sidebar;
+            export default Sidebar;
