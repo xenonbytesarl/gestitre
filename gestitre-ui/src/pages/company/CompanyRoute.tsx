@@ -8,7 +8,7 @@ const CompanyRoute = () => {
     return (
         <Routes>
             <Route>
-                <Route index path="/"  element={<Navigate to="tree"/>}/>
+                <Route index path="/"  element={<Navigate to="form/new"/>}/>
                 <Route path="tree"  element={<CompanyTree/>}/>
                 <Route path="card"  element={<CompanyCard/>}/>
                 <Route path="form/new"  element={<CompanyForm/>}/>

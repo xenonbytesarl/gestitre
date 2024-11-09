@@ -5,7 +5,7 @@ import {LanguageModel} from "@/layout/navbar/LanguageModel.ts";
 import {changeLanguage, selectLanguage} from "@/layout/navbar/NavbarSlice.ts";
 import {useEffect, useRef, useState} from "react";
 import i18n from "@/i18n.tsx";
-import {getImageUrl} from "@/utils/imageUtils.ts";
+import {getImageUrl} from "@/shared/utils/imageUtils.ts";
 
 const WebNavbar = () => {
     const {t} = useTranslation(['home']);
