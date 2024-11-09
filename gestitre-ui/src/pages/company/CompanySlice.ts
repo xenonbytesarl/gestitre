@@ -6,6 +6,8 @@ import companyService from "@/pages/company/CompanyService.ts";
 import {ErrorResponseModel} from "@/shared/model/errorResponseModel.ts";
 import {RootState} from "@/Store.ts";
 import {handleApiError} from "@/shared/utils/apiError.ts";
+import {FindParamModel} from "@/shared/model/findParamModel.ts";
+import {SearchParamModel} from "@/shared/model/searchParamModel.ts";
 
 
 const companyEntityAdapter = createEntityAdapter<CompanyModel>({});
@@ -40,6 +42,26 @@ export const findCompanyById = createAsyncThunk('company/findCompanyById', async
     }
 });
 
+export const findCompanies = createAsyncThunk('company/findCompanies', async (findParam: FindParamModel, {rejectWithValue})=> {
+    try {
+        const response =  await companyService.findCompanies(findParam);
+        // @ts-ignore
+        return {content: response.data.data.content, message: response.data.message}
+    } catch (apiError) {
+        return handleApiError(apiError as AxiosError<ErrorResponseModel>, {rejectWithValue});
+    }
+});
+
+export const searchCompanies = createAsyncThunk('company/searchCompanies', async (searchParam: SearchParamModel, {rejectWithValue})=> {
+    try {
+        const response =  await companyService.searchCompanies(searchParam);
+        // @ts-ignore
+        return {content: response.data.data.content, message: response.data.message}
+    } catch (apiError) {
+        return handleApiError(apiError as AxiosError<ErrorResponseModel>, {rejectWithValue});
+    }
+});
+
 const companySlice = createSlice({
     name: "company",
     initialState: companyInitialState,
@@ -66,8 +88,22 @@ const companySlice = createSlice({
             })
             .addMatcher(
                 isAnyOf(
+                    findCompanies.fulfilled,
+                    searchCompanies.fulfilled
+                ), (state, action) => {
+                    const {content} = action.payload;
+                    state.loading = false;
+                    state.pageSize = content.pageSize as number;
+                    state.totalElements = content.totalElements as number;
+                    state.totalPages = content.totalPages as number;
+                    companyEntityAdapter.setAll(state, content.elements);
+                })
+            .addMatcher(
+                isAnyOf(
                     createCompany.pending,
-                    findCompanyById.pending
+                    findCompanyById.pending,
+                    findCompanies.pending,
+                    searchCompanies.pending
             ), (state) => {
                 state.loading = true;
                 state.message = '';
@@ -77,7 +113,9 @@ const companySlice = createSlice({
             .addMatcher(
                 isAnyOf(
                     createCompany.rejected,
-                    findCompanyById.rejected
+                    findCompanyById.rejected,
+                    findCompanies.rejected,
+                    searchCompanies.rejected
                 ), (state, action) => {
                     state.loading = false;
                     state.message = '';

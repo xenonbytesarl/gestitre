@@ -86,6 +86,15 @@
   "company_form_contact_fax_max_length_message": "La valeur doit être au maximum 32 charactères",
   "company_form_contact_phone_label": "Téléphone",
   "company_form_contact_phone_max_length_message": "La valeur doit être au maximum 32 charactères",
-  "company_form_tab_images": "Logo & Cachet"
+  "company_form_tab_images": "Logo & Cachet",
+
+  "company_tree_title": "Sociétés",
+  "company_tree_company_name": "Désignation",
+  "company_tree_company_manager_name": "Directeur",
+  "company_tree_legal_form": "Form juridique",
+  "company_tree_isin_code": "Code ISIN",
+  "company_tree_address": "Adresse",
+  "company_tree_licence": "Fin de licence"
+
 
 }

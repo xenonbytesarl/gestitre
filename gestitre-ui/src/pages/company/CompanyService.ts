@@ -2,6 +2,9 @@ import {CompanyModel} from "@/pages/company/CompanyModel.ts";
 import {SuccessResponseModel} from "@/shared/model/successResponseModel.ts";
 import axios from "axios";
 import {API_BASE_URL, API_FORM_DATA_HEADER, API_JSON_HEADER} from "@/shared/constant/globalConstant.ts";
+import {FindParamModel} from "@/shared/model/findParamModel.ts";
+import {SearchParamModel} from "@/shared/model/searchParamModel.ts";
+import {PageModel} from "@/shared/model/pageModel.ts";
 
 const createCompany = async (company: CompanyModel, logo: File, stamp: File): Promise<SuccessResponseModel<CompanyModel>> => {
     const data = new FormData();
@@ -18,9 +21,27 @@ const findCompanyById = async (companyId: string): Promise<SuccessResponseModel<
         });
 }
 
+const findCompanies = async (findParam: FindParamModel): Promise<SuccessResponseModel<PageModel<CompanyModel>>> => {
+    return await axios.get(API_BASE_URL + '/companies',
+        {
+            params: {...findParam},
+            headers: API_JSON_HEADER
+        });
+}
+
+const searchCompanies = async (searchParam: SearchParamModel): Promise<SuccessResponseModel<PageModel<CompanyModel>>> => {
+    return await axios.get(API_BASE_URL + '/companies/search',
+        {
+            params: {...searchParam},
+            headers: API_JSON_HEADER
+        });
+}
+
 const companyService = {
-  createCompany,
-    findCompanyById
+    createCompany,
+    findCompanyById,
+    findCompanies,
+    searchCompanies
 };
 
 export default companyService;
