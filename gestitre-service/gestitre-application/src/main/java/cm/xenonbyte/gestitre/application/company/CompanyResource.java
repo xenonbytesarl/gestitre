@@ -130,7 +130,7 @@ public class CompanyResource {
     public Response searchCompanies(
             @HeaderParam("Accept-Language") String acceptLanguage,
             @PathParam("companyId") UUID companyId
-    ) {
+    ) throws IOException {
         return Response.status(OK)
                 .entity(
                         SuccessApiResponse.builder()

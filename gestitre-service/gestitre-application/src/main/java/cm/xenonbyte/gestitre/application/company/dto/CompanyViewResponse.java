@@ -29,7 +29,11 @@ public class CompanyViewResponse extends CompanyView {
     @NotNull(message = NOT_NULL)
     protected UUID id;
     protected String logoFilename;
+    protected String logoEncoded;
+    protected String logoMimeType;
     protected String stampFilename;
+    protected String stampEncoded;
+    protected String stampMimeType;
     @PositiveOrZero(message = POSITIVE_OR_ZERO)
     protected BigDecimal netDividendStock;
     @PositiveOrZero(message = POSITIVE_OR_ZERO)

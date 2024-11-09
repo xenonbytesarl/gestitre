@@ -27,7 +27,7 @@ public interface CompanyApplicationAdapter {
 
     SearchCompanyPageInfoViewResponse searchCompanies(Integer page, Integer size, String field, String direction, String keyword);
 
-    FindCompanyByIdViewResponse findCompanyById(UUID companyId);
+    FindCompanyByIdViewResponse findCompanyById(UUID companyId) throws IOException;
 
     @NonNull @Valid
     UpdateCompanyViewResponse updateCompany(@Nonnull UUID companyId, @NonNull @Valid UpdateCompanyViewRequest updateCompanyViewRequest, FileUpload logo, FileUpload stamp) throws IOException;

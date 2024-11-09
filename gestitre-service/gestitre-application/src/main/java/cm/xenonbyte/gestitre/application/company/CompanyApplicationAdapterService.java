@@ -82,15 +82,21 @@ public final class CompanyApplicationAdapterService implements CompanyApplicatio
         CompanyCreatedEvent companyCreatedEvent = companyService.createCompany(companyApplicationViewMapper.toCompany(
                 createCompanyViewRequest, imageLogo, imageStamp));
 
-        if(imageLogo != null) {
-            storageManager.store(imageLogo, StorageLocation.of(Text.of(imageLogo.name().value())));
-        }
-        if(imageStamp != null) {
-            storageManager.store(imageStamp, StorageLocation.of(Text.of(imageStamp.name().value())));
-        }
+        saveImage(imageLogo, imageStamp);
 
-        return companyApplicationViewMapper.toCompanyCreateViewResponse(companyCreatedEvent.getCompany());
+        CreateCompanyViewResponse companyCreateViewResponse =
+                companyApplicationViewMapper.toCompanyCreateViewResponse(companyCreatedEvent.getCompany());
+
+        GetEncodedFiles getEncodedFiles = getGetEncodedFiles(companyCreatedEvent.getCompany());
+
+        companyCreateViewResponse.setLogoMimeType(getEncodedFiles.logoMimeType());
+        companyCreateViewResponse.setLogoEncoded(getEncodedFiles.logoEncoded());
+        companyCreateViewResponse.setStampMimeType(getEncodedFiles.stampMimeType());
+        companyCreateViewResponse.setStampEncoded(getEncodedFiles.stampEncoded());
+
+        return companyCreateViewResponse;
     }
+
 
     @Override
     public FindCompanyPageInfoViewResponse findCompanies(Integer page, Integer size, String field, String direction) {
@@ -117,11 +123,18 @@ public final class CompanyApplicationAdapterService implements CompanyApplicatio
     }
 
     @Override
-    public FindCompanyByIdViewResponse findCompanyById(UUID companyId) {
-        return companyApplicationViewMapper.toFindByIdViewResponse(
-                companyService.findCompanyById(new CompanyId(companyId))
-        );
+    public FindCompanyByIdViewResponse findCompanyById(UUID companyId) throws IOException {
+        Company company = companyService.findCompanyById(new CompanyId(companyId));
+        FindCompanyByIdViewResponse findByIdViewResponse = companyApplicationViewMapper.toFindByIdViewResponse(company);
+        GetEncodedFiles result = getGetEncodedFiles(company);
+        findByIdViewResponse.setLogoEncoded(result.logoEncoded());
+        findByIdViewResponse.setLogoMimeType(result.logoMimeType());
+        findByIdViewResponse.setStampEncoded(result.stampEncoded());
+        findByIdViewResponse.setStampMimeType(result.stampMimeType());
+        return findByIdViewResponse;
     }
+
+
 
     @Override
     public @NonNull UpdateCompanyViewResponse updateCompany(@Nonnull UUID companyId, @NonNull UpdateCompanyViewRequest updateCompanyViewRequest, FileUpload logo, FileUpload stamp) throws IOException {
@@ -144,12 +157,37 @@ public final class CompanyApplicationAdapterService implements CompanyApplicatio
         CompanyUpdatedEvent companyUpdatedEvent = companyService.updateCompany(new CompanyId(companyId), companyApplicationViewMapper.toCompany(
                 updateCompanyViewRequest, imageLogo, imageStamp));
 
+        saveImage(imageLogo, imageStamp);
+
+        UpdateCompanyViewResponse updateCompanyViewResponse =
+                companyApplicationViewMapper.toUpdateCompanyViewResponse(companyUpdatedEvent.getCompany());
+
+        GetEncodedFiles getEncodedFiles = getGetEncodedFiles(companyUpdatedEvent.getCompany());
+
+        updateCompanyViewResponse.setLogoMimeType(getEncodedFiles.logoMimeType());
+        updateCompanyViewResponse.setLogoEncoded(getEncodedFiles.logoEncoded());
+        updateCompanyViewResponse.setStampMimeType(getEncodedFiles.stampMimeType());
+        updateCompanyViewResponse.setStampEncoded(getEncodedFiles.stampEncoded());
+
+        return updateCompanyViewResponse;
+    }
+
+    private void saveImage(Image imageLogo, Image imageStamp) {
         if(imageLogo != null) {
             storageManager.store(imageLogo, StorageLocation.of(Text.of(imageLogo.name().value())));
         }
         if(imageStamp != null) {
             storageManager.store(imageStamp, StorageLocation.of(Text.of(imageStamp.name().value())));
         }
-        return companyApplicationViewMapper.toUpdateCompanyViewResponse(companyUpdatedEvent.getCompany());
     }
+
+    private GetEncodedFiles getGetEncodedFiles(Company company) throws IOException {
+        String logoEncoded = storageManager.fileToBase64(company.getLogoFilename().text().value());
+        String logoMimeType = storageManager.mimeType(company.getLogoFilename().text().value());
+        String stampEncoded = storageManager.fileToBase64(company.getStampFilename().text().value());
+        String stampMimeType = storageManager.mimeType(company.getStampFilename().text().value());
+        return new GetEncodedFiles(logoEncoded, logoMimeType, stampEncoded, stampMimeType);
+    }
+
+    private record GetEncodedFiles(String logoEncoded, String logoMimeType, String stampEncoded, String stampMimeType) {}
 }
