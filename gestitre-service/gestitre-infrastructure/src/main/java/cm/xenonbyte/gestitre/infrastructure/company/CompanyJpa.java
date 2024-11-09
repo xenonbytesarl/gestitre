@@ -55,16 +55,16 @@ public class CompanyJpa extends Audit {
     @Column(name = "c_activity", length = 128)
     private String activity;
 
-    @Column(name = "c_registration_number",  length = 64)
+    @Column(name = "c_registration_number",  length = 32)
     private String registrationNumber;
 
     @Column(name = "c_website_url",  length = 64)
     private String webSiteUrl;
 
-    @Column(name = "c_isin_code",  length = 64)
+    @Column(name = "c_isin_code",  length = 32)
     private String isinCode;
 
-    @Column(name = "c_tax_number",  length = 64)
+    @Column(name = "c_tax_number",  length = 32)
     private String taxNumber;
 
     @Column(name = "c_logo_filename", length = 512)

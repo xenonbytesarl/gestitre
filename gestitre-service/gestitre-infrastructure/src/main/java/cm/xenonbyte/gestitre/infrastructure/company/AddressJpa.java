@@ -24,7 +24,7 @@ public  class AddressJpa {
     @Column(name = "c_address_city", nullable = false, length = 64)
     private String city;
 
-    @Column(name = "c_address_zip_code", nullable = false, length = 32)
+    @Column(name = "c_address_zip_code", nullable = false, length = 16)
     private String zipCode;
 
     @Column(name = "c_address_country", nullable = false, length = 64)
