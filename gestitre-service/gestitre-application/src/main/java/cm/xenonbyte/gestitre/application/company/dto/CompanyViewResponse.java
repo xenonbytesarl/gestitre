@@ -1,5 +1,6 @@
 package cm.xenonbyte.gestitre.application.company.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
@@ -9,6 +10,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 import static cm.xenonbyte.gestitre.application.common.ApplicationConstant.NOT_NULL;
@@ -34,6 +36,10 @@ public class CompanyViewResponse extends CompanyView {
     protected String stampFilename;
     protected String stampEncoded;
     protected String stampMimeType;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
+    protected ZonedDateTime createdDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
+    protected ZonedDateTime endLicenceDate;
     @PositiveOrZero(message = POSITIVE_OR_ZERO)
     protected BigDecimal netDividendStock;
     @PositiveOrZero(message = POSITIVE_OR_ZERO)

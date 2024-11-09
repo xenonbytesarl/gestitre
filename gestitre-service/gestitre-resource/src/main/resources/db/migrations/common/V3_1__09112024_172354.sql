@@ -1,0 +1,1 @@
+alter table t_company add c_created_date timestamp with time zone not null;

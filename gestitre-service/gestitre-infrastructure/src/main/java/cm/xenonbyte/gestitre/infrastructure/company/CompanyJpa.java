@@ -17,6 +17,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 
 /**
  * @author bamk
@@ -51,6 +52,9 @@ public class CompanyJpa extends Audit {
 
     @Embedded
     private ContactJpa contactJpa;
+
+    @Column(name = "c_created_date", nullable = false)
+    private ZonedDateTime createdDate;
 
     @Column(name = "c_activity", length = 128)
     private String activity;

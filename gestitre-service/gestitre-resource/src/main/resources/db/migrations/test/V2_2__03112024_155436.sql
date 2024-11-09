@@ -12,7 +12,7 @@ insert into t_company (c_id, c_created_at, c_company_name, c_company_manager_nam
 
 
 insert into t_company (c_id, c_created_at, c_company_name, c_company_manager_name, c_licence, c_legal_form, c_address_city, c_address_zip_code, c_address_country, c_contact_email, c_contact_name, c_logo_filename, c_stamp_filename, c_active, c_contact_phone, c_tax_number, c_registration_number, c_isin_code, c_website_url) VALUES
-    ('01930d8c-cee8-7851-869d-a21161ac37bc', current_timestamp,  'Company Name u', 'Company Manager Name u', 'MONTH_36', 'EI', 'City u', '309', 'Country u', 'emailu@gmail.com', 'Name u', './gestitre/logo/logou.png', './gestitre/stamp/stampu.png', true,
+    ('0192f2b7-c1d4-795e-8e9f-b382b4c61d01', current_timestamp,  'Company Name u', 'Company Manager Name u', 'MONTH_36', 'EI', 'City u', '309', 'Country u', 'emailu@gmail.com', 'Name u', './gestitre/logo/logou.png', './gestitre/stamp/stampu.png', true,
      '645 254 287', 'TN95929949', 'RN24921492', 'CIKDHET444651', 'https://companu.com');
 
 

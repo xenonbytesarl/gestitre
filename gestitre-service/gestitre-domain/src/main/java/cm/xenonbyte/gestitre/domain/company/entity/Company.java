@@ -1,6 +1,6 @@
 package cm.xenonbyte.gestitre.domain.company.entity;
 
-import cm.xenonbyte.gestitre.domain.common.entity.BaseEntity;
+import cm.xenonbyte.gestitre.domain.common.entity.AggregateRoot;
 import cm.xenonbyte.gestitre.domain.common.validation.Assert;
 import cm.xenonbyte.gestitre.domain.common.vo.Active;
 import cm.xenonbyte.gestitre.domain.common.vo.Filename;
@@ -10,6 +10,7 @@ import cm.xenonbyte.gestitre.domain.company.vo.CertificateTemplateId;
 import cm.xenonbyte.gestitre.domain.company.vo.CompanyId;
 import cm.xenonbyte.gestitre.domain.company.vo.CompanyManagerName;
 import cm.xenonbyte.gestitre.domain.company.vo.CompanyName;
+import cm.xenonbyte.gestitre.domain.company.vo.EndLicence;
 import cm.xenonbyte.gestitre.domain.company.vo.GrossDividendStockUnit;
 import cm.xenonbyte.gestitre.domain.company.vo.IrcmRetain;
 import cm.xenonbyte.gestitre.domain.company.vo.IsinCode;
@@ -24,6 +25,7 @@ import cm.xenonbyte.gestitre.domain.company.vo.WebSiteUrl;
 import cm.xenonbyte.gestitre.domain.company.vo.address.Address;
 import cm.xenonbyte.gestitre.domain.company.vo.contact.Contact;
 
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.UUID;
 
@@ -32,7 +34,7 @@ import java.util.UUID;
  * @version 1.0
  * @since 01/11/2024
  */
-public final class Company extends BaseEntity<CompanyId> {
+public final class Company extends AggregateRoot<CompanyId> {
 
     private final CompanyName companyName;
     private final CompanyManagerName companyManagerName;
@@ -40,6 +42,7 @@ public final class Company extends BaseEntity<CompanyId> {
     private final LegalForm legalForm;
     private final Address address;
     private final Contact contact;
+    private ZonedDateTime createdDate;
     private Activity activity;
     private RegistrationNumber registrationNumber;
     private CertificateTemplateId certificateTemplateId;
@@ -54,6 +57,7 @@ public final class Company extends BaseEntity<CompanyId> {
     private Capitalization capitalization;
     private Quantity stockQuantity;
     private IrcmRetain ircmRetain;
+    private EndLicence endLicence;
     private Active active;
 
     public Company(CompanyName companyName, CompanyManagerName companyManagerName,
@@ -74,6 +78,7 @@ public final class Company extends BaseEntity<CompanyId> {
         legalForm = builder.legalForm;
         address = builder.address;
         contact = builder.contact;
+        createdDate = builder.createdDate;
         activity = builder.activity;
         registrationNumber = builder.registrationNumber;
         certificateTemplateId = builder.certificateTemplateId;
@@ -88,6 +93,7 @@ public final class Company extends BaseEntity<CompanyId> {
         capitalization = builder.capitalization;
         stockQuantity = builder.stockQuantity;
         ircmRetain = builder.ircmRetain;
+        endLicence = builder.endLicence;
         active = builder.active;
     }
 
@@ -117,6 +123,10 @@ public final class Company extends BaseEntity<CompanyId> {
 
     public Contact getContact() {
         return contact;
+    }
+
+    public ZonedDateTime getCreatedDate() {
+        return createdDate;
     }
 
     public Activity getActivity() {
@@ -175,6 +185,10 @@ public final class Company extends BaseEntity<CompanyId> {
         return ircmRetain;
     }
 
+    public EndLicence getEndLicence() {
+        return endLicence;
+    }
+
     public Active getActive() {
         return active;
     }
@@ -182,6 +196,8 @@ public final class Company extends BaseEntity<CompanyId> {
     public void initializeDefaultValues() {
         setId(new CompanyId(UUID.randomUUID()));
         this.active = Active.with(true);
+
+        this.createdDate = ZonedDateTime.now();
 
         if(nominalValue != null && stockQuantity != null) {
             capitalization = Capitalization.of(nominalValue, stockQuantity);
@@ -221,6 +237,7 @@ public final class Company extends BaseEntity<CompanyId> {
         private LegalForm legalForm;
         private Address address;
         private Contact contact;
+        private ZonedDateTime createdDate;
         private Activity activity;
         private RegistrationNumber registrationNumber;
         private CertificateTemplateId certificateTemplateId;
@@ -235,6 +252,7 @@ public final class Company extends BaseEntity<CompanyId> {
         private Capitalization capitalization;
         private Quantity stockQuantity;
         private IrcmRetain ircmRetain;
+        private EndLicence endLicence;
         private Active active;
 
         private Builder() {
@@ -272,6 +290,11 @@ public final class Company extends BaseEntity<CompanyId> {
 
         public Builder contact(Contact val) {
             contact = val;
+            return this;
+        }
+
+        public Builder createdDate(ZonedDateTime val) {
+            createdDate = val;
             return this;
         }
 
@@ -342,6 +365,11 @@ public final class Company extends BaseEntity<CompanyId> {
 
         public Builder ircmRetain(IrcmRetain val) {
             ircmRetain = val;
+            return this;
+        }
+
+        public Builder endLicence(EndLicence val) {
+            endLicence = val;
             return this;
         }
 
