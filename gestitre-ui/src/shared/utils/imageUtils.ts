@@ -2,7 +2,7 @@ export const getImageUrl = (imageUrl: string): string => {
     return imageUrl? new URL(imageUrl, import.meta.url).href: '';
 }
 
-export const fileToBase64 = (string64: string, mime: string): string => {
+export const showString64Image= (string64: string, mime: string): string => {
     return "data:mime;base64,string64".replace('mime', mime).replace('string64', string64);
 }
 
@@ -11,11 +11,11 @@ export const pathToFile = async (url: string, mime: string) => {
     const blob = await response.blob();
     const urls = url.split('/');
     const filename = urls.length > 1 ? urls[urls.length - 1]: url;
-    return new File([blob], filename, {type: mime})
+    return new File([blob], filename, {type: mime});
 }
 
 
-export const fileFromBase64 = (string64: string, fileName:string, mime: string): File =>  {
+export const fileFromString64 = (string64: string, fileName:string, mime: string): File =>  {
     const imageContent = atob(string64);
     const buffer = new ArrayBuffer(imageContent.length);
     const view = new Uint8Array(buffer);

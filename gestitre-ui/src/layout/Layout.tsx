@@ -6,7 +6,7 @@ import MobileNavbar from "@/layout/navbar/MobileNavbar.tsx";
 
 const Layout = () => {
     return (
-        <div className="flex flex-row min-h-screen overflow-x-hidden">
+        <div className="flex flex-row min-h-screen overflow-x-hidden bg-neutral-50">
             <div className="hidden md:block">
                 <div className="flex flex-row w-screen">
                     <div className="hidden md:block">

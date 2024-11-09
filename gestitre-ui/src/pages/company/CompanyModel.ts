@@ -16,13 +16,13 @@ export interface CompanyModel {
     certificateTemplateId: string;
     webSiteUrl: string;
     isinCode: string;
-    taxCode: string;
+    taxNumber: string;
     logoFilename: string;
-    encodedLogo: string;
-    mimeLogo: string;
+    logoEncoded: string;
+    logoMimeType: string;
     stampFilename: string;
-    encodedStamp: string;
-    mimeStamp: string;
+    stampEncoded: string;
+    stampMimeType: string;
     grossDividendStockUnit: number;
     nominalValue: number;
     netDividendStock?: number;

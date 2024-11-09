@@ -12,7 +12,7 @@ const createCompany = async (company: CompanyModel, logo: File, stamp: File): Pr
 }
 
 const findCompanyById = async (companyId: string): Promise<SuccessResponseModel<CompanyModel>> => {
-    return await axios.get(API_BASE_URL + `/catalog/company/${companyId}`,
+    return await axios.get(API_BASE_URL + `/companies/${companyId}`,
         {
             headers: API_JSON_HEADER
         });

@@ -12,7 +12,7 @@ const CompanyRoute = () => {
                 <Route path="tree"  element={<CompanyTree/>}/>
                 <Route path="card"  element={<CompanyCard/>}/>
                 <Route path="form/new"  element={<CompanyForm/>}/>
-                <Route path="form/details/:productId"  element={<CompanyForm/>}/>
+                <Route path="form/details/:companyId"  element={<CompanyForm/>}/>
                 <Route path="*" element={<NotFound/>}/>
             </Route>
         </Routes>
