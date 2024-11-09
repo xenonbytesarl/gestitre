@@ -601,7 +601,7 @@ const CompanyForm = () => {
                                                                                                 setOpenCertificateTemplatePopOver(false);
                                                                                                 form.setValue(
                                                                                                     "certificateTemplateId",
-                                                                                                    currentValue === certificateTemplatePopOverLabel ? "" : certificateTemplate.name,
+                                                                                                    currentValue === certificateTemplatePopOverLabel ? "" : certificateTemplate.id,
                                                                                                     {shouldTouch: true, shouldDirty: true, shouldValidate: true}
                                                                                                 );
                                                                                             }}

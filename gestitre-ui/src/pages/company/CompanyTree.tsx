@@ -100,11 +100,12 @@ const CompanyTree = () => {
             )
         },
         {
-            accessorKey: "licence",
+            accessorKey: "createdDate",
+            header: () => (<div className="text-left">{t("company_tree_created_date")}</div>),
+        },
+        {
+            accessorKey: "endLicenceDate",
             header: () => (<div className="text-left">{t("company_tree_licence")}</div>),
-            cell: ({row}) => (
-                <div className="text-left capitalize">{row.original.licence}</div>
-            )
         },
         {
             accessorKey: "action",

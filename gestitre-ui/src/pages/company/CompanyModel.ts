@@ -29,5 +29,7 @@ export interface CompanyModel {
     capitalization?: number;
     stockQuantity?: number;
     ircmRetain?: number;
+    endLicenceDate?: Date;
+    createdDate?: Date;
     active?: boolean;
 }
