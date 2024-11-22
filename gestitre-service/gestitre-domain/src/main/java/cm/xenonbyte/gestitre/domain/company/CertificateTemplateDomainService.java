@@ -48,6 +48,7 @@ public final class CertificateTemplateDomainService implements CertificateTempla
         certificateTemplate.initializeDefaultValues();
         certificateTemplate = certificateTemplateRepository.create(certificateTemplate);
         LOGGER.info("Certificate template created with id " + certificateTemplate.getId().getValue());
+        //TODO fire an event to audit manager
         return new CertificateTemplateCreatedEvent(certificateTemplate, ZonedDateTime.now());
     }
 
