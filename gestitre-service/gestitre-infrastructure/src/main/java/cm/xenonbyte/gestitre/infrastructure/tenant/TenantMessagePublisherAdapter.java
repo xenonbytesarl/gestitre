@@ -1,10 +1,12 @@
-package cm.xenonbyte.gestitre.infrastructure.Tenant;
+package cm.xenonbyte.gestitre.infrastructure.tenant;
 
-import cm.xenonbyte.gestitre.domain.company.ports.secondary.message.TenantEventType;
-import cm.xenonbyte.gestitre.domain.company.ports.secondary.message.TenantMessagePublisher;
+import cm.xenonbyte.gestitre.domain.company.vo.TenantEventType;
 import cm.xenonbyte.gestitre.domain.tenant.TenantEvent;
-import io.vertx.mutiny.core.eventbus.EventBus;
+import cm.xenonbyte.gestitre.domain.tenant.ports.secondary.message.TenantMessagePublisher;
+import cm.xenonbyte.gestitre.infrastructure.common.annotation.DefaultEventBus;
+import io.vertx.core.eventbus.EventBus;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -16,17 +18,16 @@ import lombok.extern.slf4j.Slf4j;
 @ApplicationScoped
 public final class TenantMessagePublisherAdapter implements TenantMessagePublisher {
 
+    @Inject
+    @DefaultEventBus
+    EventBus eventBus;
 
-    private final EventBus bus;
 
-    public TenantMessagePublisherAdapter(EventBus bus) {
-        this.bus = bus;
-    }
 
     @Override
     public void publish(TenantEvent event, TenantEventType type) {
         log.info("Publishing event {} for tenant with name {}  in the bus",
                 type.name(), event.getTenant().getName().text().value());
-        bus.publish(type.name(), event);
+        eventBus.publish(type.name(), event);
     }
 }

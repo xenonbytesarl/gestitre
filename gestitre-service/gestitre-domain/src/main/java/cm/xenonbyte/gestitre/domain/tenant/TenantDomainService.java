@@ -1,7 +1,7 @@
 package cm.xenonbyte.gestitre.domain.tenant;
 
 import cm.xenonbyte.gestitre.domain.common.annotation.DomainEvent;
-import cm.xenonbyte.gestitre.domain.company.ports.secondary.message.TenantMessagePublisher;
+import cm.xenonbyte.gestitre.domain.tenant.ports.secondary.message.TenantMessagePublisher;
 import cm.xenonbyte.gestitre.domain.tenant.ports.primary.message.listener.TenantService;
 import cm.xenonbyte.gestitre.domain.tenant.ports.secondary.repository.TenantRepository;
 import jakarta.annotation.Nonnull;
@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import static cm.xenonbyte.gestitre.domain.company.ports.secondary.message.TenantEventType.TENANT_CREATED;
+import static cm.xenonbyte.gestitre.domain.company.vo.TenantEventType.TENANT_CREATED;
 
 /**
  * @author bamk
@@ -33,15 +33,15 @@ public final class TenantDomainService implements TenantService {
     }
 
     @Override
-    public TenantCreateEvent create(Tenant tenant) {
+    public TenantCreatedEvent create(Tenant tenant) {
         tenant.validateMandatoryFields();
         validateTenant(tenant);
         tenant.initializeDefaults();
         tenantRepository.create(tenant);
-        LOGGER.info("Tenant is created with id " + tenant.getId());
-        TenantCreateEvent tenantCreateEvent = new TenantCreateEvent(tenant, ZonedDateTime.now());
-        tenantMessagePublisher.publish(tenantCreateEvent, TENANT_CREATED);
-        return tenantCreateEvent;
+        LOGGER.info("tenant is created with id " + tenant.getId());
+        TenantCreatedEvent tenantCreatedEvent = new TenantCreatedEvent(tenant, ZonedDateTime.now());
+        tenantMessagePublisher.publish(tenantCreatedEvent, TENANT_CREATED);
+        return tenantCreatedEvent;
     }
 
     private void validateTenant(Tenant tenant) {

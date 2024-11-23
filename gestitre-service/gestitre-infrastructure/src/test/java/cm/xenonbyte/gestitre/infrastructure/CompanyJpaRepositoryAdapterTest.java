@@ -1,6 +1,8 @@
 package cm.xenonbyte.gestitre.infrastructure;
 
 import cm.xenonbyte.gestitre.domain.common.vo.Active;
+import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
+import cm.xenonbyte.gestitre.domain.common.vo.CompanyName;
 import cm.xenonbyte.gestitre.domain.common.vo.Filename;
 import cm.xenonbyte.gestitre.domain.common.vo.Keyword;
 import cm.xenonbyte.gestitre.domain.common.vo.Name;
@@ -11,9 +13,7 @@ import cm.xenonbyte.gestitre.domain.common.vo.PageInfoPage;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoSize;
 import cm.xenonbyte.gestitre.domain.common.vo.Text;
 import cm.xenonbyte.gestitre.domain.company.entity.Company;
-import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
 import cm.xenonbyte.gestitre.domain.company.vo.CompanyManagerName;
-import cm.xenonbyte.gestitre.domain.common.vo.CompanyName;
 import cm.xenonbyte.gestitre.domain.company.vo.LegalForm;
 import cm.xenonbyte.gestitre.domain.company.vo.Licence;
 import cm.xenonbyte.gestitre.domain.company.vo.address.Address;
@@ -33,6 +33,7 @@ import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.ZonedDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -89,6 +90,7 @@ final class CompanyJpaRepositoryAdapterTest {
                 .logoFilename(Filename.of(Text.of(System.getProperty("user.home") + "/gestitre/logo/logo0.png")))
                 .stampFilename(Filename.of(Text.of(System.getProperty("user.home") + "/gestitre/stamp/stamp0.png")))
                 .active(Active.with(true))
+                .createdDate(ZonedDateTime.now())
                 .build();
 
         //Act
@@ -227,6 +229,7 @@ final class CompanyJpaRepositoryAdapterTest {
                 .logoFilename(Filename.of(Text.of(System.getProperty("user.home") + "/gestitre/logo/logo2.png")))
                 .stampFilename(Filename.of(Text.of(System.getProperty("user.home") + "/gestitre/stamp/stamp2.png")))
                 .active(Active.with(true))
+                .createdDate(ZonedDateTime.now())
                 .build();
 
         //Act

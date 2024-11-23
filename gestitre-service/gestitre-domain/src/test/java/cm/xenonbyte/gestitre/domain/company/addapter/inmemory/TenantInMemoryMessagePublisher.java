@@ -1,10 +1,10 @@
 package cm.xenonbyte.gestitre.domain.company.addapter.inmemory;
 
-import cm.xenonbyte.gestitre.domain.company.ports.secondary.message.TenantEventType;
-import cm.xenonbyte.gestitre.domain.tenant.Tenant;
 import cm.xenonbyte.gestitre.domain.common.vo.TenantId;
-import cm.xenonbyte.gestitre.domain.company.ports.secondary.message.TenantMessagePublisher;
+import cm.xenonbyte.gestitre.domain.company.vo.TenantEventType;
+import cm.xenonbyte.gestitre.domain.tenant.Tenant;
 import cm.xenonbyte.gestitre.domain.tenant.TenantEvent;
+import cm.xenonbyte.gestitre.domain.tenant.ports.secondary.message.TenantMessagePublisher;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

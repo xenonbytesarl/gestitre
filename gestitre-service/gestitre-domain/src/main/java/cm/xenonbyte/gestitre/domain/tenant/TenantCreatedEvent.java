@@ -10,8 +10,8 @@ import java.time.ZonedDateTime;
  * @since 22/11/2024
  */
 @DomainEvent
-public final class TenantCreateEvent extends TenantEvent {
-    public TenantCreateEvent(Tenant tenant, ZonedDateTime createdAt) {
+public final class TenantCreatedEvent extends TenantEvent {
+    public TenantCreatedEvent(Tenant tenant, ZonedDateTime createdAt) {
         super(tenant, createdAt);
     }
 }

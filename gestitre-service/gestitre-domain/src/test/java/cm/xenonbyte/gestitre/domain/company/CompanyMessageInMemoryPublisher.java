@@ -3,8 +3,8 @@ package cm.xenonbyte.gestitre.domain.company;
 import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
 import cm.xenonbyte.gestitre.domain.company.entity.Company;
 import cm.xenonbyte.gestitre.domain.company.event.CompanyEvent;
+import cm.xenonbyte.gestitre.domain.company.ports.secondary.message.CompanyMessagePublisher;
 import cm.xenonbyte.gestitre.domain.company.vo.CompanyEventType;
-import cm.xenonbyte.gestitre.domain.tenant.ports.secondary.message.CompanyMessagePublisher;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -17,6 +17,7 @@ import java.util.Map;
 public final class CompanyMessageInMemoryPublisher implements CompanyMessagePublisher {
 
     private Map<CompanyId, Company> companies = new LinkedHashMap<>();
+
 
     @Override
     public void publish(CompanyEvent event, CompanyEventType type) {

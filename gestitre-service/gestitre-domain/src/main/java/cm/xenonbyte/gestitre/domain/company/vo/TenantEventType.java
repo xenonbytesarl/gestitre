@@ -1,4 +1,4 @@
-package cm.xenonbyte.gestitre.domain.company.ports.secondary.message;
+package cm.xenonbyte.gestitre.domain.company.vo;
 
 /**
  * @author bamk

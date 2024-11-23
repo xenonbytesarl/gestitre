@@ -27,6 +27,7 @@ create table if not exists t_company (
     c_stock_quantity bigint ,
     c_active boolean not null ,
     c_certificate_template_id uuid ,
+    c_created_date timestamp with time zone not null ,
     constraint Pk_t_company_c_id primary key (c_id),
     constraint Uk_t_company_c_company_name unique (c_company_name),
     constraint Uk_t_company_c_tax_number unique (c_tax_number),

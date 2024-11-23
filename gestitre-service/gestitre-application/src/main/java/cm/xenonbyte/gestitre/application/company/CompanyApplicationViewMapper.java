@@ -227,6 +227,7 @@ public interface CompanyApplicationViewMapper {
     @Mapping(source = "updateCompanyViewRequest.id", target = "id.value")
     @Mapping(source = "updateCompanyViewRequest.companyName", target="companyName.text.value")
     @Mapping(source = "updateCompanyViewRequest.companyManagerName", target="companyManagerName.text.value")
+    @Mapping(source = "updateCompanyViewRequest.createdDate", target="createdDate")
     @Mapping(expression = "java(cm.xenonbyte.gestitre.domain.company.vo.Licence.valueOf(updateCompanyViewRequest.getLicence()))", target="licence")
     @Mapping(expression = "java(cm.xenonbyte.gestitre.domain.company.vo.LegalForm.valueOf(updateCompanyViewRequest.getLegalForm()))", target="legalForm")
     @Mapping(source = "updateCompanyViewRequest.address", qualifiedByName = "companyViewToAddress", target = "address")

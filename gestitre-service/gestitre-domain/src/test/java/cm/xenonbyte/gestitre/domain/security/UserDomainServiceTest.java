@@ -64,7 +64,7 @@ class UserDomainServiceTest {
         tenantRepository.create(
                 Tenant.builder()
                         .id(tenantId)
-                        .name(Name.of(Text.of("First Tenant")))
+                        .name(Name.of(Text.of("First tenant")))
                         .build()
         );
 

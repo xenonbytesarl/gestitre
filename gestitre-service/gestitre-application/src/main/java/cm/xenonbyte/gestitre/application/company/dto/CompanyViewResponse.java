@@ -36,7 +36,7 @@ public class CompanyViewResponse extends CompanyView {
     protected String stampFilename;
     protected String stampEncoded;
     protected String stampMimeType;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
+    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
     protected ZonedDateTime createdDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
     protected ZonedDateTime endLicenceDate;

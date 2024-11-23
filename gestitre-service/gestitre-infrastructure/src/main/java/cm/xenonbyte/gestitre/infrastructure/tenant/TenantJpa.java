@@ -1,4 +1,4 @@
-package cm.xenonbyte.gestitre.infrastructure.Tenant;
+package cm.xenonbyte.gestitre.infrastructure.tenant;
 
 import cm.xenonbyte.gestitre.infrastructure.common.Auditable;
 import jakarta.persistence.Column;

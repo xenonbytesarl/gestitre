@@ -15,8 +15,8 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -71,8 +71,17 @@ class CompanyTest {
                                                 .build()
                                 )
                                 .build(),
-                        new MultiPartSpecBuilder(Optional.ofNullable(null)).build(),
-                        new MultiPartSpecBuilder(Optional.ofNullable(null)).build()
+                        new MultiPartSpecBuilder("Logo content 2".getBytes())
+                                .fileName("createCompanyLogo2.png")
+                                .controlName("logo")
+                                .mimeType("image/png")
+                                .build(),
+
+                        new MultiPartSpecBuilder("Stamp content 2".getBytes())
+                                .fileName("createCompanyStamp2.png")
+                                .controlName("stamp")
+                                .mimeType("image/png")
+                                .build()
                 ),
                 Arguments.of(
                         CreateCompanyViewRequest.builder()
@@ -446,7 +455,7 @@ class CompanyTest {
     @Test
     void should_find_company_by_existing_id() {
         //Given
-        UUID companyId = UUID.fromString("0192ff21-d672-7550-b9c9-fa2acff54e11");
+        UUID companyId = UUID.fromString("019359ab-12ea-77d1-8a37-984affddd14f");
         //Act + Then
         given()
             .header("Accept-Language", FR_LANGUAGE)
@@ -530,9 +539,9 @@ class CompanyTest {
     static Stream<Arguments> updateCompanySuccessMethodSource() {
         return Stream.of(
                 Arguments.of(
-                       UUID.fromString("01930d8c-cee8-7851-869d-a21161ac37bc"),
+                       UUID.fromString("019359a9-6db3-79f8-98dd-4e55d2cccfff"),
                        UpdateCompanyViewRequest.builder()
-                               .id(UUID.fromString("01930d8c-cee8-7851-869d-a21161ac37bc"))
+                               .id(UUID.fromString("019359a9-6db3-79f8-98dd-4e55d2cccfff"))
                                 .companyName("Company Name IT0Updated")
                                 .companyManagerName("Company Manager Name IT0Updated")
                                 .licence("MONTH_12")
@@ -554,9 +563,19 @@ class CompanyTest {
                                                 .build()
                                 )
                                .active(true)
+                               .createdDate(ZonedDateTime.now())
                                 .build(),
-                        new MultiPartSpecBuilder(Optional.ofNullable(null)).build(),
-                        new MultiPartSpecBuilder(Optional.ofNullable(null)).build()
+                        new MultiPartSpecBuilder("Logo content 2".getBytes())
+                                .fileName("createCompanyLogo2.png")
+                                .controlName("logo")
+                                .mimeType("image/png")
+                                .build(),
+
+                        new MultiPartSpecBuilder("Stamp content 2".getBytes())
+                                .fileName("createCompanyStamp2.png")
+                                .controlName("stamp")
+                                .mimeType("image/png")
+                                .build()
                 )
 
         );

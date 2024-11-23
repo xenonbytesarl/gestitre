@@ -1,8 +1,6 @@
 package cm.xenonbyte.gestitre.domain.company.event;
 
 import cm.xenonbyte.gestitre.domain.common.annotation.DomainEvent;
-import cm.xenonbyte.gestitre.domain.common.event.BaseEvent;
-import cm.xenonbyte.gestitre.domain.common.validation.Assert;
 import cm.xenonbyte.gestitre.domain.company.entity.Company;
 
 import java.time.ZonedDateTime;

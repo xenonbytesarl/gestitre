@@ -1,5 +1,6 @@
-package cm.xenonbyte.gestitre.domain.company.ports.secondary.message;
+package cm.xenonbyte.gestitre.domain.tenant.ports.secondary.message;
 
+import cm.xenonbyte.gestitre.domain.company.vo.TenantEventType;
 import cm.xenonbyte.gestitre.domain.tenant.TenantEvent;
 
 /**

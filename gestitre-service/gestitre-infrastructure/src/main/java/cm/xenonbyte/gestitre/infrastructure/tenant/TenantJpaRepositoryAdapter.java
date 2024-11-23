@@ -1,4 +1,4 @@
-package cm.xenonbyte.gestitre.infrastructure.Tenant;
+package cm.xenonbyte.gestitre.infrastructure.tenant;
 
 import cm.xenonbyte.gestitre.domain.common.vo.Name;
 import cm.xenonbyte.gestitre.domain.common.vo.TenantId;

@@ -1,7 +1,7 @@
 package cm.xenonbyte.gestitre.domain.tenant.ports.primary.message.listener;
 
 import cm.xenonbyte.gestitre.domain.tenant.Tenant;
-import cm.xenonbyte.gestitre.domain.tenant.TenantCreateEvent;
+import cm.xenonbyte.gestitre.domain.tenant.TenantCreatedEvent;
 
 /**
  * @author bamk
@@ -10,5 +10,5 @@ import cm.xenonbyte.gestitre.domain.tenant.TenantCreateEvent;
  */
 public interface TenantService {
 
-    TenantCreateEvent create(Tenant tenant);
+    TenantCreatedEvent create(Tenant tenant);
 }

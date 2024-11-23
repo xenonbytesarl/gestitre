@@ -20,6 +20,7 @@ import cm.xenonbyte.gestitre.domain.company.ports.CompanyNameConflictException;
 import cm.xenonbyte.gestitre.domain.company.ports.CompanyNotFoundException;
 import cm.xenonbyte.gestitre.domain.company.ports.CompanyPhoneConflictException;
 import cm.xenonbyte.gestitre.domain.company.ports.primary.CompanyService;
+import cm.xenonbyte.gestitre.domain.company.ports.secondary.message.CompanyMessagePublisher;
 import cm.xenonbyte.gestitre.domain.company.ports.secondary.repository.CertificateTemplateRepository;
 import cm.xenonbyte.gestitre.domain.company.ports.secondary.repository.CompanyRepository;
 import cm.xenonbyte.gestitre.domain.company.vo.CertificateTemplateId;
@@ -30,7 +31,6 @@ import cm.xenonbyte.gestitre.domain.company.vo.WebSiteUrl;
 import cm.xenonbyte.gestitre.domain.company.vo.contact.Email;
 import cm.xenonbyte.gestitre.domain.company.vo.contact.Phone;
 import cm.xenonbyte.gestitre.domain.tenant.Tenant;
-import cm.xenonbyte.gestitre.domain.tenant.ports.secondary.message.CompanyMessagePublisher;
 import jakarta.annotation.Nonnull;
 
 import java.time.ZonedDateTime;
