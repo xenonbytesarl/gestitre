@@ -1,5 +1,6 @@
-package cm.xenonbyte.gestitre.domain.common.entity;
+package cm.xenonbyte.gestitre.domain.tenant;
 
+import cm.xenonbyte.gestitre.domain.common.entity.BaseEntity;
 import cm.xenonbyte.gestitre.domain.common.validation.Assert;
 import cm.xenonbyte.gestitre.domain.common.vo.Active;
 import cm.xenonbyte.gestitre.domain.common.vo.Name;
@@ -35,6 +36,14 @@ public final class Tenant extends BaseEntity<TenantId> {
         return new Tenant(name);
     }
 
+    public Name getName() {
+        return name;
+    }
+
+    public Active getActive() {
+        return active;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -44,8 +53,11 @@ public final class Tenant extends BaseEntity<TenantId> {
         this.active = Active.with(true);
     }
 
-    public Name getName() {
-        return name;
+    public void validateMandatoryFields() {
+        Assert.field("name", name)
+                .notNull()
+                .notNull(name.text())
+                .notNull(name.text().value());
     }
 
 

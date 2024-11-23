@@ -13,13 +13,13 @@ import java.time.ZonedDateTime;
 public final class AuditListener {
 
     @PrePersist
-    public void prePersist(Audit entity) {
+    public void prePersist(Auditable entity) {
         entity.setCreatedAt(ZonedDateTime.now());
         entity.setUpdatedAt(null);
     }
 
     @PreUpdate
-    public void preUpdate(Audit entity) {
+    public void preUpdate(Auditable entity) {
         entity.setUpdatedAt(ZonedDateTime.now());
     }
 }

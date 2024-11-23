@@ -1,6 +1,6 @@
 package cm.xenonbyte.gestitre.infrastructure.company.certificatetemplate;
 
-import cm.xenonbyte.gestitre.infrastructure.common.Audit;
+import cm.xenonbyte.gestitre.infrastructure.common.Auditable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -22,7 +22,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "t_certificate_template")
-public class CertificateTemplateJpa extends Audit {
+public class CertificateTemplateJpa extends Auditable {
 
 
     @Column(name = "c_name", nullable = false, unique = true, length = 64)

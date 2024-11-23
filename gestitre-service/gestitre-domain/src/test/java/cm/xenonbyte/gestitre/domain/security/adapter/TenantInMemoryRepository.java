@@ -1,8 +1,8 @@
 package cm.xenonbyte.gestitre.domain.security.adapter;
 
 import cm.xenonbyte.gestitre.domain.common.vo.Name;
-import cm.xenonbyte.gestitre.domain.common.entity.Tenant;
-import cm.xenonbyte.gestitre.domain.common.ports.secondary.TenantRepository;
+import cm.xenonbyte.gestitre.domain.tenant.Tenant;
+import cm.xenonbyte.gestitre.domain.tenant.ports.secondary.repository.TenantRepository;
 import cm.xenonbyte.gestitre.domain.common.vo.TenantId;
 import jakarta.annotation.Nonnull;
 
@@ -37,5 +37,10 @@ public final class TenantInMemoryRepository implements TenantRepository {
                 .filter(tenant ->
                     tenant.getName().text().value().equalsIgnoreCase(name.text().value()))
                 .findFirst();
+    }
+
+    @Override
+    public Boolean existsByName(@Nonnull Name name) {
+        return tenants.values().stream().anyMatch(tenant -> tenant.getName().text().value().equalsIgnoreCase(name.text().value()));
     }
 }

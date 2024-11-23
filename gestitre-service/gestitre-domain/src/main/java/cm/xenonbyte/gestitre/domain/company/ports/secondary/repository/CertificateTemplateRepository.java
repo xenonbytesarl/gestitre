@@ -1,4 +1,4 @@
-package cm.xenonbyte.gestitre.domain.company.ports.secondary;
+package cm.xenonbyte.gestitre.domain.company.ports.secondary.repository;
 
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoDirection;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoField;

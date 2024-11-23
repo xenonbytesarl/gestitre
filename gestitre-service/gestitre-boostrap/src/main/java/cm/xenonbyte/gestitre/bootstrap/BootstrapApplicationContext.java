@@ -4,10 +4,15 @@ import cm.xenonbyte.gestitre.domain.company.CertificateTemplateDomainService;
 import cm.xenonbyte.gestitre.domain.company.CompanyDomainService;
 import cm.xenonbyte.gestitre.domain.company.ports.primary.CertificateTemplateService;
 import cm.xenonbyte.gestitre.domain.company.ports.primary.CompanyService;
-import cm.xenonbyte.gestitre.domain.company.ports.secondary.CertificateTemplateRepository;
-import cm.xenonbyte.gestitre.domain.company.ports.secondary.CompanyRepository;
+import cm.xenonbyte.gestitre.domain.company.ports.secondary.message.TenantMessagePublisher;
+import cm.xenonbyte.gestitre.domain.company.ports.secondary.repository.CertificateTemplateRepository;
+import cm.xenonbyte.gestitre.domain.company.ports.secondary.repository.CompanyRepository;
 import cm.xenonbyte.gestitre.domain.file.StorageManagerDomainService;
 import cm.xenonbyte.gestitre.domain.file.port.primary.StorageManager;
+import cm.xenonbyte.gestitre.domain.tenant.TenantDomainService;
+import cm.xenonbyte.gestitre.domain.tenant.ports.primary.message.listener.TenantService;
+import cm.xenonbyte.gestitre.domain.tenant.ports.secondary.message.CompanyMessagePublisher;
+import cm.xenonbyte.gestitre.domain.tenant.ports.secondary.repository.TenantRepository;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -39,13 +44,19 @@ public final class BootstrapApplicationContext {
     @ApplicationScoped
     public CompanyService companyService(
             CompanyRepository companyRepository,
-            CertificateTemplateRepository certificateTemplateRepository) {
-        return new CompanyDomainService(companyRepository, certificateTemplateRepository);
+            CertificateTemplateRepository certificateTemplateRepository,
+            CompanyMessagePublisher companyMessagePublisher) {
+        return new CompanyDomainService(companyRepository, certificateTemplateRepository, companyMessagePublisher);
     }
 
     @ApplicationScoped
     public StorageManager storageManager() {
         return new StorageManagerDomainService();
+    }
+
+    @ApplicationScoped
+    public TenantService tenantService(TenantRepository tenantRepository, TenantMessagePublisher tenantMessagePublisher) {
+        return new TenantDomainService(tenantRepository, tenantMessagePublisher);
     }
 
 

@@ -20,7 +20,7 @@ import cm.xenonbyte.gestitre.domain.company.entity.Company;
 import cm.xenonbyte.gestitre.domain.company.event.CompanyCreatedEvent;
 import cm.xenonbyte.gestitre.domain.company.event.CompanyUpdatedEvent;
 import cm.xenonbyte.gestitre.domain.company.ports.primary.CompanyService;
-import cm.xenonbyte.gestitre.domain.company.vo.CompanyId;
+import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
 import cm.xenonbyte.gestitre.domain.file.port.primary.StorageManager;
 import jakarta.annotation.Nonnull;
 import jakarta.enterprise.context.ApplicationScoped;

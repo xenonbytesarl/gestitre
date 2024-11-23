@@ -14,9 +14,9 @@ public class UserEvent implements BaseEvent<User> {
     private final User user;
     private final ZonedDateTime createAt;
 
-    public UserEvent(User user, ZonedDateTime createAt) {
+    public UserEvent(User user, ZonedDateTime createdAt) {
         this.user = user;
-        this.createAt = createAt;
+        this.createAt = createdAt;
     }
 
     public User getUser() {

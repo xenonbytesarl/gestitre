@@ -7,6 +7,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import java.util.Optional;
 import java.util.UUID;
 
+
 /**
  * @author bamk
  * @version 1.0

@@ -1,18 +1,19 @@
 package cm.xenonbyte.gestitre.domain.company;
 
 import cm.xenonbyte.gestitre.domain.common.vo.Active;
-import cm.xenonbyte.gestitre.domain.common.vo.PageInfoDirection;
-import cm.xenonbyte.gestitre.domain.common.vo.PageInfoField;
 import cm.xenonbyte.gestitre.domain.common.vo.Filename;
 import cm.xenonbyte.gestitre.domain.common.vo.Keyword;
 import cm.xenonbyte.gestitre.domain.common.vo.Name;
-import cm.xenonbyte.gestitre.domain.common.vo.PageInfoPage;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfo;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoDirection;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoField;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoPage;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoSize;
 import cm.xenonbyte.gestitre.domain.common.vo.StorageLocation;
 import cm.xenonbyte.gestitre.domain.common.vo.Text;
 import cm.xenonbyte.gestitre.domain.company.addapter.inmemory.CertificateTemplateInMemoryRepository;
 import cm.xenonbyte.gestitre.domain.company.addapter.inmemory.CompanyInMemoryRepository;
+import cm.xenonbyte.gestitre.domain.company.addapter.inmemory.TenantInMemoryMessagePublisher;
 import cm.xenonbyte.gestitre.domain.company.entity.CertificateTemplate;
 import cm.xenonbyte.gestitre.domain.company.entity.Company;
 import cm.xenonbyte.gestitre.domain.company.event.CompanyCreatedEvent;
@@ -23,11 +24,17 @@ import cm.xenonbyte.gestitre.domain.company.ports.CompanyNameConflictException;
 import cm.xenonbyte.gestitre.domain.company.ports.CompanyNotFoundException;
 import cm.xenonbyte.gestitre.domain.company.ports.CompanyPhoneConflictException;
 import cm.xenonbyte.gestitre.domain.company.ports.primary.CompanyService;
-import cm.xenonbyte.gestitre.domain.company.ports.secondary.CertificateTemplateRepository;
-import cm.xenonbyte.gestitre.domain.company.ports.secondary.CompanyRepository;
+import cm.xenonbyte.gestitre.domain.company.ports.secondary.message.TenantMessagePublisher;
+import cm.xenonbyte.gestitre.domain.company.ports.secondary.repository.CertificateTemplateRepository;
+import cm.xenonbyte.gestitre.domain.company.ports.secondary.repository.CompanyRepository;
+import cm.xenonbyte.gestitre.domain.company.vo.Activity;
 import cm.xenonbyte.gestitre.domain.company.vo.CertificateTemplateId;
-import cm.xenonbyte.gestitre.domain.company.vo.CompanyId;
+import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
+import cm.xenonbyte.gestitre.domain.company.vo.CompanyManagerName;
+import cm.xenonbyte.gestitre.domain.common.vo.CompanyName;
 import cm.xenonbyte.gestitre.domain.company.vo.IsinCode;
+import cm.xenonbyte.gestitre.domain.company.vo.LegalForm;
+import cm.xenonbyte.gestitre.domain.company.vo.Licence;
 import cm.xenonbyte.gestitre.domain.company.vo.RegistrationNumber;
 import cm.xenonbyte.gestitre.domain.company.vo.TaxNumber;
 import cm.xenonbyte.gestitre.domain.company.vo.WebSiteUrl;
@@ -38,17 +45,12 @@ import cm.xenonbyte.gestitre.domain.company.vo.address.ZipCode;
 import cm.xenonbyte.gestitre.domain.company.vo.contact.Contact;
 import cm.xenonbyte.gestitre.domain.company.vo.contact.Email;
 import cm.xenonbyte.gestitre.domain.company.vo.contact.Phone;
-import cm.xenonbyte.gestitre.domain.company.vo.Activity;
-import cm.xenonbyte.gestitre.domain.company.vo.CompanyManagerName;
-import cm.xenonbyte.gestitre.domain.company.vo.CompanyName;
-import cm.xenonbyte.gestitre.domain.company.vo.LegalForm;
-import cm.xenonbyte.gestitre.domain.company.vo.Licence;
+import cm.xenonbyte.gestitre.domain.tenant.ports.secondary.message.CompanyMessagePublisher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
-
 
 import static cm.xenonbyte.gestitre.domain.company.CompanyIsinCodeConflictException.COMPANY_ISIN_CODE_CONFLICT;
 import static cm.xenonbyte.gestitre.domain.company.CompanyRegistrationNumberConflictException.COMPANY_REGISTRATION_NUMBER_CONFLICT;
@@ -80,7 +82,8 @@ final class CompanyDomainTest {
     void setUp() {
         CompanyRepository companyRepository = new CompanyInMemoryRepository();
         CertificateTemplateRepository certificateTemplateRepository = new CertificateTemplateInMemoryRepository();
-        companyService = new CompanyDomainService(companyRepository, certificateTemplateRepository);
+        CompanyMessagePublisher companyMessagePublisher = new CompanyMessageInMemoryPublisher();
+        companyService = new CompanyDomainService(companyRepository, certificateTemplateRepository, companyMessagePublisher);
 
         companyId = new CompanyId(UUID.fromString("0192e847-a74e-7802-9ca3-5c754010aff1"));
         Company company = Company.builder()

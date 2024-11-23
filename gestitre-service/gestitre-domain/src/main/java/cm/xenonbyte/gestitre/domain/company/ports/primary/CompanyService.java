@@ -1,15 +1,15 @@
 package cm.xenonbyte.gestitre.domain.company.ports.primary;
 
+import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
+import cm.xenonbyte.gestitre.domain.common.vo.Keyword;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfo;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoDirection;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoField;
-import cm.xenonbyte.gestitre.domain.common.vo.Keyword;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoPage;
-import cm.xenonbyte.gestitre.domain.common.vo.PageInfo;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoSize;
 import cm.xenonbyte.gestitre.domain.company.entity.Company;
 import cm.xenonbyte.gestitre.domain.company.event.CompanyCreatedEvent;
 import cm.xenonbyte.gestitre.domain.company.event.CompanyUpdatedEvent;
-import cm.xenonbyte.gestitre.domain.company.vo.CompanyId;
 import jakarta.annotation.Nonnull;
 
 /**

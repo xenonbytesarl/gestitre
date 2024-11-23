@@ -25,7 +25,7 @@ import java.util.UUID;
  * @since 09/11/2024
  */
 public final class User extends AggregateRoot<UserId> {
-    private TenantId tenantId;
+    private final TenantId tenantId;
     private final Email email;
     private final Name name;
     private final RoleId roleId;
@@ -40,9 +40,11 @@ public final class User extends AggregateRoot<UserId> {
 
 
     public User(
+            @Nonnull TenantId tenantId,
             @Nonnull Email email,
             @Nonnull Name name,
             @Nonnull RoleId roleId) {
+        this.tenantId = tenantId;
         this.email = Objects.requireNonNull(email);
         this.name = Objects.requireNonNull(name);
         this.roleId = Objects.requireNonNull(roleId);
@@ -68,9 +70,8 @@ public final class User extends AggregateRoot<UserId> {
         return new Builder();
     }
 
-    public void initializeDefaults(TenantId tenantId) {
+    public void initializeDefaults() {
         setId(new UserId(UUID.randomUUID()));
-        this.tenantId = tenantId;
         this.accountEnabled = AccountEnabled.with(false);
         this.credentialExpired = CredentialExpired.with(false);
         this.accountLocked = AccountLocked.with(false);

@@ -4,12 +4,13 @@ import cm.xenonbyte.gestitre.domain.common.entity.AggregateRoot;
 import cm.xenonbyte.gestitre.domain.common.validation.Assert;
 import cm.xenonbyte.gestitre.domain.common.vo.Active;
 import cm.xenonbyte.gestitre.domain.common.vo.Filename;
+import cm.xenonbyte.gestitre.domain.common.vo.TenantId;
 import cm.xenonbyte.gestitre.domain.company.vo.Activity;
 import cm.xenonbyte.gestitre.domain.company.vo.Capitalization;
 import cm.xenonbyte.gestitre.domain.company.vo.CertificateTemplateId;
-import cm.xenonbyte.gestitre.domain.company.vo.CompanyId;
+import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
 import cm.xenonbyte.gestitre.domain.company.vo.CompanyManagerName;
-import cm.xenonbyte.gestitre.domain.company.vo.CompanyName;
+import cm.xenonbyte.gestitre.domain.common.vo.CompanyName;
 import cm.xenonbyte.gestitre.domain.company.vo.EndLicence;
 import cm.xenonbyte.gestitre.domain.company.vo.GrossDividendStockUnit;
 import cm.xenonbyte.gestitre.domain.company.vo.IrcmRetain;
@@ -46,6 +47,7 @@ public final class Company extends AggregateRoot<CompanyId> {
     private Activity activity;
     private RegistrationNumber registrationNumber;
     private CertificateTemplateId certificateTemplateId;
+    private TenantId tenantId;
     private WebSiteUrl webSiteUrl;
     private IsinCode isinCode;
     private TaxNumber taxNumber;
@@ -82,6 +84,7 @@ public final class Company extends AggregateRoot<CompanyId> {
         activity = builder.activity;
         registrationNumber = builder.registrationNumber;
         certificateTemplateId = builder.certificateTemplateId;
+        tenantId = builder.tenantId;
         webSiteUrl = builder.webSiteUrl;
         isinCode = builder.isinCode;
         taxNumber = builder.taxNumber;
@@ -139,6 +142,10 @@ public final class Company extends AggregateRoot<CompanyId> {
 
     public CertificateTemplateId getCertificateTemplateId() {
         return certificateTemplateId;
+    }
+
+    public TenantId getTenantId() {
+        return tenantId;
     }
 
     public WebSiteUrl getWebSiteUrl() {
@@ -229,6 +236,10 @@ public final class Company extends AggregateRoot<CompanyId> {
                 .notNull(contact.email());
     }
 
+    public void addTenant(TenantId tenantId) {
+        this.tenantId = tenantId;
+    }
+
     public static final class Builder {
         private CompanyId id;
         private CompanyName companyName;
@@ -241,6 +252,7 @@ public final class Company extends AggregateRoot<CompanyId> {
         private Activity activity;
         private RegistrationNumber registrationNumber;
         private CertificateTemplateId certificateTemplateId;
+        private TenantId tenantId;
         private WebSiteUrl webSiteUrl;
         private IsinCode isinCode;
         private TaxNumber taxNumber;
@@ -310,6 +322,11 @@ public final class Company extends AggregateRoot<CompanyId> {
 
         public Builder certificateTemplateId(CertificateTemplateId val) {
             certificateTemplateId = val;
+            return this;
+        }
+
+        public Builder tenantId(TenantId val) {
+            tenantId = val;
             return this;
         }
 

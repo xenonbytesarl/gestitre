@@ -8,7 +8,7 @@ import cm.xenonbyte.gestitre.domain.common.vo.PageInfoPage;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfo;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoSize;
 import cm.xenonbyte.gestitre.domain.company.entity.CertificateTemplate;
-import cm.xenonbyte.gestitre.domain.company.ports.secondary.CertificateTemplateRepository;
+import cm.xenonbyte.gestitre.domain.company.ports.secondary.repository.CertificateTemplateRepository;
 import cm.xenonbyte.gestitre.domain.company.vo.CertificateTemplateId;
 import jakarta.annotation.Nonnull;
 

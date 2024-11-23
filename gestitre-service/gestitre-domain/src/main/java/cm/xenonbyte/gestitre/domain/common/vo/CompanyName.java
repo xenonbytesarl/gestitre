@@ -1,7 +1,6 @@
-package cm.xenonbyte.gestitre.domain.company.vo;
+package cm.xenonbyte.gestitre.domain.common.vo;
 
 import cm.xenonbyte.gestitre.domain.common.validation.Assert;
-import cm.xenonbyte.gestitre.domain.common.vo.Text;
 import jakarta.annotation.Nonnull;
 
 import java.util.Objects;

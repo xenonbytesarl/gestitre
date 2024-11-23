@@ -1,13 +1,17 @@
 package cm.xenonbyte.gestitre.domain.security;
 
-import cm.xenonbyte.gestitre.domain.common.entity.Tenant;
+import cm.xenonbyte.gestitre.domain.tenant.Tenant;
+import cm.xenonbyte.gestitre.domain.tenant.TenantNameBadException;
+import cm.xenonbyte.gestitre.domain.tenant.TenantNameNotFoundException;
+import cm.xenonbyte.gestitre.domain.tenant.TenantNotFoundException;
 import cm.xenonbyte.gestitre.domain.common.vo.Name;
+import cm.xenonbyte.gestitre.domain.common.vo.TenantId;
 import cm.xenonbyte.gestitre.domain.company.vo.contact.Email;
 import cm.xenonbyte.gestitre.domain.security.event.UserCreatedEvent;
 import cm.xenonbyte.gestitre.domain.security.ports.primary.PasswordEncryptService;
 import cm.xenonbyte.gestitre.domain.security.ports.primary.UserService;
 import cm.xenonbyte.gestitre.domain.security.ports.secondary.RoleRepository;
-import cm.xenonbyte.gestitre.domain.common.ports.secondary.TenantRepository;
+import cm.xenonbyte.gestitre.domain.tenant.ports.secondary.repository.TenantRepository;
 import cm.xenonbyte.gestitre.domain.security.ports.secondary.UserRepository;
 import cm.xenonbyte.gestitre.domain.security.vo.RoleId;
 import cm.xenonbyte.gestitre.domain.security.vo.UserId;
@@ -48,9 +52,8 @@ public final class UserDomainService implements UserService {
         user.validateMandatoryFields();
         user.validatePassword();
         validateUser(user);
-        Tenant tenant = findTenant(TenantContext.current());
         user.encryptPassword(passwordEncryptService.encrypt(user.getPassword()));
-        user.initializeDefaults(tenant.getId());
+        user.initializeDefaults();
         userRepository.create(user);
         LOGGER.info("User created with id " + user.getId().getValue());
         //TODO fire event to audit manager
@@ -59,7 +62,14 @@ public final class UserDomainService implements UserService {
 
     private void validateUser(User user) {
         validateEmail(user.getId(), user.getEmail());
+        validateTenantId(user.getTenantId());
         validateRoleId(user.getRoleId());
+    }
+
+    private void validateTenantId(TenantId tenantId) {
+        if(!tenantRepository.existsById(tenantId)) {
+            throw new TenantNotFoundException(new String[] {tenantId.getValue().toString()});
+        }
     }
 
     private void validateRoleId(RoleId roleId) {

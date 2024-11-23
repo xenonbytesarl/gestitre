@@ -15,7 +15,7 @@ import cm.xenonbyte.gestitre.domain.company.event.CertificateTemplateUpdateEvent
 import cm.xenonbyte.gestitre.domain.company.ports.CertificateTemplateNameConflictException;
 import cm.xenonbyte.gestitre.domain.company.ports.CertificateTemplateNotFoundException;
 import cm.xenonbyte.gestitre.domain.company.ports.primary.CertificateTemplateService;
-import cm.xenonbyte.gestitre.domain.company.ports.secondary.CertificateTemplateRepository;
+import cm.xenonbyte.gestitre.domain.company.ports.secondary.repository.CertificateTemplateRepository;
 import cm.xenonbyte.gestitre.domain.company.vo.CertificateTemplateId;
 import jakarta.annotation.Nonnull;
 

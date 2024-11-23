@@ -1,8 +1,11 @@
 package cm.xenonbyte.gestitre.domain.security;
 
-import cm.xenonbyte.gestitre.domain.common.entity.Tenant;
+import cm.xenonbyte.gestitre.domain.tenant.Tenant;
+import cm.xenonbyte.gestitre.domain.tenant.TenantNotFoundException;
+import cm.xenonbyte.gestitre.domain.tenant.ports.secondary.repository.TenantRepository;
 import cm.xenonbyte.gestitre.domain.common.vo.Active;
 import cm.xenonbyte.gestitre.domain.common.vo.Name;
+import cm.xenonbyte.gestitre.domain.common.vo.TenantId;
 import cm.xenonbyte.gestitre.domain.common.vo.Text;
 import cm.xenonbyte.gestitre.domain.company.vo.contact.Email;
 import cm.xenonbyte.gestitre.domain.security.adapter.PasswordInMemoryService;
@@ -13,13 +16,11 @@ import cm.xenonbyte.gestitre.domain.security.event.UserCreatedEvent;
 import cm.xenonbyte.gestitre.domain.security.ports.primary.PasswordEncryptService;
 import cm.xenonbyte.gestitre.domain.security.ports.primary.UserService;
 import cm.xenonbyte.gestitre.domain.security.ports.secondary.RoleRepository;
-import cm.xenonbyte.gestitre.domain.common.ports.secondary.TenantRepository;
 import cm.xenonbyte.gestitre.domain.security.ports.secondary.UserRepository;
 import cm.xenonbyte.gestitre.domain.security.vo.Password;
 import cm.xenonbyte.gestitre.domain.security.vo.Permission;
 import cm.xenonbyte.gestitre.domain.security.vo.PermissionId;
 import cm.xenonbyte.gestitre.domain.security.vo.RoleId;
-import cm.xenonbyte.gestitre.domain.common.vo.TenantId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +28,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import static cm.xenonbyte.gestitre.domain.security.RoleNotFoundException.ROLE_NOT_FOUND;
-import static cm.xenonbyte.gestitre.domain.security.TenantNameNotFoundException.TENANT_NAME_NOT_FOUND;
+import static cm.xenonbyte.gestitre.domain.tenant.TenantNotFoundException.TENANT_NOT_FOUND;
 import static cm.xenonbyte.gestitre.domain.security.UserEmailConflictException.USER_EMAIL_CONFLICT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -41,6 +42,7 @@ class UserDomainServiceTest {
 
     private UserService userService;
     private RoleId roleId;
+    private TenantId tenantId;
 
     @BeforeEach
     void setUp() {
@@ -49,7 +51,7 @@ class UserDomainServiceTest {
         TenantRepository tenantRepository = new TenantInMemoryRepository();
         PasswordEncryptService passwordEncryptService = new PasswordInMemoryService();
 
-        TenantId tenantId = new TenantId(UUID.fromString("0193127b-1508-7da5-95fe-203d58fa0a97"));
+        tenantId = new TenantId(UUID.fromString("0193127b-1508-7da5-95fe-203d58fa0a97"));
         roleId = new RoleId(UUID.fromString("0193127b-3f4c-710e-8680-f97ba96bd7af"));
 
         userService = new UserDomainService(
@@ -59,16 +61,12 @@ class UserDomainServiceTest {
                 passwordEncryptService
         );
 
-        Name tenantName = Name.of(Text.of("First Tenant"));
-
         tenantRepository.create(
                 Tenant.builder()
                         .id(tenantId)
-                        .name(tenantName)
+                        .name(Name.of(Text.of("First Tenant")))
                         .build()
         );
-
-        TenantContext.set(tenantName.text().value());
 
         roleRepository.create(
             Role.builder()
@@ -119,6 +117,7 @@ class UserDomainServiceTest {
                 .password(Password.of(Text.of("test123")))
                 .confirmPassword(Password.of(Text.of("test123")))
                 .roleId(roleId)
+                .tenantId(tenantId)
                 .build();
 
         //Act
@@ -138,6 +137,7 @@ class UserDomainServiceTest {
                 .password(Password.of(Text.of("test123")))
                 .confirmPassword(Password.of(Text.of("test123")))
                 .roleId(new RoleId(UUID.randomUUID()))
+                .tenantId(tenantId)
                 .build();
         //Act + Then
         assertThatThrownBy(() -> userService.createUser(user))
@@ -148,20 +148,18 @@ class UserDomainServiceTest {
     @Test
     void should_fail_when_create_user_with_invalid_tenant_name() {
         //Given
-
-        TenantContext.set("xxxxxxxxxxx");
-
         User user = User.builder()
                 .name(Name.of(Text.of("First User")))
                 .email(Email.of(Text.of("test@gmail.com")))
                 .password(Password.of(Text.of("test123")))
                 .confirmPassword(Password.of(Text.of("test123")))
                 .roleId(roleId)
+                .tenantId(new TenantId(UUID.fromString("019353d5-b63c-7874-9d44-22622626500e")))
                 .build();
         //Act + Then
         assertThatThrownBy(() -> userService.createUser(user))
-                .isInstanceOf(TenantNameNotFoundException.class)
-                .hasMessage(TENANT_NAME_NOT_FOUND);
+                .isInstanceOf(TenantNotFoundException.class)
+                .hasMessage(TENANT_NOT_FOUND);
     }
 
     @Test
@@ -173,6 +171,7 @@ class UserDomainServiceTest {
                 .password(Password.of(Text.of("test123")))
                 .confirmPassword(Password.of(Text.of("test123")))
                 .roleId(roleId)
+                .tenantId(tenantId)
                 .build();
         //Act + Then
         assertThatThrownBy(() -> userService.createUser(user))

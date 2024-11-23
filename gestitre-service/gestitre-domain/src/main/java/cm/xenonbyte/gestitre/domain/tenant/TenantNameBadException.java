@@ -1,4 +1,4 @@
-package cm.xenonbyte.gestitre.domain.security;
+package cm.xenonbyte.gestitre.domain.tenant;
 
 import cm.xenonbyte.gestitre.domain.common.exception.BaseDomainBadException;
 

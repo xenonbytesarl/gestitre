@@ -2,7 +2,10 @@ package cm.xenonbyte.gestitre.domain.company;
 
 import cm.xenonbyte.gestitre.domain.common.annotation.DomainService;
 import cm.xenonbyte.gestitre.domain.common.validation.Assert;
+import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
+import cm.xenonbyte.gestitre.domain.common.vo.CompanyName;
 import cm.xenonbyte.gestitre.domain.common.vo.Keyword;
+import cm.xenonbyte.gestitre.domain.common.vo.Name;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfo;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoDirection;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoField;
@@ -17,23 +20,26 @@ import cm.xenonbyte.gestitre.domain.company.ports.CompanyNameConflictException;
 import cm.xenonbyte.gestitre.domain.company.ports.CompanyNotFoundException;
 import cm.xenonbyte.gestitre.domain.company.ports.CompanyPhoneConflictException;
 import cm.xenonbyte.gestitre.domain.company.ports.primary.CompanyService;
-import cm.xenonbyte.gestitre.domain.company.ports.secondary.CertificateTemplateRepository;
-import cm.xenonbyte.gestitre.domain.company.ports.secondary.CompanyRepository;
+import cm.xenonbyte.gestitre.domain.company.ports.secondary.repository.CertificateTemplateRepository;
+import cm.xenonbyte.gestitre.domain.company.ports.secondary.repository.CompanyRepository;
 import cm.xenonbyte.gestitre.domain.company.vo.CertificateTemplateId;
-import cm.xenonbyte.gestitre.domain.company.vo.CompanyId;
-import cm.xenonbyte.gestitre.domain.company.vo.CompanyName;
 import cm.xenonbyte.gestitre.domain.company.vo.IsinCode;
 import cm.xenonbyte.gestitre.domain.company.vo.RegistrationNumber;
 import cm.xenonbyte.gestitre.domain.company.vo.TaxNumber;
 import cm.xenonbyte.gestitre.domain.company.vo.WebSiteUrl;
 import cm.xenonbyte.gestitre.domain.company.vo.contact.Email;
 import cm.xenonbyte.gestitre.domain.company.vo.contact.Phone;
+import cm.xenonbyte.gestitre.domain.tenant.Tenant;
+import cm.xenonbyte.gestitre.domain.tenant.ports.secondary.message.CompanyMessagePublisher;
 import jakarta.annotation.Nonnull;
 
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Logger;
+
+import static cm.xenonbyte.gestitre.domain.company.vo.CompanyEventType.COMPANY_CREATED;
+import static cm.xenonbyte.gestitre.domain.company.vo.CompanyEventType.COMPANY_UPDATED;
 
 /**
  * @author bamk
@@ -47,12 +53,15 @@ public final class CompanyDomainService implements CompanyService {
 
     private final CompanyRepository companyRepository;
     private final CertificateTemplateRepository certificateTemplateRepository;
+    private final CompanyMessagePublisher companyMessagePublisher;
 
     public CompanyDomainService(
             @Nonnull CompanyRepository companyRepository,
-            @Nonnull CertificateTemplateRepository certificateTemplateRepository) {
+            @Nonnull CertificateTemplateRepository certificateTemplateRepository,
+            @Nonnull CompanyMessagePublisher companyMessagePublisher) {
         this.companyRepository = Objects.requireNonNull(companyRepository);
         this.certificateTemplateRepository = Objects.requireNonNull(certificateTemplateRepository);
+        this.companyMessagePublisher = Objects.requireNonNull(companyMessagePublisher);
     }
 
     @Nonnull
@@ -63,8 +72,15 @@ public final class CompanyDomainService implements CompanyService {
         company.initializeDefaultValues();
         companyRepository.create(company);
         LOGGER.info("Company is created with id " + company.getId().getValue());
-        //TODO fire create event to audit manager
-        return new CompanyCreatedEvent(company, ZonedDateTime.now());
+        CompanyCreatedEvent companyCreatedEvent = new CompanyCreatedEvent(company, ZonedDateTime.now());
+        companyMessagePublisher.publish(companyCreatedEvent, COMPANY_CREATED);
+        return companyCreatedEvent;
+    }
+
+    private Tenant tenantFrom(CompanyCreatedEvent companyCreatedEvent) {
+        Tenant tenant = Tenant.of(Name.of(companyCreatedEvent.getCompany().getCompanyName().text()));
+        tenant.initializeDefaults();
+        return tenant;
     }
 
     @Nonnull
@@ -113,9 +129,11 @@ public final class CompanyDomainService implements CompanyService {
         validateCompany(newCompany);
         newCompany = companyRepository.update(companyId, newCompany);
         LOGGER.info("Company updated with id " + newCompany.getId().getValue());
-        //TODO fire update company event to audit manager
-        return new CompanyUpdatedEvent(newCompany, ZonedDateTime.now());
+        CompanyUpdatedEvent companyUpdatedEvent = new CompanyUpdatedEvent(newCompany, ZonedDateTime.now());
+        companyMessagePublisher.publish(companyUpdatedEvent, COMPANY_UPDATED);
+        return companyUpdatedEvent;
     }
+
 
     private void validateCompany(Company company) {
         validateCompanyName(company.getId(), company.getCompanyName());

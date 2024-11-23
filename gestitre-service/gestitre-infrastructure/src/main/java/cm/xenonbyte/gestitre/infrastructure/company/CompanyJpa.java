@@ -1,6 +1,6 @@
 package cm.xenonbyte.gestitre.infrastructure.company;
 
-import cm.xenonbyte.gestitre.infrastructure.common.Audit;
+import cm.xenonbyte.gestitre.infrastructure.common.Auditable;
 import cm.xenonbyte.gestitre.infrastructure.company.certificatetemplate.CertificateTemplateJpa;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -31,7 +31,7 @@ import java.time.ZonedDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "t_company")
-public class CompanyJpa extends Audit {
+public class CompanyJpa extends Auditable {
 
     @Column(name = "c_company_name", nullable = false, unique = true, length = 64)
     private String companyName;

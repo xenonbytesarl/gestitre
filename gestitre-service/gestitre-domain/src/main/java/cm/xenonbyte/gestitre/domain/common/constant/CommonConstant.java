@@ -11,4 +11,9 @@ public final class CommonConstant {
     public static final String POINT = ".";
     public static final String PLUS = "+";
     public static final String UNDERSCORE = "_";
+
+
+    public static final String TENANT_CREATED = "TENANT_CREATED";
+    public static final String COMPANY_CREATED = "COMPANY_CREATED";
+    public static final String COMPANY_UPDATED = "COMPANY_UPDATED";
 }
