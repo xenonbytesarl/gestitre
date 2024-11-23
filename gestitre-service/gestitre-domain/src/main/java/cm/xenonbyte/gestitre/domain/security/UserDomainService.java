@@ -1,5 +1,7 @@
 package cm.xenonbyte.gestitre.domain.security;
 
+import cm.xenonbyte.gestitre.domain.common.annotation.DomainService;
+import cm.xenonbyte.gestitre.domain.security.ports.secondary.message.publisher.UserMessagePublisher;
 import cm.xenonbyte.gestitre.domain.tenant.Tenant;
 import cm.xenonbyte.gestitre.domain.tenant.TenantNameBadException;
 import cm.xenonbyte.gestitre.domain.tenant.TenantNameNotFoundException;
@@ -21,11 +23,14 @@ import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.logging.Logger;
 
+import static cm.xenonbyte.gestitre.domain.security.ports.secondary.message.publisher.UserEventType.USER_CREATED;
+
 /**
  * @author bamk
  * @version 1.0
  * @since 09/11/2024
  */
+@DomainService
 public final class UserDomainService implements UserService {
 
     private static final Logger LOGGER = Logger.getLogger(UserDomainService.class.getName());
@@ -34,16 +39,19 @@ public final class UserDomainService implements UserService {
     private final RoleRepository roleRepository;
     private final TenantRepository tenantRepository;
     private final PasswordEncryptService passwordEncryptService;
+    private final UserMessagePublisher userEventPublisher;
 
     public UserDomainService(
             @Nonnull UserRepository userRepository,
             @Nonnull RoleRepository roleRepository,
             @Nonnull TenantRepository tenantRepository,
-            @Nonnull PasswordEncryptService passwordEncryptService) {
+            @Nonnull PasswordEncryptService passwordEncryptService,
+            @Nonnull UserMessagePublisher userEventPublisher) {
         this.userRepository = Objects.requireNonNull(userRepository);
         this.roleRepository = Objects.requireNonNull(roleRepository);
         this.tenantRepository = Objects.requireNonNull(tenantRepository);
         this.passwordEncryptService = Objects.requireNonNull(passwordEncryptService);
+        this.userEventPublisher = Objects.requireNonNull(userEventPublisher);
     }
 
     @Nonnull
@@ -56,8 +64,9 @@ public final class UserDomainService implements UserService {
         user.initializeDefaults();
         userRepository.create(user);
         LOGGER.info("User created with id " + user.getId().getValue());
-        //TODO fire event to audit manager
-        return new UserCreatedEvent(user, ZonedDateTime.now());
+        UserCreatedEvent userCreatedEvent = new UserCreatedEvent(user, ZonedDateTime.now());
+        userEventPublisher.publish(userCreatedEvent, USER_CREATED);
+        return userCreatedEvent;
     }
 
     private void validateUser(User user) {

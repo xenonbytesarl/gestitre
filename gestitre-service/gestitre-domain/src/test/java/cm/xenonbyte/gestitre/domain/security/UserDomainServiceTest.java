@@ -1,5 +1,6 @@
 package cm.xenonbyte.gestitre.domain.security;
 
+import cm.xenonbyte.gestitre.domain.security.ports.secondary.message.publisher.UserMessagePublisher;
 import cm.xenonbyte.gestitre.domain.tenant.Tenant;
 import cm.xenonbyte.gestitre.domain.tenant.TenantNotFoundException;
 import cm.xenonbyte.gestitre.domain.tenant.ports.secondary.repository.TenantRepository;
@@ -50,6 +51,7 @@ class UserDomainServiceTest {
         RoleRepository roleRepository = new RoleInMemoryRepository();
         TenantRepository tenantRepository = new TenantInMemoryRepository();
         PasswordEncryptService passwordEncryptService = new PasswordInMemoryService();
+        UserMessagePublisher userMessagePublisher = new UserMessageInMemoryPublisher();
 
         tenantId = new TenantId(UUID.fromString("0193127b-1508-7da5-95fe-203d58fa0a97"));
         roleId = new RoleId(UUID.fromString("0193127b-3f4c-710e-8680-f97ba96bd7af"));
@@ -58,7 +60,8 @@ class UserDomainServiceTest {
                 userRepository,
                 roleRepository,
                 tenantRepository,
-                passwordEncryptService
+                passwordEncryptService,
+                userMessagePublisher
         );
 
         tenantRepository.create(
