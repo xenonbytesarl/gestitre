@@ -1,6 +1,6 @@
 -- Create table t_company
 create table if not exists t_company (
-    c_id UUID not null ,
+    c_id uuid not null ,
     c_created_at timestamp with time zone not null ,
     c_updated_at timestamp with time zone,
     c_company_name varchar(64) not null ,
@@ -36,8 +36,6 @@ create table if not exists t_company (
     constraint Uk_t_company_c_registration_number unique (c_registration_number),
     constraint Uk_t_company_c_contact_email unique (c_contact_email),
     constraint Uk_t_company_c_contact_fax unique (c_contact_fax),
-    constraint Uk_t_company_c_contact_phone unique (c_contact_phone)
+    constraint Uk_t_company_c_contact_phone unique (c_contact_phone),
+    constraint Fk_t_company_c_certificate_template_id foreign key (c_certificate_template_id) references t_certificate_template (c_id)
 );
-
---- Foreign key constraint for t_company
-ALTER TABLE t_company ADD CONSTRAINT Fk_t_company_c_certificate_template_id FOREIGN KEY (c_certificate_template_id) REFERENCES t_certificate_template (c_id);

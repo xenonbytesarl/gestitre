@@ -1,6 +1,6 @@
 package cm.xenonbyte.gestitre.domain.security.ports.secondary.message.publisher;
 
-import cm.xenonbyte.gestitre.domain.security.event.UserEvent;
+import cm.xenonbyte.gestitre.domain.security.event.UserCreatedEvent;
 
 /**
  * @author bamk
@@ -8,5 +8,5 @@ import cm.xenonbyte.gestitre.domain.security.event.UserEvent;
  * @since 23/11/2024
  */
 public interface UserMessagePublisher {
-    void publish(UserEvent event, UserEventType type);
+    void publish(UserCreatedEvent event, UserEventType type);
 }

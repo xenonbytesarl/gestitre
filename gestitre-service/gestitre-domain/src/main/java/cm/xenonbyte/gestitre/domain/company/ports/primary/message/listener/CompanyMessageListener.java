@@ -1,5 +1,7 @@
 package cm.xenonbyte.gestitre.domain.company.ports.primary.message.listener;
 
+import cm.xenonbyte.gestitre.domain.company.event.CompanyUpdatedEvent;
+import cm.xenonbyte.gestitre.domain.security.event.UserCreatedEvent;
 import cm.xenonbyte.gestitre.domain.tenant.TenantCreatedEvent;
 
 /**
@@ -9,4 +11,6 @@ import cm.xenonbyte.gestitre.domain.tenant.TenantCreatedEvent;
  */
 public interface CompanyMessageListener {
     void handle(TenantCreatedEvent event);
+    void handle(UserCreatedEvent event);
+    void handle(CompanyUpdatedEvent event);
 }

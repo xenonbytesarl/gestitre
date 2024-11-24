@@ -2,7 +2,9 @@ package cm.xenonbyte.gestitre.domain.security;
 
 import cm.xenonbyte.gestitre.domain.common.entity.AggregateRoot;
 import cm.xenonbyte.gestitre.domain.common.validation.Assert;
+import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
 import cm.xenonbyte.gestitre.domain.common.vo.Name;
+import cm.xenonbyte.gestitre.domain.common.vo.TenantId;
 import cm.xenonbyte.gestitre.domain.company.vo.contact.Email;
 import cm.xenonbyte.gestitre.domain.security.vo.AccountEnabled;
 import cm.xenonbyte.gestitre.domain.security.vo.AccountExpired;
@@ -11,7 +13,6 @@ import cm.xenonbyte.gestitre.domain.security.vo.CredentialExpired;
 import cm.xenonbyte.gestitre.domain.security.vo.FailedLoginAttempt;
 import cm.xenonbyte.gestitre.domain.security.vo.Password;
 import cm.xenonbyte.gestitre.domain.security.vo.RoleId;
-import cm.xenonbyte.gestitre.domain.common.vo.TenantId;
 import cm.xenonbyte.gestitre.domain.security.vo.UseMfa;
 import cm.xenonbyte.gestitre.domain.security.vo.UserId;
 import jakarta.annotation.Nonnull;
@@ -25,10 +26,11 @@ import java.util.UUID;
  * @since 09/11/2024
  */
 public final class User extends AggregateRoot<UserId> {
-    private final TenantId tenantId;
+    private final CompanyId companyId;
     private final Email email;
     private final Name name;
     private final RoleId roleId;
+    private TenantId tenantId;
     private Password password;
     private Password confirmPassword;
     private AccountEnabled accountEnabled;
@@ -40,11 +42,11 @@ public final class User extends AggregateRoot<UserId> {
 
 
     public User(
-            @Nonnull TenantId tenantId,
+            @Nonnull CompanyId companyId,
             @Nonnull Email email,
             @Nonnull Name name,
             @Nonnull RoleId roleId) {
-        this.tenantId = tenantId;
+        this.companyId = Objects.requireNonNull(companyId);
         this.email = Objects.requireNonNull(email);
         this.name = Objects.requireNonNull(name);
         this.roleId = Objects.requireNonNull(roleId);
@@ -52,10 +54,11 @@ public final class User extends AggregateRoot<UserId> {
 
     private User(Builder builder) {
         setId(builder.id);
-        tenantId = builder.tenantId;
+        companyId = builder.companyId;
         email = builder.email;
         password = builder.password;
         confirmPassword = builder.confirmPassword;
+        tenantId = builder.tenantId;
         name = builder.name;
         roleId = builder.roleId;
         accountEnabled = builder.accountEnabled;
@@ -70,18 +73,25 @@ public final class User extends AggregateRoot<UserId> {
         return new Builder();
     }
 
-    public void initializeDefaults() {
+    public void initializeDefaults(TenantId tenantId) {
         setId(new UserId(UUID.randomUUID()));
+        this.tenantId = tenantId;
         this.accountEnabled = AccountEnabled.with(false);
         this.credentialExpired = CredentialExpired.with(false);
         this.accountLocked = AccountLocked.with(false);
         this.accountExpired = AccountExpired.with(false);
-        this.useMfa = UseMfa.with(true);
+        if(this.useMfa == null) {
+            this.useMfa = UseMfa.with(true);
+        }
         this.failedLoginAttempt = FailedLoginAttempt.of(0L);
     }
 
     public TenantId getTenantId() {
         return tenantId;
+    }
+
+    public CompanyId getCompanyId() {
+        return companyId;
     }
 
     public Email getEmail() {
@@ -144,6 +154,8 @@ public final class User extends AggregateRoot<UserId> {
 
         Assert.field("Role ID", roleId)
                 .notNull();
+
+        Assert.field("Company ID", companyId);
     }
 
     public void validatePassword() {
@@ -159,6 +171,7 @@ public final class User extends AggregateRoot<UserId> {
     public static final class Builder {
         private UserId id;
         private TenantId tenantId;
+        private CompanyId companyId;
         private Email email;
         private Password password;
         private Password confirmPassword;
@@ -181,6 +194,11 @@ public final class User extends AggregateRoot<UserId> {
 
         public Builder tenantId(TenantId val) {
             tenantId = val;
+            return this;
+        }
+
+        public Builder companyId(CompanyId val) {
+            companyId = val;
             return this;
         }
 

@@ -1,8 +1,9 @@
-package cm.xenonbyte.gestitre.domain.security.vo;
+package cm.xenonbyte.gestitre.domain.security;
 
 import cm.xenonbyte.gestitre.domain.common.entity.BaseEntity;
 import cm.xenonbyte.gestitre.domain.common.validation.Assert;
 import cm.xenonbyte.gestitre.domain.common.vo.Name;
+import cm.xenonbyte.gestitre.domain.security.vo.PermissionId;
 import jakarta.annotation.Nonnull;
 
 import java.util.Objects;

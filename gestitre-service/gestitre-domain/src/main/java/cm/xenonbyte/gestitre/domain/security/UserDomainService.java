@@ -1,22 +1,22 @@
 package cm.xenonbyte.gestitre.domain.security;
 
 import cm.xenonbyte.gestitre.domain.common.annotation.DomainService;
-import cm.xenonbyte.gestitre.domain.security.ports.secondary.message.publisher.UserMessagePublisher;
-import cm.xenonbyte.gestitre.domain.tenant.Tenant;
-import cm.xenonbyte.gestitre.domain.tenant.TenantNameBadException;
-import cm.xenonbyte.gestitre.domain.tenant.TenantNameNotFoundException;
-import cm.xenonbyte.gestitre.domain.tenant.TenantNotFoundException;
+import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
 import cm.xenonbyte.gestitre.domain.common.vo.Name;
-import cm.xenonbyte.gestitre.domain.common.vo.TenantId;
+import cm.xenonbyte.gestitre.domain.company.entity.Company;
+import cm.xenonbyte.gestitre.domain.company.ports.CompanyNotFoundException;
+import cm.xenonbyte.gestitre.domain.company.ports.primary.CompanyService;
 import cm.xenonbyte.gestitre.domain.company.vo.contact.Email;
 import cm.xenonbyte.gestitre.domain.security.event.UserCreatedEvent;
-import cm.xenonbyte.gestitre.domain.security.ports.primary.PasswordEncryptService;
+import cm.xenonbyte.gestitre.domain.security.ports.primary.PasswordEncryptProvider;
 import cm.xenonbyte.gestitre.domain.security.ports.primary.UserService;
 import cm.xenonbyte.gestitre.domain.security.ports.secondary.RoleRepository;
-import cm.xenonbyte.gestitre.domain.tenant.ports.secondary.repository.TenantRepository;
 import cm.xenonbyte.gestitre.domain.security.ports.secondary.UserRepository;
+import cm.xenonbyte.gestitre.domain.security.ports.secondary.message.publisher.UserMessagePublisher;
 import cm.xenonbyte.gestitre.domain.security.vo.RoleId;
 import cm.xenonbyte.gestitre.domain.security.vo.UserId;
+import cm.xenonbyte.gestitre.domain.tenant.Tenant;
+import cm.xenonbyte.gestitre.domain.tenant.ports.primary.message.listener.TenantService;
 import jakarta.annotation.Nonnull;
 
 import java.time.ZonedDateTime;
@@ -37,20 +37,23 @@ public final class UserDomainService implements UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final TenantRepository tenantRepository;
-    private final PasswordEncryptService passwordEncryptService;
+    private final TenantService tenantService;
+    private final CompanyService companyService;
+    private final PasswordEncryptProvider passwordEncryptProvider;
     private final UserMessagePublisher userEventPublisher;
 
     public UserDomainService(
             @Nonnull UserRepository userRepository,
             @Nonnull RoleRepository roleRepository,
-            @Nonnull TenantRepository tenantRepository,
-            @Nonnull PasswordEncryptService passwordEncryptService,
+            @Nonnull TenantService tenantService,
+            @Nonnull CompanyService companyService,
+            @Nonnull PasswordEncryptProvider passwordEncryptProvider,
             @Nonnull UserMessagePublisher userEventPublisher) {
         this.userRepository = Objects.requireNonNull(userRepository);
         this.roleRepository = Objects.requireNonNull(roleRepository);
-        this.tenantRepository = Objects.requireNonNull(tenantRepository);
-        this.passwordEncryptService = Objects.requireNonNull(passwordEncryptService);
+        this.tenantService = Objects.requireNonNull(tenantService);
+        this.companyService = Objects.requireNonNull(companyService);
+        this.passwordEncryptProvider = Objects.requireNonNull(passwordEncryptProvider);
         this.userEventPublisher = Objects.requireNonNull(userEventPublisher);
     }
 
@@ -60,8 +63,9 @@ public final class UserDomainService implements UserService {
         user.validateMandatoryFields();
         user.validatePassword();
         validateUser(user);
-        user.encryptPassword(passwordEncryptService.encrypt(user.getPassword()));
-        user.initializeDefaults();
+        Tenant tenant = findTenant(user.getCompanyId());
+        user.encryptPassword(passwordEncryptProvider.encrypt(user.getPassword()));
+        user.initializeDefaults(tenant.getId());
         userRepository.create(user);
         LOGGER.info("User created with id " + user.getId().getValue());
         UserCreatedEvent userCreatedEvent = new UserCreatedEvent(user, ZonedDateTime.now());
@@ -71,29 +75,27 @@ public final class UserDomainService implements UserService {
 
     private void validateUser(User user) {
         validateEmail(user.getId(), user.getEmail());
-        validateTenantId(user.getTenantId());
+        validateCompanyId(user.getCompanyId());
         validateRoleId(user.getRoleId());
     }
 
-    private void validateTenantId(TenantId tenantId) {
-        if(!tenantRepository.existsById(tenantId)) {
-            throw new TenantNotFoundException(new String[] {tenantId.getValue().toString()});
+    private void validateCompanyId(CompanyId companyId) {
+        if(!companyService.existsById(companyId)) {
+            throw new CompanyNotFoundException(new String[] {companyId.getValue().toString()});
         }
     }
 
     private void validateRoleId(RoleId roleId) {
-        if(!roleRepository.existsById(roleId)) {
+        if(Boolean.FALSE.equals(roleRepository.existsById(roleId))) {
             throw new RoleNotFoundException(new String[] {roleId.getValue().toString()});
         }
     }
 
-    private Tenant findTenant(Name name) {
-        if(name == null) {
-            throw new TenantNameBadException();
-        }
-        return tenantRepository.findByName(name).orElseThrow(
-                () -> new TenantNameNotFoundException(new String[]{name.text().value()})
-        );
+    private Tenant findTenant(CompanyId companyId) {
+
+        Company company = companyService.findCompanyById(companyId);
+
+        return tenantService.findByName(Name.of(company.getCompanyName().text()));
     }
 
     private void validateEmail(UserId userId, Email email) {

@@ -1,35 +1,57 @@
 package cm.xenonbyte.gestitre.domain.security;
 
-import cm.xenonbyte.gestitre.domain.security.ports.secondary.message.publisher.UserMessagePublisher;
-import cm.xenonbyte.gestitre.domain.tenant.Tenant;
-import cm.xenonbyte.gestitre.domain.tenant.TenantNotFoundException;
-import cm.xenonbyte.gestitre.domain.tenant.ports.secondary.repository.TenantRepository;
 import cm.xenonbyte.gestitre.domain.common.vo.Active;
+import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
+import cm.xenonbyte.gestitre.domain.common.vo.CompanyName;
 import cm.xenonbyte.gestitre.domain.common.vo.Name;
 import cm.xenonbyte.gestitre.domain.common.vo.TenantId;
 import cm.xenonbyte.gestitre.domain.common.vo.Text;
+import cm.xenonbyte.gestitre.domain.company.CompanyDomainService;
+import cm.xenonbyte.gestitre.domain.company.CompanyMessageInMemoryPublisher;
+import cm.xenonbyte.gestitre.domain.company.addapter.inmemory.CertificateTemplateInMemoryRepository;
+import cm.xenonbyte.gestitre.domain.company.addapter.inmemory.CompanyInMemoryRepository;
+import cm.xenonbyte.gestitre.domain.company.addapter.inmemory.TenantInMemoryMessagePublisher;
+import cm.xenonbyte.gestitre.domain.company.entity.Company;
+import cm.xenonbyte.gestitre.domain.company.ports.CompanyNotFoundException;
+import cm.xenonbyte.gestitre.domain.company.ports.primary.CompanyService;
+import cm.xenonbyte.gestitre.domain.company.ports.secondary.repository.CompanyRepository;
+import cm.xenonbyte.gestitre.domain.company.vo.Activity;
+import cm.xenonbyte.gestitre.domain.company.vo.CompanyManagerName;
+import cm.xenonbyte.gestitre.domain.company.vo.LegalForm;
+import cm.xenonbyte.gestitre.domain.company.vo.Licence;
+import cm.xenonbyte.gestitre.domain.company.vo.address.Address;
+import cm.xenonbyte.gestitre.domain.company.vo.address.City;
+import cm.xenonbyte.gestitre.domain.company.vo.address.Country;
+import cm.xenonbyte.gestitre.domain.company.vo.address.ZipCode;
+import cm.xenonbyte.gestitre.domain.company.vo.contact.Contact;
 import cm.xenonbyte.gestitre.domain.company.vo.contact.Email;
-import cm.xenonbyte.gestitre.domain.security.adapter.PasswordInMemoryService;
+import cm.xenonbyte.gestitre.domain.company.vo.contact.Phone;
+import cm.xenonbyte.gestitre.domain.security.adapter.PasswordInMemoryProvider;
 import cm.xenonbyte.gestitre.domain.security.adapter.RoleInMemoryRepository;
 import cm.xenonbyte.gestitre.domain.security.adapter.TenantInMemoryRepository;
 import cm.xenonbyte.gestitre.domain.security.adapter.UserInMemoryRepository;
 import cm.xenonbyte.gestitre.domain.security.event.UserCreatedEvent;
-import cm.xenonbyte.gestitre.domain.security.ports.primary.PasswordEncryptService;
+import cm.xenonbyte.gestitre.domain.security.ports.primary.PasswordEncryptProvider;
 import cm.xenonbyte.gestitre.domain.security.ports.primary.UserService;
 import cm.xenonbyte.gestitre.domain.security.ports.secondary.RoleRepository;
 import cm.xenonbyte.gestitre.domain.security.ports.secondary.UserRepository;
+import cm.xenonbyte.gestitre.domain.security.ports.secondary.message.publisher.UserMessagePublisher;
 import cm.xenonbyte.gestitre.domain.security.vo.Password;
-import cm.xenonbyte.gestitre.domain.security.vo.Permission;
 import cm.xenonbyte.gestitre.domain.security.vo.PermissionId;
 import cm.xenonbyte.gestitre.domain.security.vo.RoleId;
+import cm.xenonbyte.gestitre.domain.tenant.Tenant;
+import cm.xenonbyte.gestitre.domain.tenant.TenantDomainService;
+import cm.xenonbyte.gestitre.domain.tenant.ports.primary.message.listener.TenantService;
+import cm.xenonbyte.gestitre.domain.tenant.ports.secondary.message.TenantMessagePublisher;
+import cm.xenonbyte.gestitre.domain.tenant.ports.secondary.repository.TenantRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 import java.util.UUID;
 
+import static cm.xenonbyte.gestitre.domain.company.ports.CompanyNotFoundException.COMPANY_NOT_FOUND;
 import static cm.xenonbyte.gestitre.domain.security.RoleNotFoundException.ROLE_NOT_FOUND;
-import static cm.xenonbyte.gestitre.domain.tenant.TenantNotFoundException.TENANT_NOT_FOUND;
 import static cm.xenonbyte.gestitre.domain.security.UserEmailConflictException.USER_EMAIL_CONFLICT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -44,13 +66,22 @@ class UserDomainServiceTest {
     private UserService userService;
     private RoleId roleId;
     private TenantId tenantId;
+    private CompanyId companyId;
 
     @BeforeEach
     void setUp() {
         UserRepository userRepository = new UserInMemoryRepository();
         RoleRepository roleRepository = new RoleInMemoryRepository();
         TenantRepository tenantRepository = new TenantInMemoryRepository();
-        PasswordEncryptService passwordEncryptService = new PasswordInMemoryService();
+        TenantMessagePublisher tenantInMemoryMessagePublisher = new TenantInMemoryMessagePublisher();
+        TenantService tenantService = new TenantDomainService(tenantRepository, tenantInMemoryMessagePublisher);
+        CompanyRepository companyRepository = new CompanyInMemoryRepository();
+        CompanyService companyService = new CompanyDomainService(
+                companyRepository,
+                new CertificateTemplateInMemoryRepository(),
+                new CompanyMessageInMemoryPublisher()
+        );
+        PasswordEncryptProvider passwordEncryptProvider = new PasswordInMemoryProvider();
         UserMessagePublisher userMessagePublisher = new UserMessageInMemoryPublisher();
 
         tenantId = new TenantId(UUID.fromString("0193127b-1508-7da5-95fe-203d58fa0a97"));
@@ -59,15 +90,45 @@ class UserDomainServiceTest {
         userService = new UserDomainService(
                 userRepository,
                 roleRepository,
-                tenantRepository,
-                passwordEncryptService,
+                tenantService,
+                companyService,
+                passwordEncryptProvider,
                 userMessagePublisher
+        );
+
+        companyId = new CompanyId(UUID.fromString("01935b63-7185-7796-b65c-2840e57ab857"));
+
+        companyRepository.create(
+                Company.builder()
+                        .id(companyId)
+                        .companyName(CompanyName.of(Text.of("Company name 0")))
+                        .companyManagerName(CompanyManagerName.of(Text.of("Company manager name")))
+                        .licence(Licence.MONTH_12)
+                        .legalForm(LegalForm.SA)
+
+                        .address(
+                                Address.of(
+                                        ZipCode.of(Text.of("360")),
+                                        City.of(Text.of("City0")),
+                                        Country.of(Text.of("Country0"))
+                                )
+                        )
+                        .contact(
+                                Contact.builder()
+                                        .phone(Phone.of(Text.of("698 254 780")))
+                                        .name(Name.of(Text.of("Name0")))
+                                        .email(Email.of( Text.of("email0@email.test")))
+                                        .build()
+                        )
+                        .activity(Activity.of(Text.of("activity0")))
+                        .active(Active.with(true))
+                        .build()
         );
 
         tenantRepository.create(
                 Tenant.builder()
                         .id(tenantId)
-                        .name(Name.of(Text.of("First tenant")))
+                        .name(Name.of(Text.of("Company name 0")))
                         .build()
         );
 
@@ -120,7 +181,7 @@ class UserDomainServiceTest {
                 .password(Password.of(Text.of("test123")))
                 .confirmPassword(Password.of(Text.of("test123")))
                 .roleId(roleId)
-                .tenantId(tenantId)
+                .companyId(companyId)
                 .build();
 
         //Act
@@ -140,7 +201,7 @@ class UserDomainServiceTest {
                 .password(Password.of(Text.of("test123")))
                 .confirmPassword(Password.of(Text.of("test123")))
                 .roleId(new RoleId(UUID.randomUUID()))
-                .tenantId(tenantId)
+                .companyId(companyId)
                 .build();
         //Act + Then
         assertThatThrownBy(() -> userService.createUser(user))
@@ -149,7 +210,7 @@ class UserDomainServiceTest {
     }
 
     @Test
-    void should_fail_when_create_user_with_invalid_tenant_name() {
+    void should_fail_when_create_user_with_invalid_company_id() {
         //Given
         User user = User.builder()
                 .name(Name.of(Text.of("First User")))
@@ -157,13 +218,14 @@ class UserDomainServiceTest {
                 .password(Password.of(Text.of("test123")))
                 .confirmPassword(Password.of(Text.of("test123")))
                 .roleId(roleId)
-                .tenantId(new TenantId(UUID.fromString("019353d5-b63c-7874-9d44-22622626500e")))
+                .companyId(new CompanyId(UUID.fromString("019353d5-b63c-7874-9d44-22622626500e")))
                 .build();
         //Act + Then
         assertThatThrownBy(() -> userService.createUser(user))
-                .isInstanceOf(TenantNotFoundException.class)
-                .hasMessage(TENANT_NOT_FOUND);
+                .isInstanceOf(CompanyNotFoundException.class)
+                .hasMessage(COMPANY_NOT_FOUND);
     }
+
 
     @Test
     void should_fail_when_create_user_with_duplicate_email() {
@@ -174,7 +236,7 @@ class UserDomainServiceTest {
                 .password(Password.of(Text.of("test123")))
                 .confirmPassword(Password.of(Text.of("test123")))
                 .roleId(roleId)
-                .tenantId(tenantId)
+                .companyId(companyId)
                 .build();
         //Act + Then
         assertThatThrownBy(() -> userService.createUser(user))

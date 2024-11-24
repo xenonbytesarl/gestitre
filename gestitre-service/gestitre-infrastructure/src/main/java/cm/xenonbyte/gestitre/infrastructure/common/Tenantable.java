@@ -43,5 +43,5 @@ public class Tenantable extends Auditable {
     public static final String TENANT_COLUMN_NAME = "c_tenant_id";
 
     @Column(name = "c_tenant_id", length = 128)
-    private UUID tenantId;
+    protected UUID tenantId;
 }

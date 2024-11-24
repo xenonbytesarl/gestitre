@@ -24,7 +24,9 @@ public final class TenantEntityListener {
             if(TenantContext.current() == null) {
                 TenantContext.set(UUID.fromString("01935926-a157-71a9-a0d6-63b14be4c4b9"));
             }
-            ((Tenantable) object).setTenantId(TenantContext.current());
+            if(((Tenantable) object).getTenantId() == null) {
+                ((Tenantable) object).setTenantId(TenantContext.current());
+            }
         }
     }
 

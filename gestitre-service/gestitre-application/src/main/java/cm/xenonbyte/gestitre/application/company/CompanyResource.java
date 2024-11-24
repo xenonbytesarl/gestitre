@@ -47,11 +47,11 @@ public class CompanyResource {
     public static final String COMPANY_FIND_SUCCESSFULLY = "CompanyResource.3";
     public static final String COMPANY_UPDATED_SUCCESSFULLY = "CompanyResource.4";
 
-    private final CompanyApplicationAdapterService companyApplicationAdapterService;
+    private final CompanyApplicationAdapter companyApplicationAdapter;
 
     public CompanyResource(
-            @Nonnull CompanyApplicationAdapterService companyApplicationAdapterService) {
-        this.companyApplicationAdapterService = Objects.requireNonNull(companyApplicationAdapterService);
+            @Nonnull CompanyApplicationAdapter companyApplicationAdapter) {
+        this.companyApplicationAdapter = Objects.requireNonNull(companyApplicationAdapter);
     }
 
     @POST
@@ -72,7 +72,7 @@ public class CompanyResource {
                                 .code(CREATED.getStatusCode())
                                 .timestamp(ZonedDateTime.now())
                                 .message(getMessage(COMPANY_CREATED_SUCCESSFULLY, forLanguageTag(acceptLanguage)))
-                                .data(of(CONTENT, companyApplicationAdapterService.createCompany(createCompanyViewRequest, logo, stamp )))
+                                .data(of(CONTENT, companyApplicationAdapter.createCompany(createCompanyViewRequest, logo, stamp )))
                                 .build()
                 )
                 .build();
@@ -95,7 +95,7 @@ public class CompanyResource {
                             .code(OK.getStatusCode())
                             .timestamp(ZonedDateTime.now())
                             .message(getMessage(COMPANY_FINDS_SUCCESSFULLY, forLanguageTag(acceptLanguage)))
-                            .data(of(CONTENT, companyApplicationAdapterService.findCompanies(page, size, field, direction)))
+                            .data(of(CONTENT, companyApplicationAdapter.findCompanies(page, size, field, direction)))
                 )
                 .build();
     }
@@ -119,7 +119,7 @@ public class CompanyResource {
                                 .code(OK.getStatusCode())
                                 .timestamp(ZonedDateTime.now())
                                 .message(getMessage(COMPANY_FINDS_SUCCESSFULLY, forLanguageTag(acceptLanguage)))
-                                .data(of(CONTENT, companyApplicationAdapterService.searchCompanies(page, size, field, direction, keyword)))
+                                .data(of(CONTENT, companyApplicationAdapter.searchCompanies(page, size, field, direction, keyword)))
                 )
                 .build();
     }
@@ -139,7 +139,7 @@ public class CompanyResource {
                                 .code(OK.getStatusCode())
                                 .timestamp(ZonedDateTime.now())
                                 .message(getMessage(COMPANY_FIND_SUCCESSFULLY, forLanguageTag(acceptLanguage)))
-                                .data(of(CONTENT, companyApplicationAdapterService.findCompanyById(companyId)))
+                                .data(of(CONTENT, companyApplicationAdapter.findCompanyById(companyId)))
                 )
                 .build();
     }
@@ -163,7 +163,7 @@ public class CompanyResource {
                                 .code(OK.getStatusCode())
                                 .timestamp(ZonedDateTime.now())
                                 .message(getMessage(COMPANY_UPDATED_SUCCESSFULLY, forLanguageTag(acceptLanguage)))
-                                .data(of(CONTENT, companyApplicationAdapterService.updateCompany(companyId, updateCompanyViewRequest, logo, stamp)))
+                                .data(of(CONTENT, companyApplicationAdapter.updateCompany(companyId, updateCompanyViewRequest, logo, stamp)))
                 )
                 .build();
     }

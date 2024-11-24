@@ -214,4 +214,9 @@ public final class CompanyJpaRepositoryAdapter implements CompanyRepository {
         return companyJpaRepository.findByWebSiteUrl(webSiteUrl.text().value())
                 .map(companyJpaMapper::toCompany);
     }
+
+    @Override
+    public Boolean existsById(@Nonnull CompanyId companyId) {
+        return companyJpaRepository.findByIdOptional(companyId.getValue()).isPresent();
+    }
 }

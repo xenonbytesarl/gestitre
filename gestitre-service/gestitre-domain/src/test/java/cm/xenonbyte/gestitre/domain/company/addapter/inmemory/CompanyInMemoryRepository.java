@@ -170,4 +170,9 @@ public final class CompanyInMemoryRepository implements CompanyRepository {
                 company.getWebSiteUrl() != null && company.getWebSiteUrl().text().value().equalsIgnoreCase(webSiteUrl.text().value()))
                 .findFirst();
     }
+
+    @Override
+    public Boolean existsById(@Nonnull CompanyId companyId) {
+        return companies.containsKey(companyId);
+    }
 }

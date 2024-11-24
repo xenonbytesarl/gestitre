@@ -69,4 +69,5 @@ public final class CompanyJpaRepository implements PanacheRepositoryBase<Company
     public Optional<CompanyJpa> findByWebSiteUrl(String webSiteUrl) {
         return find("webSiteUrl", webSiteUrl).firstResultOptional();
     }
+
 }

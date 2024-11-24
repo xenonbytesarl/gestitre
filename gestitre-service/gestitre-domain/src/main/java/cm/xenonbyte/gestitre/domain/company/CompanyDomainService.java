@@ -134,6 +134,11 @@ public final class CompanyDomainService implements CompanyService {
         return companyUpdatedEvent;
     }
 
+    @Override
+    public Boolean existsById(@Nonnull CompanyId companyId) {
+        return companyRepository.existsById(companyId);
+    }
+
 
     private void validateCompany(Company company) {
         validateCompanyName(company.getId(), company.getCompanyName());

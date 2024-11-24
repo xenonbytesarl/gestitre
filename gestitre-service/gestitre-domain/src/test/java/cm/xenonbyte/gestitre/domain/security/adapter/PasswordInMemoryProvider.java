@@ -1,7 +1,7 @@
 package cm.xenonbyte.gestitre.domain.security.adapter;
 
 import cm.xenonbyte.gestitre.domain.common.vo.Text;
-import cm.xenonbyte.gestitre.domain.security.ports.primary.PasswordEncryptService;
+import cm.xenonbyte.gestitre.domain.security.ports.primary.PasswordEncryptProvider;
 import cm.xenonbyte.gestitre.domain.security.vo.Password;
 
 import javax.crypto.Cipher;
@@ -17,7 +17,7 @@ import java.util.Base64;
  * @version 1.0
  * @since 09/11/2024
  */
-public final class PasswordInMemoryService implements PasswordEncryptService {
+public final class PasswordInMemoryProvider implements PasswordEncryptProvider {
 
     private static final String ALGORITHM = "AES";
     private static final String TRANSFORMATION = "AES/GCM/NoPadding";

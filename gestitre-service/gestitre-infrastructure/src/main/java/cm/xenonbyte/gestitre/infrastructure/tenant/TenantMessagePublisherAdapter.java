@@ -3,11 +3,12 @@ package cm.xenonbyte.gestitre.infrastructure.tenant;
 import cm.xenonbyte.gestitre.domain.company.vo.TenantEventType;
 import cm.xenonbyte.gestitre.domain.tenant.TenantEvent;
 import cm.xenonbyte.gestitre.domain.tenant.ports.secondary.message.TenantMessagePublisher;
-import cm.xenonbyte.gestitre.infrastructure.common.annotation.DefaultEventBus;
 import io.vertx.core.eventbus.EventBus;
+import jakarta.annotation.Nonnull;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Objects;
 
 /**
  * @author bamk
@@ -18,10 +19,11 @@ import lombok.extern.slf4j.Slf4j;
 @ApplicationScoped
 public final class TenantMessagePublisherAdapter implements TenantMessagePublisher {
 
-    @Inject
-    @DefaultEventBus
-    EventBus eventBus;
+    private final EventBus eventBus;
 
+    public TenantMessagePublisherAdapter(@Nonnull  EventBus eventBus) {
+        this.eventBus = Objects.requireNonNull(eventBus);
+    }
 
 
     @Override

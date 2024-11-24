@@ -28,4 +28,6 @@ public interface CompanyService {
     PageInfo<Company> searchCompanies(@Nonnull PageInfoPage pageInfoPage, @Nonnull PageInfoSize pageInfoSize, @Nonnull PageInfoField pageInfoField, @Nonnull PageInfoDirection pageInfoDirection, @Nonnull Keyword keyword);
 
     @Nonnull CompanyUpdatedEvent updateCompany(@Nonnull CompanyId companyId, @Nonnull Company company);
+
+    Boolean existsById(@Nonnull CompanyId companyId);
 }

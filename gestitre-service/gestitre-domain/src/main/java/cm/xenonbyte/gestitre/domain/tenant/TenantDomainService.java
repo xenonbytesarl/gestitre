@@ -1,6 +1,7 @@
 package cm.xenonbyte.gestitre.domain.tenant;
 
 import cm.xenonbyte.gestitre.domain.common.annotation.DomainEvent;
+import cm.xenonbyte.gestitre.domain.common.vo.Name;
 import cm.xenonbyte.gestitre.domain.tenant.ports.secondary.message.TenantMessagePublisher;
 import cm.xenonbyte.gestitre.domain.tenant.ports.primary.message.listener.TenantService;
 import cm.xenonbyte.gestitre.domain.tenant.ports.secondary.repository.TenantRepository;
@@ -42,6 +43,13 @@ public final class TenantDomainService implements TenantService {
         TenantCreatedEvent tenantCreatedEvent = new TenantCreatedEvent(tenant, ZonedDateTime.now());
         tenantMessagePublisher.publish(tenantCreatedEvent, TENANT_CREATED);
         return tenantCreatedEvent;
+    }
+
+    @Override
+    public Tenant findByName(@Nonnull Name name) {
+        return tenantRepository.findByName(name).orElseThrow(
+                () -> new TenantNotFoundException(new String[] {name.text().value()})
+        );
     }
 
     private void validateTenant(Tenant tenant) {

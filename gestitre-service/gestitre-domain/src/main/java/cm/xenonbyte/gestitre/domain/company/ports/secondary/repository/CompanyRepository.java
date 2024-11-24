@@ -63,4 +63,6 @@ public interface CompanyRepository {
     Boolean existByWebSiteUrl(@Nonnull WebSiteUrl webSiteUrl);
 
     Optional<Company> findByWebSiteUrl(@Nonnull WebSiteUrl webSiteUrl);
+
+    Boolean existsById(@Nonnull CompanyId companyId);
 }

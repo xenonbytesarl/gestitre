@@ -4,7 +4,6 @@ import cm.xenonbyte.gestitre.domain.common.entity.BaseEntity;
 import cm.xenonbyte.gestitre.domain.common.validation.Assert;
 import cm.xenonbyte.gestitre.domain.common.vo.Active;
 import cm.xenonbyte.gestitre.domain.common.vo.Name;
-import cm.xenonbyte.gestitre.domain.security.vo.Permission;
 import cm.xenonbyte.gestitre.domain.security.vo.RoleId;
 import jakarta.annotation.Nonnull;
 
@@ -33,6 +32,18 @@ public class Role extends BaseEntity<RoleId> {
         name = builder.name;
         permissions = builder.permissions;
         active = builder.active;
+    }
+
+    public Name getName() {
+        return name;
+    }
+
+    public Set<Permission> getPermissions() {
+        return permissions;
+    }
+
+    public Active getActive() {
+        return active;
     }
 
     @Nonnull
