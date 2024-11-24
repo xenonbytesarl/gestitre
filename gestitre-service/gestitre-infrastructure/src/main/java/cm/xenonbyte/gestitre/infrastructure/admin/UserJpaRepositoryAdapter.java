@@ -1,8 +1,8 @@
 package cm.xenonbyte.gestitre.infrastructure.admin;
 
 import cm.xenonbyte.gestitre.domain.company.vo.contact.Email;
-import cm.xenonbyte.gestitre.domain.security.User;
-import cm.xenonbyte.gestitre.domain.security.ports.secondary.UserRepository;
+import cm.xenonbyte.gestitre.domain.admin.User;
+import cm.xenonbyte.gestitre.domain.admin.ports.secondary.UserRepository;
 import jakarta.annotation.Nonnull;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;

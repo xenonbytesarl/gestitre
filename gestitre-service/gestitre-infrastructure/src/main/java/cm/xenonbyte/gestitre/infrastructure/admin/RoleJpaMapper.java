@@ -1,6 +1,6 @@
 package cm.xenonbyte.gestitre.infrastructure.admin;
 
-import cm.xenonbyte.gestitre.domain.security.Role;
+import cm.xenonbyte.gestitre.domain.admin.Role;
 import jakarta.annotation.Nonnull;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.InjectionStrategy;

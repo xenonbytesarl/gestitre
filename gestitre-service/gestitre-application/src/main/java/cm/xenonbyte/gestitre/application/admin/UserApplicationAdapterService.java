@@ -2,8 +2,8 @@ package cm.xenonbyte.gestitre.application.admin;
 
 import cm.xenonbyte.gestitre.application.admin.dto.CreateUserViewRequest;
 import cm.xenonbyte.gestitre.application.admin.dto.CreateUserViewResponse;
-import cm.xenonbyte.gestitre.domain.security.event.UserCreatedEvent;
-import cm.xenonbyte.gestitre.domain.security.ports.primary.UserService;
+import cm.xenonbyte.gestitre.domain.admin.event.UserCreatedEvent;
+import cm.xenonbyte.gestitre.domain.admin.ports.primary.UserService;
 import jakarta.annotation.Nonnull;
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.extern.slf4j.Slf4j;

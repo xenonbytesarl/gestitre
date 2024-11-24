@@ -2,7 +2,7 @@ package cm.xenonbyte.gestitre.application.admin;
 
 import cm.xenonbyte.gestitre.application.admin.dto.CreateUserViewRequest;
 import cm.xenonbyte.gestitre.application.admin.dto.CreateUserViewResponse;
-import cm.xenonbyte.gestitre.domain.security.User;
+import cm.xenonbyte.gestitre.domain.admin.User;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.Valid;
 import org.mapstruct.BeanMapping;
@@ -28,7 +28,7 @@ public interface UserApplicationViewMapper {
     @Mapping(source = "password", target = "password.text.value")
     @Mapping(source = "confirmPassword", target = "confirmPassword.text.value")
     @Mapping(source = "roleId", target = "roleId.value")
-    @Mapping(expression = "java(createUserViewRequest.getUseMfa() == null? null: cm.xenonbyte.gestitre.domain.security.vo.UseMfa.with(createUserViewRequest.getUseMfa()))", target="useMfa")
+    @Mapping(expression = "java(createUserViewRequest.getUseMfa() == null? null: cm.xenonbyte.gestitre.domain.admin.vo.UseMfa.with(createUserViewRequest.getUseMfa()))", target="useMfa")
     @Nonnull User toUser(@Nonnull @Valid CreateUserViewRequest createUserViewRequest);
 
     @BeanMapping(ignoreByDefault = true)

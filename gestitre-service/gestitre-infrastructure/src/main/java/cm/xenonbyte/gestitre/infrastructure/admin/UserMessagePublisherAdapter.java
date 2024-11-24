@@ -1,8 +1,8 @@
 package cm.xenonbyte.gestitre.infrastructure.admin;
 
-import cm.xenonbyte.gestitre.domain.security.event.UserCreatedEvent;
-import cm.xenonbyte.gestitre.domain.security.ports.secondary.message.publisher.UserEventType;
-import cm.xenonbyte.gestitre.domain.security.ports.secondary.message.publisher.UserMessagePublisher;
+import cm.xenonbyte.gestitre.domain.admin.event.UserEvent;
+import cm.xenonbyte.gestitre.domain.admin.ports.secondary.message.publisher.UserMessagePublisher;
+import cm.xenonbyte.gestitre.domain.admin.vo.UserEventType;
 import io.vertx.core.eventbus.EventBus;
 import jakarta.annotation.Nonnull;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -26,7 +26,7 @@ public final class UserMessagePublisherAdapter implements UserMessagePublisher {
     }
 
     @Override
-    public void publish(UserCreatedEvent event, UserEventType type) {
+    public void publish(UserEvent event, UserEventType type) {
         log.info("Publishing event {} for user with name {}  in the bus",
                 type.name(), event.getUser().getName().text().value());
         eventBus.publish(type.name(), event);

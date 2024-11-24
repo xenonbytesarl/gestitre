@@ -35,7 +35,7 @@ public final class TenantMessageListenerAdapter implements TenantMessageListener
     @Blocking
     @ConsumeEvent(value = COMPANY_CREATED)
     public void handle(CompanyCreatedEvent event) {
-        log.info("Receiving event from CompanyMessagePublisher to create tenant with name {}", event.getCompany().getCompanyName().text().value());
+        log.info(">>>> Receiving event from CompanyMessagePublisher to create tenant with name {}", event.getCompany().getCompanyName().text().value());
         tenantService.create(Tenant.builder().name(Name.of(event.getCompany().getCompanyName().text())).build());
 
     }

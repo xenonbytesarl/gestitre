@@ -1,8 +1,8 @@
 package cm.xenonbyte.gestitre.infrastructure.admin;
 
-import cm.xenonbyte.gestitre.domain.security.Role;
-import cm.xenonbyte.gestitre.domain.security.ports.secondary.RoleRepository;
-import cm.xenonbyte.gestitre.domain.security.vo.RoleId;
+import cm.xenonbyte.gestitre.domain.admin.Role;
+import cm.xenonbyte.gestitre.domain.admin.ports.secondary.RoleRepository;
+import cm.xenonbyte.gestitre.domain.admin.vo.RoleId;
 import jakarta.annotation.Nonnull;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
