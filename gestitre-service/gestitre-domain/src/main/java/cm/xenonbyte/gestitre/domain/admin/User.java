@@ -1,23 +1,23 @@
 package cm.xenonbyte.gestitre.domain.admin;
 
-import cm.xenonbyte.gestitre.domain.common.entity.AggregateRoot;
-import cm.xenonbyte.gestitre.domain.common.validation.Assert;
-import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
-import cm.xenonbyte.gestitre.domain.common.vo.Name;
-import cm.xenonbyte.gestitre.domain.common.vo.TenantId;
-import cm.xenonbyte.gestitre.domain.company.vo.contact.Email;
 import cm.xenonbyte.gestitre.domain.admin.vo.AccountEnabled;
 import cm.xenonbyte.gestitre.domain.admin.vo.AccountExpired;
 import cm.xenonbyte.gestitre.domain.admin.vo.AccountLocked;
 import cm.xenonbyte.gestitre.domain.admin.vo.CredentialExpired;
 import cm.xenonbyte.gestitre.domain.admin.vo.FailedLoginAttempt;
 import cm.xenonbyte.gestitre.domain.admin.vo.Password;
-import cm.xenonbyte.gestitre.domain.admin.vo.RoleId;
 import cm.xenonbyte.gestitre.domain.admin.vo.UseMfa;
 import cm.xenonbyte.gestitre.domain.admin.vo.UserId;
+import cm.xenonbyte.gestitre.domain.common.entity.AggregateRoot;
+import cm.xenonbyte.gestitre.domain.common.validation.Assert;
+import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
+import cm.xenonbyte.gestitre.domain.common.vo.Name;
+import cm.xenonbyte.gestitre.domain.common.vo.TenantId;
+import cm.xenonbyte.gestitre.domain.company.vo.contact.Email;
 import jakarta.annotation.Nonnull;
 
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -29,7 +29,7 @@ public final class User extends AggregateRoot<UserId> {
     private final CompanyId companyId;
     private final Email email;
     private final Name name;
-    private final RoleId roleId;
+    private final Set<Role> roles;
     private TenantId tenantId;
     private Password password;
     private Password confirmPassword;
@@ -45,11 +45,11 @@ public final class User extends AggregateRoot<UserId> {
             @Nonnull CompanyId companyId,
             @Nonnull Email email,
             @Nonnull Name name,
-            @Nonnull RoleId roleId) {
+            @Nonnull Set<Role> roles) {
         this.companyId = Objects.requireNonNull(companyId);
         this.email = Objects.requireNonNull(email);
         this.name = Objects.requireNonNull(name);
-        this.roleId = Objects.requireNonNull(roleId);
+        this.roles = Objects.requireNonNull(roles);
     }
 
     private User(Builder builder) {
@@ -60,7 +60,7 @@ public final class User extends AggregateRoot<UserId> {
         confirmPassword = builder.confirmPassword;
         tenantId = builder.tenantId;
         name = builder.name;
-        roleId = builder.roleId;
+        roles = builder.roles;
         accountEnabled = builder.accountEnabled;
         credentialExpired = builder.credentialExpired;
         accountLocked = builder.accountLocked;
@@ -110,8 +110,8 @@ public final class User extends AggregateRoot<UserId> {
         return name;
     }
 
-    public RoleId getRoleId() {
-        return roleId;
+    public Set<Role> getRoles() {
+        return roles;
     }
 
     public AccountEnabled getAccountEnabled() {
@@ -152,10 +152,12 @@ public final class User extends AggregateRoot<UserId> {
         Assert.field("Name", name)
                 .notNull();
 
-        Assert.field("Role ID", roleId)
-                .notNull();
+        Assert.field("Roles", roles)
+                .notNull()
+                .minLength(1, roles.size());
 
-        Assert.field("Company ID", companyId);
+        Assert.field("Company ID", companyId)
+                .notNull();
     }
 
     public void validatePassword() {
@@ -176,7 +178,7 @@ public final class User extends AggregateRoot<UserId> {
         private Password password;
         private Password confirmPassword;
         private Name name;
-        private RoleId roleId;
+        private Set<Role> roles;
         private AccountEnabled accountEnabled;
         private CredentialExpired credentialExpired;
         private AccountLocked accountLocked;
@@ -222,8 +224,8 @@ public final class User extends AggregateRoot<UserId> {
             return this;
         }
 
-        public Builder roleId(RoleId val) {
-            roleId = val;
+        public Builder roles(Set<Role> val) {
+            roles = val;
             return this;
         }
 

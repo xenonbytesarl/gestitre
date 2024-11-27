@@ -15,7 +15,7 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.Set;
 
-import static jakarta.persistence.FetchType.EAGER;
+import static jakarta.persistence.FetchType.LAZY;
 
 /**
  * @author bamk
@@ -34,11 +34,11 @@ public final class RoleJpa extends Auditable {
     private String name;
     @Column(name = "c_active", nullable = false)
     private Boolean active;
-    @ManyToMany(fetch = EAGER)
+    @ManyToMany(fetch = LAZY)
     @JoinTable(
             name = "t_role_permission",
             joinColumns = @JoinColumn(name = "c_role_id", referencedColumnName = "c_id"),
             inverseJoinColumns = @JoinColumn(name = "c_permission_id", referencedColumnName = "c_id")
     )
-    private Set<PermissionJpa> permissions;
+    private Set<PermissionJpa> permissionsJpa;
 }

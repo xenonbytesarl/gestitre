@@ -46,10 +46,18 @@ create table if not exists t_user
     c_account_expired      boolean                     not null ,
     c_use_mfa              boolean                     not null ,
     c_failed_login_attempt bigint                      not null ,
-    c_tenant_id              uuid                        not null ,
-    c_role_id              uuid                        not null ,
+    c_tenant_id              uuid                      not null ,
     constraint Pk_t_user_c_id primary key (c_id),
     constraint Uk_t_user_c_email UNIQUE (c_email),
-    constraint Fk_t_role_c_role_id foreign key (c_role_id) references t_role (c_id),
     constraint Fk_t_tenant_c_tenant_id foreign key (c_tenant_id) references t_tenant (c_id)
+);
+
+-- Create table t_user_role
+create table if not exists t_user_role
+(
+    c_user_id       uuid not null ,
+    c_role_id       uuid not null ,
+    constraint Pk_t_user_role_c_user_id_c_role_id primary key (c_user_id, c_role_id),
+    constraint Fk_t_user_role_c_user_id foreign key (c_user_id) references t_user (c_id),
+    constraint Fk_t_user_role_c_role_id foreign key (c_role_id) references t_role (c_id)
 );

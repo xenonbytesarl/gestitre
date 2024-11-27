@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.util.Set;
 import java.util.UUID;
 
 import static cm.xenonbyte.gestitre.application.common.ApplicationConstant.EMAIL;
@@ -36,7 +37,7 @@ public class UserView {
     @NotEmpty(message = NOT_EMPTY)
     private String confirmPassword;
     @NotNull(message = NOT_NULL)
-    private UUID roleId;
+    private Set<RoleView> roleViews;
     @NotNull(message = NOT_NULL)
     private UUID companyId;
     private Boolean useMfa;

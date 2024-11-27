@@ -1,5 +1,12 @@
 package cm.xenonbyte.gestitre.domain.admin;
 
+import cm.xenonbyte.gestitre.domain.admin.event.UserCreatedEvent;
+import cm.xenonbyte.gestitre.domain.admin.ports.primary.PasswordEncryptProvider;
+import cm.xenonbyte.gestitre.domain.admin.ports.primary.UserService;
+import cm.xenonbyte.gestitre.domain.admin.ports.secondary.RoleRepository;
+import cm.xenonbyte.gestitre.domain.admin.ports.secondary.UserRepository;
+import cm.xenonbyte.gestitre.domain.admin.ports.secondary.message.publisher.UserMessagePublisher;
+import cm.xenonbyte.gestitre.domain.admin.vo.UserId;
 import cm.xenonbyte.gestitre.domain.common.annotation.DomainService;
 import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
 import cm.xenonbyte.gestitre.domain.common.vo.Name;
@@ -7,20 +14,13 @@ import cm.xenonbyte.gestitre.domain.company.entity.Company;
 import cm.xenonbyte.gestitre.domain.company.ports.CompanyNotFoundException;
 import cm.xenonbyte.gestitre.domain.company.ports.primary.CompanyService;
 import cm.xenonbyte.gestitre.domain.company.vo.contact.Email;
-import cm.xenonbyte.gestitre.domain.admin.event.UserCreatedEvent;
-import cm.xenonbyte.gestitre.domain.admin.ports.primary.PasswordEncryptProvider;
-import cm.xenonbyte.gestitre.domain.admin.ports.primary.UserService;
-import cm.xenonbyte.gestitre.domain.admin.ports.secondary.RoleRepository;
-import cm.xenonbyte.gestitre.domain.admin.ports.secondary.UserRepository;
-import cm.xenonbyte.gestitre.domain.admin.ports.secondary.message.publisher.UserMessagePublisher;
-import cm.xenonbyte.gestitre.domain.admin.vo.RoleId;
-import cm.xenonbyte.gestitre.domain.admin.vo.UserId;
 import cm.xenonbyte.gestitre.domain.tenant.Tenant;
 import cm.xenonbyte.gestitre.domain.tenant.ports.primary.message.listener.TenantService;
 import jakarta.annotation.Nonnull;
 
 import java.time.ZonedDateTime;
 import java.util.Objects;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import static cm.xenonbyte.gestitre.domain.admin.vo.UserEventType.USER_CREATED;
@@ -76,19 +76,22 @@ public final class UserDomainService implements UserService {
     private void validateUser(User user) {
         validateEmail(user.getId(), user.getEmail());
         validateCompanyId(user.getCompanyId());
-        validateRoleId(user.getRoleId());
+        validateRoles(user.getRoles());
     }
 
     private void validateCompanyId(CompanyId companyId) {
-        if(!companyService.existsById(companyId)) {
+        if(Boolean.FALSE.equals(companyService.existsById(companyId))) {
             throw new CompanyNotFoundException(new String[] {companyId.getValue().toString()});
         }
     }
 
-    private void validateRoleId(RoleId roleId) {
-        if(Boolean.FALSE.equals(roleRepository.existsById(roleId))) {
-            throw new RoleNotFoundException(new String[] {roleId.getValue().toString()});
-        }
+    private void validateRoles(Set<Role> roles) {
+        roles.forEach(role -> {
+            if(Boolean.FALSE.equals(roleRepository.existsById(role.getId()))) {
+                throw new RoleNotFoundException(new String[] {role.getId().getValue().toString()});
+            }
+        });
+
     }
 
     private Tenant findTenant(CompanyId companyId) {

@@ -64,9 +64,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class UserDomainServiceTest {
 
     private UserService userService;
-    private RoleId roleId;
-    private TenantId tenantId;
     private CompanyId companyId;
+    private Set<Role> roles;
 
     @BeforeEach
     void setUp() {
@@ -84,8 +83,7 @@ class UserDomainServiceTest {
         PasswordEncryptProvider passwordEncryptProvider = new PasswordInMemoryProvider();
         UserMessagePublisher userMessagePublisher = new UserMessageInMemoryPublisher();
 
-        tenantId = new TenantId(UUID.fromString("0193127b-1508-7da5-95fe-203d58fa0a97"));
-        roleId = new RoleId(UUID.fromString("0193127b-3f4c-710e-8680-f97ba96bd7af"));
+        TenantId tenantId = new TenantId(UUID.fromString("0193127b-1508-7da5-95fe-203d58fa0a97"));
 
         userService = new UserDomainService(
                 userRepository,
@@ -132,33 +130,34 @@ class UserDomainServiceTest {
                         .build()
         );
 
-        roleRepository.create(
-            Role.builder()
-                    .id(roleId)
+        Role role = Role.builder()
+                .id(new RoleId(UUID.fromString("0193127b-3f4c-710e-8680-f97ba96bd7af")))
                 .name(Name.of(Text.of("Utilisateur")))
                 .permissions(
-                    Set.of(
-                        Permission.builder()
-                            .id(new PermissionId(UUID.fromString("0193128d-dcdd-75dd-a586-e473cb938984")))
-                            .name(Name.of(Text.of("create:company")))
-                            .build(),
-                        Permission.builder()
-                            .id(new PermissionId(UUID.fromString("0193128e-00c6-760f-b92a-80069e8df541")))
-                            .name(Name.of(Text.of("update:company")))
-                            .build(),
-                        Permission.builder()
-                            .id(new PermissionId(UUID.fromString("0193128e-1fe3-75a1-8d65-1fb9a291b5ed")))
-                            .name(Name.of(Text.of("read:company")))
-                            .build(),
-                        Permission.builder()
-                            .id(new PermissionId(UUID.fromString("0193128e-3ef1-7e6c-9a5b-2e35f00ef346")))
-                            .name(Name.of(Text.of("delete:company")))
-                            .build()
-                    )
+                        Set.of(
+                                Permission.builder()
+                                        .id(new PermissionId(UUID.fromString("0193128d-dcdd-75dd-a586-e473cb938984")))
+                                        .name(Name.of(Text.of("create:company")))
+                                        .build(),
+                                Permission.builder()
+                                        .id(new PermissionId(UUID.fromString("0193128e-00c6-760f-b92a-80069e8df541")))
+                                        .name(Name.of(Text.of("update:company")))
+                                        .build(),
+                                Permission.builder()
+                                        .id(new PermissionId(UUID.fromString("0193128e-1fe3-75a1-8d65-1fb9a291b5ed")))
+                                        .name(Name.of(Text.of("read:company")))
+                                        .build(),
+                                Permission.builder()
+                                        .id(new PermissionId(UUID.fromString("0193128e-3ef1-7e6c-9a5b-2e35f00ef346")))
+                                        .name(Name.of(Text.of("delete:company")))
+                                        .build()
+                        )
                 )
                 .active(Active.with(true))
-                .build()
-        );
+                .build();
+        roleRepository.create(role);
+
+        roles = Set.of(role);
 
         userRepository.create(
             User.builder()
@@ -167,7 +166,7 @@ class UserDomainServiceTest {
                 .password(Password.of(Text.of("test123")))
                 .confirmPassword(Password.of(Text.of("test123")))
                 .tenantId(tenantId)
-                .roleId(roleId)
+                .roles(Set.of(role))
                 .build()
         );
     }
@@ -180,7 +179,7 @@ class UserDomainServiceTest {
                 .email(Email.of(Text.of("test@gmail.com")))
                 .password(Password.of(Text.of("test123")))
                 .confirmPassword(Password.of(Text.of("test123")))
-                .roleId(roleId)
+                .roles(roles)
                 .companyId(companyId)
                 .build();
 
@@ -200,7 +199,17 @@ class UserDomainServiceTest {
                 .email(Email.of(Text.of("test@gmail.com")))
                 .password(Password.of(Text.of("test123")))
                 .confirmPassword(Password.of(Text.of("test123")))
-                .roleId(new RoleId(UUID.randomUUID()))
+                .roles(Set.of(
+                        Role.builder()
+                                .id(new RoleId(UUID.fromString("01936fd1-0b90-7b2e-a4cd-3c7324ddeca7")))
+                                .permissions(Set.of(
+                                        Permission.builder()
+                                                .id(new PermissionId(UUID.fromString("01936fd1-34a2-74b2-bd22-7208b20f8c17")))
+                                                .name(Name.of(Text.of("create:role")))
+                                                .build()
+                                ))
+                                .build()
+                ))
                 .companyId(companyId)
                 .build();
         //Act + Then
@@ -217,7 +226,7 @@ class UserDomainServiceTest {
                 .email(Email.of(Text.of("test@gmail.com")))
                 .password(Password.of(Text.of("test123")))
                 .confirmPassword(Password.of(Text.of("test123")))
-                .roleId(roleId)
+                .roles(roles)
                 .companyId(new CompanyId(UUID.fromString("019353d5-b63c-7874-9d44-22622626500e")))
                 .build();
         //Act + Then
@@ -235,7 +244,7 @@ class UserDomainServiceTest {
                 .email(Email.of(Text.of("emailsecond@gmail.com")))
                 .password(Password.of(Text.of("test123")))
                 .confirmPassword(Password.of(Text.of("test123")))
-                .roleId(roleId)
+                .roles(roles)
                 .companyId(companyId)
                 .build();
         //Act + Then

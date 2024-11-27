@@ -4,13 +4,18 @@ import cm.xenonbyte.gestitre.infrastructure.common.Tenantable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+
+import java.util.Set;
+
+import static jakarta.persistence.FetchType.LAZY;
 
 /**
  * @author bamk
@@ -43,7 +48,11 @@ public final class UserJpa extends Tenantable {
     private Boolean useMfa;
     @Column(name = "c_failed_login_attempt", nullable = false)
     private Long failedLoginAttempt;
-    @ManyToOne
-    @JoinColumn(name = "c_role_id", nullable = false)
-    private RoleJpa roleJpa;
+    @ManyToMany(fetch = LAZY)
+    @JoinTable(
+            name = "t_user_role",
+            joinColumns = @JoinColumn(name = "c_user_id", referencedColumnName = "c_id"),
+            inverseJoinColumns = @JoinColumn(name = "c_role_id", referencedColumnName = "c_id")
+    )
+    private Set<RoleJpa> rolesJpa;
 }

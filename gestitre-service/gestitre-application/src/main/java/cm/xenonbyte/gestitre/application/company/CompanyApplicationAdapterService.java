@@ -182,10 +182,10 @@ public final class CompanyApplicationAdapterService implements CompanyApplicatio
     }
 
     private GetEncodedFiles getGetEncodedFiles(Company company) throws IOException {
-        String logoEncoded = storageManager.fileToBase64(company.getLogoFilename().text().value());
-        String logoMimeType = storageManager.mimeType(company.getLogoFilename().text().value());
-        String stampEncoded = storageManager.fileToBase64(company.getStampFilename().text().value());
-        String stampMimeType = storageManager.mimeType(company.getStampFilename().text().value());
+        String logoEncoded = company.getLogoFilename() == null || company.getLogoFilename().text().value().isEmpty()? null: storageManager.fileToBase64(company.getLogoFilename().text().value());
+        String logoMimeType = company.getLogoFilename() == null || company.getLogoFilename().text().value().isEmpty()? null: storageManager.mimeType(company.getLogoFilename().text().value());
+        String stampEncoded = company.getStampFilename() == null || company.getStampFilename().text().value().isEmpty()? null: storageManager.fileToBase64(company.getStampFilename().text().value());
+        String stampMimeType = company.getStampFilename() == null || company.getStampFilename().text().value().isEmpty()? null: storageManager.mimeType(company.getStampFilename().text().value());
         return new GetEncodedFiles(logoEncoded, logoMimeType, stampEncoded, stampMimeType);
     }
 
