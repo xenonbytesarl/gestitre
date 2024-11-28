@@ -3,6 +3,8 @@ package cm.xenonbyte.gestitre.infrastructure.admin;
 import cm.xenonbyte.gestitre.infrastructure.common.TenantPanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 
+import java.util.Optional;
+
 /**
  * @author bamk
  * @version 1.0
@@ -13,5 +15,9 @@ public final class UserJpaRepository implements TenantPanacheRepository<UserJpa>
 
     public Boolean existsByEmail(String email) {
         return find("email", email).count() > 0;
+    }
+
+    public Optional<UserJpa> findByEmail(String email) {
+        return find("email", email).stream().findFirst();
     }
 }

@@ -4,8 +4,11 @@ import cm.xenonbyte.gestitre.domain.admin.event.UserCreatedEvent;
 import cm.xenonbyte.gestitre.domain.admin.ports.primary.PasswordEncryptProvider;
 import cm.xenonbyte.gestitre.domain.admin.ports.primary.UserService;
 import cm.xenonbyte.gestitre.domain.admin.ports.secondary.RoleRepository;
+import cm.xenonbyte.gestitre.domain.admin.ports.secondary.TokenProvider;
 import cm.xenonbyte.gestitre.domain.admin.ports.secondary.UserRepository;
 import cm.xenonbyte.gestitre.domain.admin.ports.secondary.message.publisher.UserMessagePublisher;
+import cm.xenonbyte.gestitre.domain.admin.vo.Password;
+import cm.xenonbyte.gestitre.domain.admin.vo.Token;
 import cm.xenonbyte.gestitre.domain.admin.vo.UserId;
 import cm.xenonbyte.gestitre.domain.common.annotation.DomainService;
 import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
@@ -20,6 +23,7 @@ import jakarta.annotation.Nonnull;
 
 import java.time.ZonedDateTime;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -41,6 +45,7 @@ public final class UserDomainService implements UserService {
     private final CompanyService companyService;
     private final PasswordEncryptProvider passwordEncryptProvider;
     private final UserMessagePublisher userEventPublisher;
+    private final TokenProvider tokenProvider;
 
     public UserDomainService(
             @Nonnull UserRepository userRepository,
@@ -48,18 +53,19 @@ public final class UserDomainService implements UserService {
             @Nonnull TenantService tenantService,
             @Nonnull CompanyService companyService,
             @Nonnull PasswordEncryptProvider passwordEncryptProvider,
-            @Nonnull UserMessagePublisher userEventPublisher) {
+            @Nonnull UserMessagePublisher userEventPublisher, TokenProvider tokenProvider) {
         this.userRepository = Objects.requireNonNull(userRepository);
         this.roleRepository = Objects.requireNonNull(roleRepository);
         this.tenantService = Objects.requireNonNull(tenantService);
         this.companyService = Objects.requireNonNull(companyService);
         this.passwordEncryptProvider = Objects.requireNonNull(passwordEncryptProvider);
         this.userEventPublisher = Objects.requireNonNull(userEventPublisher);
+        this.tokenProvider = Objects.requireNonNull(tokenProvider);
     }
 
     @Nonnull
     @Override
-    public UserCreatedEvent createUser(@Nonnull User user) throws Exception {
+    public UserCreatedEvent createUser(@Nonnull User user) {
         user.validateMandatoryFields();
         user.validatePassword();
         validateUser(user);
@@ -71,6 +77,19 @@ public final class UserDomainService implements UserService {
         UserCreatedEvent userCreatedEvent = new UserCreatedEvent(user, ZonedDateTime.now());
         userEventPublisher.publish(userCreatedEvent, USER_CREATED);
         return userCreatedEvent;
+    }
+
+    @Nonnull
+    @Override
+    public Token login(@Nonnull Email email, @Nonnull Password password) {
+        Optional<User> optionalUser = userRepository.findUserByEmail(email);
+        if (optionalUser.isPresent()) {
+            if (Boolean.FALSE.equals(passwordEncryptProvider.checkCredentials(password, optionalUser.get().getPassword()))) {
+                throw new UserPasswordUnAuthorizedException();
+            }
+            return tokenProvider.generateToken(optionalUser.get());
+        }
+        throw new UserEmailUnAuthorizedException();
     }
 
     private void validateUser(User user) {

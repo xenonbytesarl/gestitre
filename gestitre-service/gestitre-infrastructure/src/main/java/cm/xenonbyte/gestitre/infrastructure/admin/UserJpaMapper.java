@@ -56,4 +56,38 @@ public interface UserJpaMapper {
     @Mapping(source = "id.value", target = "id")
     @Mapping(source = "name.text.value", target = "name")
     @Nonnull PermissionJpa toPermissionsJpa(@Nonnull Permission permission);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id.value", source = "id")
+    @Mapping(target = "name.text.value", source = "name")
+    @Mapping(target = "email.text.value", source = "email")
+    @Mapping(target = "tenantId.value", source = "tenantId")
+    @Mapping(target = "password.text.value", source = "password")
+    @Mapping(target = "accountEnabled.value", source = "accountEnabled")
+    @Mapping(target = "credentialExpired.value", source = "credentialExpired")
+    @Mapping(target = "accountLocked.value", source = "accountLocked")
+    @Mapping(target = "accountExpired.value", source = "accountExpired")
+    @Mapping(target = "useMfa.value", source = "useMfa")
+    @Mapping(target = "failedLoginAttempt.value", source = "failedLoginAttempt")
+    @Mapping(target = "roles", qualifiedByName = "toRoles", source = "rolesJpa")
+    @Nonnull User toUser(@Nonnull UserJpa userJpa);
+
+    @Named("toRoles")
+    Set<Role> toRoles(Set<RoleJpa> rolesJpa);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id.value", source = "id")
+    @Mapping(target = "name.text.value", source = "name")
+    @Mapping(target = "permissions", qualifiedByName = "toPermissions", source = "permissionsJpa")
+    @Mapping(target = "active.value", source = "active")
+    @Nonnull Role toRole(@Nonnull RoleJpa roleJpa);
+
+    @Named("toPermissions")
+    Set<Permission> toPermissions(Set<PermissionJpa> permissionsJpa);
+
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id.value", source = "id")
+    @Mapping(target = "name.text.value", source = "name")
+    @Nonnull Permission toPermission(@Nonnull PermissionJpa permissionJpa);
 }

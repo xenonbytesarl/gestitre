@@ -1,6 +1,14 @@
 package cm.xenonbyte.gestitre.bootstrap;
 
 
+import cm.xenonbyte.gestitre.domain.admin.UserDomainService;
+import cm.xenonbyte.gestitre.domain.admin.event.UserCreatedEvent;
+import cm.xenonbyte.gestitre.domain.admin.ports.primary.PasswordEncryptProvider;
+import cm.xenonbyte.gestitre.domain.admin.ports.primary.UserService;
+import cm.xenonbyte.gestitre.domain.admin.ports.secondary.RoleRepository;
+import cm.xenonbyte.gestitre.domain.admin.ports.secondary.TokenProvider;
+import cm.xenonbyte.gestitre.domain.admin.ports.secondary.UserRepository;
+import cm.xenonbyte.gestitre.domain.admin.ports.secondary.message.publisher.UserMessagePublisher;
 import cm.xenonbyte.gestitre.domain.company.CertificateTemplateDomainService;
 import cm.xenonbyte.gestitre.domain.company.CompanyDomainService;
 import cm.xenonbyte.gestitre.domain.company.event.CompanyCreatedEvent;
@@ -12,13 +20,6 @@ import cm.xenonbyte.gestitre.domain.company.ports.secondary.repository.Certifica
 import cm.xenonbyte.gestitre.domain.company.ports.secondary.repository.CompanyRepository;
 import cm.xenonbyte.gestitre.domain.file.StorageManagerDomainService;
 import cm.xenonbyte.gestitre.domain.file.port.primary.StorageManager;
-import cm.xenonbyte.gestitre.domain.admin.UserDomainService;
-import cm.xenonbyte.gestitre.domain.admin.event.UserCreatedEvent;
-import cm.xenonbyte.gestitre.domain.admin.ports.primary.PasswordEncryptProvider;
-import cm.xenonbyte.gestitre.domain.admin.ports.primary.UserService;
-import cm.xenonbyte.gestitre.domain.admin.ports.secondary.RoleRepository;
-import cm.xenonbyte.gestitre.domain.admin.ports.secondary.UserRepository;
-import cm.xenonbyte.gestitre.domain.admin.ports.secondary.message.publisher.UserMessagePublisher;
 import cm.xenonbyte.gestitre.domain.tenant.TenantCreatedEvent;
 import cm.xenonbyte.gestitre.domain.tenant.TenantDomainService;
 import cm.xenonbyte.gestitre.domain.tenant.ports.primary.message.listener.TenantService;
@@ -41,8 +42,6 @@ import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
  * @since 02/11/2024
  */
 public final class BootstrapApplicationContext {
-
-
 
     @ApplicationScoped
     public CertificateTemplateService certificateTemplateService(CertificateTemplateRepository certificateTemplateRepository) {
@@ -83,7 +82,8 @@ public final class BootstrapApplicationContext {
             TenantService tenantService,
             CompanyService companyService,
             PasswordEncryptProvider passwordEncryptProvider,
-            UserMessagePublisher userMessagePublisher
+            UserMessagePublisher userMessagePublisher,
+            TokenProvider tokenProvider
     ) {
         return new UserDomainService(
                 userRepository,
@@ -91,7 +91,8 @@ public final class BootstrapApplicationContext {
                 tenantService,
                 companyService,
                 passwordEncryptProvider,
-                userMessagePublisher
+                userMessagePublisher,
+                tokenProvider
         );
     }
 

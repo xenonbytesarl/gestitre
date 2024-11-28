@@ -8,6 +8,7 @@ import jakarta.annotation.Nonnull;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author bamk
@@ -27,5 +28,12 @@ public final class UserInMemoryRepository implements UserRepository {
     public User create(@Nonnull User user) {
         users.put(user.getId(), user);
         return user;
+    }
+
+    @Override
+    public Optional<User> findUserByEmail(@Nonnull Email email) {
+        return users.values().stream().filter(user ->
+                user.getEmail().equals(email))
+                .findFirst();
     }
 }

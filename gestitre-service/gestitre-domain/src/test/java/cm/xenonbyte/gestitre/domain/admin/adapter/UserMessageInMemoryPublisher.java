@@ -1,5 +1,6 @@
-package cm.xenonbyte.gestitre.domain.admin;
+package cm.xenonbyte.gestitre.domain.admin.adapter;
 
+import cm.xenonbyte.gestitre.domain.admin.User;
 import cm.xenonbyte.gestitre.domain.admin.event.UserEvent;
 import cm.xenonbyte.gestitre.domain.admin.ports.secondary.message.publisher.UserMessagePublisher;
 import cm.xenonbyte.gestitre.domain.admin.vo.UserEventType;

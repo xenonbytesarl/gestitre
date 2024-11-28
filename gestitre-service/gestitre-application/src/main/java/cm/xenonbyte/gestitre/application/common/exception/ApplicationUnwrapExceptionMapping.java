@@ -6,6 +6,7 @@ import cm.xenonbyte.gestitre.application.common.in18.LocalizationResolver;
 import cm.xenonbyte.gestitre.domain.common.exception.BaseDomainBadException;
 import cm.xenonbyte.gestitre.domain.common.exception.BaseDomainConflictException;
 import cm.xenonbyte.gestitre.domain.common.exception.BaseDomainNotFoundException;
+import cm.xenonbyte.gestitre.domain.common.exception.BaseDomainUnAuthorizedException;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -30,6 +31,7 @@ import static jakarta.ws.rs.core.Response.Status.BAD_REQUEST;
 import static jakarta.ws.rs.core.Response.Status.CONFLICT;
 import static jakarta.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
 import static jakarta.ws.rs.core.Response.Status.NOT_FOUND;
+import static jakarta.ws.rs.core.Response.Status.UNAUTHORIZED;
 
 /**
  * @author bamk
@@ -64,6 +66,22 @@ public class ApplicationUnwrapExceptionMapping {
                 .build();
 
    }
+
+    @ServerExceptionMapper
+    public Response unwrapBaseDomainBadException(BaseDomainUnAuthorizedException exception) {
+        log.error(exception.getMessage(), exception);
+        return Response.status(UNAUTHORIZED)
+                .entity(
+                        ErrorApiResponse.builder()
+                                .success(false)
+                                .status(UNAUTHORIZED.name())
+                                .timestamp(ZonedDateTime.now())
+                                .reason(getMessage(exception.getMessage(), localeResolver.getLocaleFromRequest(), exception.getArgs()))
+                                .code(UNAUTHORIZED.getStatusCode())
+                )
+                .build();
+
+    }
 
     @ServerExceptionMapper
     public Response unwrapBaseDomainConflictException(BaseDomainConflictException exception) {

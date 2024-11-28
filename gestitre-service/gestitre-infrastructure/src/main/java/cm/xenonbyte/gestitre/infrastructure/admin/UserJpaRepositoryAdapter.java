@@ -9,6 +9,7 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @author bamk
@@ -40,5 +41,11 @@ public final class UserJpaRepositoryAdapter implements UserRepository {
     public User create(@Nonnull User user) {
         userJpaRepository.persist(userJpaMapper.toUserJpa(user));
         return user;
+    }
+
+    @Override
+    public Optional<User> findUserByEmail(@Nonnull Email email) {
+        return userJpaRepository.findByEmail(email.text().value())
+                .map(userJpaMapper::toUser);
     }
 }

@@ -8,5 +8,7 @@ import cm.xenonbyte.gestitre.domain.admin.vo.Password;
  * @since 09/11/2024
  */
 public interface PasswordEncryptProvider {
-    Password encrypt(Password password) throws Exception;
+    Password encrypt(Password password);
+
+    Boolean checkCredentials(Password password, Password encryptedPassword);
 }

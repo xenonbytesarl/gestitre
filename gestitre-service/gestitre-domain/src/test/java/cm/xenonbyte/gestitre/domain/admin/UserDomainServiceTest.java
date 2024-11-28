@@ -1,5 +1,10 @@
 package cm.xenonbyte.gestitre.domain.admin;
 
+import cm.xenonbyte.gestitre.domain.admin.adapter.TokenInMemoryProvider;
+import cm.xenonbyte.gestitre.domain.admin.adapter.UserMessageInMemoryPublisher;
+import cm.xenonbyte.gestitre.domain.admin.ports.secondary.TokenProvider;
+import cm.xenonbyte.gestitre.domain.admin.vo.Token;
+import cm.xenonbyte.gestitre.domain.admin.vo.UserId;
 import cm.xenonbyte.gestitre.domain.common.vo.Active;
 import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
 import cm.xenonbyte.gestitre.domain.common.vo.CompanyName;
@@ -50,6 +55,8 @@ import org.junit.jupiter.api.Test;
 import java.util.Set;
 import java.util.UUID;
 
+import static cm.xenonbyte.gestitre.domain.admin.UserEmailUnAuthorizedException.USER_EMAIL_UN_AUTHORIZED;
+import static cm.xenonbyte.gestitre.domain.admin.UserPasswordUnAuthorizedException.USER_PASSWORD_UN_AUTHORIZED;
 import static cm.xenonbyte.gestitre.domain.company.ports.CompanyNotFoundException.COMPANY_NOT_FOUND;
 import static cm.xenonbyte.gestitre.domain.admin.RoleNotFoundException.ROLE_NOT_FOUND;
 import static cm.xenonbyte.gestitre.domain.admin.UserEmailConflictException.USER_EMAIL_CONFLICT;
@@ -64,12 +71,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class UserDomainServiceTest {
 
     private UserService userService;
+    private UserRepository userRepository;
     private CompanyId companyId;
     private Set<Role> roles;
 
     @BeforeEach
     void setUp() {
-        UserRepository userRepository = new UserInMemoryRepository();
+        userRepository = new UserInMemoryRepository();
         RoleRepository roleRepository = new RoleInMemoryRepository();
         TenantRepository tenantRepository = new TenantInMemoryRepository();
         TenantMessagePublisher tenantInMemoryMessagePublisher = new TenantInMemoryMessagePublisher();
@@ -85,13 +93,16 @@ class UserDomainServiceTest {
 
         TenantId tenantId = new TenantId(UUID.fromString("0193127b-1508-7da5-95fe-203d58fa0a97"));
 
+        TokenProvider tokenProvider = new TokenInMemoryProvider();
+
         userService = new UserDomainService(
                 userRepository,
                 roleRepository,
                 tenantService,
                 companyService,
                 passwordEncryptProvider,
-                userMessagePublisher
+                userMessagePublisher,
+                tokenProvider
         );
 
         companyId = new CompanyId(UUID.fromString("01935b63-7185-7796-b65c-2840e57ab857"));
@@ -222,6 +233,7 @@ class UserDomainServiceTest {
     void should_fail_when_create_user_with_invalid_company_id() {
         //Given
         User user = User.builder()
+                .id(new UserId(UUID.fromString("01937041-908c-74cb-a0ce-c73685736175")))
                 .name(Name.of(Text.of("First User")))
                 .email(Email.of(Text.of("test@gmail.com")))
                 .password(Password.of(Text.of("test123")))
@@ -251,5 +263,70 @@ class UserDomainServiceTest {
         assertThatThrownBy(() -> userService.createUser(user))
                 .isInstanceOf(UserEmailConflictException.class)
                 .hasMessage(USER_EMAIL_CONFLICT);
+    }
+
+    @Test
+    void should_create_token_when_login_with_valid_credentials() {
+        //Given
+        Email email = Email.of(Text.of("test@gmail.com"));
+        Password password = Password.of(Text.of("test123"));
+        User user = User.builder()
+            .id(new UserId(UUID.fromString("01937040-0104-7f64-a292-29d12581d41d")))
+            .name(Name.of(Text.of("First User")))
+            .email(email)
+            .password(password)
+            .confirmPassword(password)
+            .roles(roles)
+            .companyId(new CompanyId(UUID.fromString("019353d5-b63c-7874-9d44-22622626500e")))
+            .build();
+        userRepository.create(user);
+
+        //Act
+        Token actual = userService.login(email, password);
+
+        //Then
+        assertThat(actual).isNotNull();
+        assertThat(actual.accessToken()).isNotNull();
+        assertThat(actual.refreshToken()).isNotNull();
+    }
+
+    @Test
+    void should_fail_when_login_with_invalid_email() {
+        Email email = Email.of(Text.of("test1@gmail.com"));
+        Password password = Password.of(Text.of("test123"));
+        User user = User.builder()
+                .id(new UserId(UUID.fromString("01937040-0104-7f64-a292-29d12581d41d")))
+                .name(Name.of(Text.of("First User")))
+                .email(Email.of(Text.of("test@gmail.com")))
+                .password(password)
+                .confirmPassword(password)
+                .roles(roles)
+                .companyId(new CompanyId(UUID.fromString("019353d5-b63c-7874-9d44-22622626500e")))
+                .build();
+        userRepository.create(user);
+        //Act + Then
+        assertThatThrownBy(() -> userService.login(email, password))
+                .isInstanceOf(UserEmailUnAuthorizedException.class)
+                .hasMessage(USER_EMAIL_UN_AUTHORIZED);
+    }
+
+    @Test
+    void should_fail_when_login_with_invalid_password() {
+        Email email = Email.of(Text.of("test1@gmail.com"));
+        Password password = Password.of(Text.of("test123!"));
+        User user = User.builder()
+                .id(new UserId(UUID.fromString("01937040-0104-7f64-a292-29d12581d41d")))
+                .name(Name.of(Text.of("First User")))
+                .email(email)
+                .password(Password.of(Text.of("test123")))
+                .confirmPassword(Password.of(Text.of("test123")))
+                .roles(roles)
+                .companyId(new CompanyId(UUID.fromString("019353d5-b63c-7874-9d44-22622626500e")))
+                .build();
+        userRepository.create(user);
+        //Act + Then
+        assertThatThrownBy(() -> userService.login(email, password))
+                .isInstanceOf(UserPasswordUnAuthorizedException.class)
+                .hasMessage(USER_PASSWORD_UN_AUTHORIZED);
     }
 }
