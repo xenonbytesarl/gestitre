@@ -1,6 +1,7 @@
 package cm.xenonbyte.gestitre.infrastructure.admin;
 
 import cm.xenonbyte.gestitre.infrastructure.common.TenantPanacheRepository;
+import cm.xenonbyte.gestitre.infrastructure.common.annotation.TenantPanacheInterceptor;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.Optional;
@@ -11,6 +12,7 @@ import java.util.Optional;
  * @since 23/11/2024
  */
 @ApplicationScoped
+@TenantPanacheInterceptor
 public final class UserJpaRepository implements TenantPanacheRepository<UserJpa> {
 
     public Boolean existsByEmail(String email) {

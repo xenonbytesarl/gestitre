@@ -47,9 +47,7 @@ public final class TenantDomainService implements TenantService {
 
     @Override
     public Tenant findByName(@Nonnull Name name) {
-        return tenantRepository.findByName(name).orElseThrow(
-                () -> new TenantNotFoundException(new String[] {name.text().value()})
-        );
+        return tenantRepository.findByName(name).orElse(null);
     }
 
     private void validateTenant(Tenant tenant) {

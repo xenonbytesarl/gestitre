@@ -33,7 +33,7 @@ import static cm.xenonbyte.gestitre.infrastructure.common.Tenantable.TENANT_PARA
 @Filter(name = TENANT_FILTER_NAME)
 @FilterDef(
         name = TENANT_FILTER_NAME,
-        parameters = @ParamDef(name = TENANT_PARAMETER_NAME, type = String.class),
+        parameters = @ParamDef(name = TENANT_PARAMETER_NAME, type = UUID.class),
         defaultCondition = TENANT_COLUMN_NAME + " = :" + TENANT_PARAMETER_NAME
 )
 public class Tenantable extends Auditable {
