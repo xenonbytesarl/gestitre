@@ -4,6 +4,7 @@ import cm.xenonbyte.gestitre.application.common.dto.SuccessApiResponse;
 import cm.xenonbyte.gestitre.application.company.certificatetemplate.dto.CreateCertificateTemplateViewRequest;
 import cm.xenonbyte.gestitre.application.company.certificatetemplate.dto.UpdateCertificateTemplateViewRequest;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
@@ -56,6 +57,7 @@ public class CertificateTemplateResource {
     @POST
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
+    @RolesAllowed({"create:certificate:template"})
     public Response createCertificateTemplate(
             @HeaderParam("Accept-Language") String acceptLanguage,
             @Valid CreateCertificateTemplateViewRequest createCertificateTemplateViewRequest
@@ -77,6 +79,7 @@ public class CertificateTemplateResource {
     @GET
     @Path("/{certificateTemplateId}")
     @Produces(APPLICATION_JSON)
+    @RolesAllowed({"read:certificate:template"})
     public Response findCertificateTemplateById(
             @HeaderParam("Accept-Language") String acceptLanguage,
             @PathParam("certificateTemplateId") UUID certificateTemplateId) {
@@ -95,6 +98,7 @@ public class CertificateTemplateResource {
 
     @GET
     @Produces(APPLICATION_JSON)
+    @RolesAllowed({"read:certificate:template"})
     public Response findCertificateTemplates(
             @HeaderParam("Accept-Language") String acceptLanguage,
             @QueryParam("page") Integer page,
@@ -118,6 +122,7 @@ public class CertificateTemplateResource {
     @GET
     @Path("/search")
     @Produces(APPLICATION_JSON)
+    @RolesAllowed({"read:certificate:template"})
     public Response searchCertificateTemplates(
             @HeaderParam("Accept-Language") String acceptLanguage,
             @QueryParam("page") Integer page,
@@ -143,7 +148,8 @@ public class CertificateTemplateResource {
     @Path("/{certificateTemplateId}")
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response createCertificateTemplate(
+    @RolesAllowed({"update:certificate:template"})
+    public Response updateCertificateTemplate(
             @HeaderParam("Accept-Language") String acceptLanguage,
             @PathParam("certificateTemplateId") UUID certificateTemplateId,
             @Valid UpdateCertificateTemplateViewRequest updateCertificateTemplateViewRequest) {

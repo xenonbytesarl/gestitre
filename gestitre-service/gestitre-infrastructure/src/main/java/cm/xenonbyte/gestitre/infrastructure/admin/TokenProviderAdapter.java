@@ -31,7 +31,7 @@ public final class TokenProviderAdapter implements TokenProvider {
     private final Long refreshTokenDuration;
 
     public TokenProviderAdapter(
-            @ConfigProperty(name = "gestitre.jwt.issuer") String issuer,
+            @ConfigProperty(name = "mp.jwt.verify.issuer") String issuer,
             @ConfigProperty(name = "gestitre.jwt.access.token.duration") Long accessTokenDuration,
             @ConfigProperty(name = "gestitre.jwt.refresh.token.duration") Long refreshTokenDuration
     ) {
@@ -77,7 +77,7 @@ public final class TokenProviderAdapter implements TokenProvider {
                     .claim(Claims.email, user.getEmail().text().value())
                     .claim("tenantId", user.getTenantId().getValue().toString())
                     .claim("use_mfa", user.getUseMfa().value())
-                    .claim("roles", authorities)
+                    .groups(authorities)
                     .sign()
 
         );

@@ -22,7 +22,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "t_permission")
-public final class PermissionJpa extends Auditable {
+public class PermissionJpa extends Auditable {
     @Column(name = "c_name", nullable = false, unique = true, length = 64)
     private String name;
 }

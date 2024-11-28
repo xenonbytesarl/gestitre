@@ -7,6 +7,8 @@ import cm.xenonbyte.gestitre.domain.common.exception.BaseDomainBadException;
 import cm.xenonbyte.gestitre.domain.common.exception.BaseDomainConflictException;
 import cm.xenonbyte.gestitre.domain.common.exception.BaseDomainNotFoundException;
 import cm.xenonbyte.gestitre.domain.common.exception.BaseDomainUnAuthorizedException;
+import io.quarkus.security.ForbiddenException;
+import io.quarkus.security.UnauthorizedException;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -29,6 +31,7 @@ import static cm.xenonbyte.gestitre.application.common.ApplicationConstant.MIN_S
 import static cm.xenonbyte.gestitre.application.common.in18.LocalizationUtil.getMessage;
 import static jakarta.ws.rs.core.Response.Status.BAD_REQUEST;
 import static jakarta.ws.rs.core.Response.Status.CONFLICT;
+import static jakarta.ws.rs.core.Response.Status.FORBIDDEN;
 import static jakarta.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
 import static jakarta.ws.rs.core.Response.Status.NOT_FOUND;
 import static jakarta.ws.rs.core.Response.Status.UNAUTHORIZED;
@@ -46,6 +49,8 @@ public class ApplicationUnwrapExceptionMapping {
     private final LocalizationResolver localeResolver;
 
     public static final String VALIDATION_ERROR_MESSAGE = "ApplicationUnwrapExceptionMapping.1";
+    private static final String FORBIDDEN_MESSAGE = "ApplicationUnwrapExceptionMapping.2";
+    private static final String UNAUTHORIZED_MESSAGE = "ApplicationUnwrapExceptionMapping.3";
 
     public ApplicationUnwrapExceptionMapping(@Nonnull LocalizationResolver localeResolver) {
         this.localeResolver = Objects.requireNonNull(localeResolver);
@@ -78,6 +83,38 @@ public class ApplicationUnwrapExceptionMapping {
                                 .timestamp(ZonedDateTime.now())
                                 .reason(getMessage(exception.getMessage(), localeResolver.getLocaleFromRequest(), exception.getArgs()))
                                 .code(UNAUTHORIZED.getStatusCode())
+                )
+                .build();
+
+    }
+
+    @ServerExceptionMapper
+    public Response unwrapUnauthorizedException(UnauthorizedException exception) {
+        log.error(exception.getMessage(), exception);
+        return Response.status(UNAUTHORIZED)
+                .entity(
+                        ErrorApiResponse.builder()
+                                .success(false)
+                                .status(UNAUTHORIZED.name())
+                                .timestamp(ZonedDateTime.now())
+                                .reason(getMessage(UNAUTHORIZED_MESSAGE, localeResolver.getLocaleFromRequest(), ""))
+                                .code(UNAUTHORIZED.getStatusCode())
+                )
+                .build();
+
+    }
+
+    @ServerExceptionMapper
+    public Response unwrapForbiddenException(ForbiddenException exception) {
+        log.error(exception.getMessage(), exception);
+        return Response.status(FORBIDDEN)
+                .entity(
+                        ErrorApiResponse.builder()
+                                .success(false)
+                                .status(FORBIDDEN.name())
+                                .timestamp(ZonedDateTime.now())
+                                .reason(getMessage(FORBIDDEN_MESSAGE, localeResolver.getLocaleFromRequest(), ""))
+                                .code(FORBIDDEN.getStatusCode())
                 )
                 .build();
 

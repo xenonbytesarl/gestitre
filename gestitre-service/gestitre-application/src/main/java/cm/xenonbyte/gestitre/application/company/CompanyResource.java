@@ -3,7 +3,9 @@ package cm.xenonbyte.gestitre.application.company;
 import cm.xenonbyte.gestitre.application.common.dto.SuccessApiResponse;
 import cm.xenonbyte.gestitre.application.company.dto.CreateCompanyViewRequest;
 import cm.xenonbyte.gestitre.application.company.dto.UpdateCompanyViewRequest;
+import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
@@ -15,6 +17,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Response;
+import lombok.extern.slf4j.Slf4j;
 import org.jboss.resteasy.reactive.PartType;
 import org.jboss.resteasy.reactive.RestForm;
 import org.jboss.resteasy.reactive.multipart.FileUpload;
@@ -39,6 +42,7 @@ import static java.util.Map.of;
  * @version 1.0
  * @since 04/11/2024
  */
+@Slf4j
 @Path(COMPANY_API_PATH)
 public class CompanyResource {
 
@@ -48,15 +52,18 @@ public class CompanyResource {
     public static final String COMPANY_UPDATED_SUCCESSFULLY = "CompanyResource.4";
 
     private final CompanyApplicationAdapter companyApplicationAdapter;
+    private final SecurityIdentity securityIdentity;
 
     public CompanyResource(
-            @Nonnull CompanyApplicationAdapter companyApplicationAdapter) {
+            @Nonnull CompanyApplicationAdapter companyApplicationAdapter, SecurityIdentity securityIdentity) {
         this.companyApplicationAdapter = Objects.requireNonNull(companyApplicationAdapter);
+        this.securityIdentity = securityIdentity;
     }
 
     @POST
     @Consumes(MULTIPART_FORM_DATA)
     @Produces(APPLICATION_JSON)
+    @RolesAllowed({"create:company"})
     public Response createCompany(
             @HeaderParam("Accept-Language") String acceptLanguage,
             @RestForm("logo") FileUpload logo,
@@ -80,6 +87,7 @@ public class CompanyResource {
 
     @GET
     @Produces(APPLICATION_JSON)
+    @RolesAllowed({"read:company"})
     public Response findCompanies(
             @HeaderParam("Accept-Language") String acceptLanguage,
             @QueryParam("page") Integer page,
@@ -87,6 +95,7 @@ public class CompanyResource {
             @QueryParam("field") String field,
             @QueryParam("direction") String direction
     ) {
+        log.info("findCompanies {}", securityIdentity.getPrincipal().getName());
         return Response.status(OK)
                 .entity(
                         SuccessApiResponse.builder()
@@ -103,6 +112,7 @@ public class CompanyResource {
     @GET
     @Path("/search")
     @Produces(APPLICATION_JSON)
+    @RolesAllowed({"read:company"})
     public Response searchCompanies(
             @HeaderParam("Accept-Language") String acceptLanguage,
             @QueryParam("page") Integer page,
@@ -127,7 +137,8 @@ public class CompanyResource {
     @GET
     @Path("/{companyId}")
     @Produces(APPLICATION_JSON)
-    public Response searchCompanies(
+    @RolesAllowed({"read:company"})
+    public Response findCompanyById(
             @HeaderParam("Accept-Language") String acceptLanguage,
             @PathParam("companyId") UUID companyId
     ) throws IOException {
@@ -148,7 +159,8 @@ public class CompanyResource {
     @Path("/{companyId}")
     @Consumes(MULTIPART_FORM_DATA)
     @Produces(APPLICATION_JSON)
-    public Response searchCompanies(
+    @RolesAllowed({"update:company"})
+    public Response updateCompanies(
             @HeaderParam("Accept-Language") String acceptLanguage,
             @PathParam("companyId") UUID companyId,
             @RestForm("logo") FileUpload logo,

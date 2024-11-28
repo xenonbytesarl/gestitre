@@ -4,6 +4,8 @@ import cm.xenonbyte.gestitre.application.admin.dto.CreateUserViewRequest;
 import cm.xenonbyte.gestitre.application.admin.dto.LoginRequest;
 import cm.xenonbyte.gestitre.application.common.dto.SuccessApiResponse;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.HeaderParam;
@@ -43,6 +45,7 @@ public class UserResource {
     @POST
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
+    @RolesAllowed({"create:user"})
     public Response createUser(
             @HeaderParam("Accept-Language") String acceptLanguage,
             @Valid CreateUserViewRequest createUserViewRequest
@@ -65,6 +68,7 @@ public class UserResource {
     @Path("/auth/token")
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
+    @PermitAll
     public Response login(
             @HeaderParam("Accept-Language") String acceptLanguage,
             @Valid LoginRequest loginRequest

@@ -29,7 +29,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "t_user")
-public final class UserJpa extends Tenantable {
+public class UserJpa extends Tenantable {
     @Column(name = "c_name", nullable = false, length = 128)
     private String name;
     @Column(name = "c_email", nullable = false, unique = true, length = 128)
