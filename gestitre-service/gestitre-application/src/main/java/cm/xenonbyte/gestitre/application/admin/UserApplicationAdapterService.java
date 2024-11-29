@@ -23,6 +23,7 @@ import cm.xenonbyte.gestitre.domain.company.vo.contact.Email;
 import jakarta.annotation.Nonnull;
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.util.Objects;
 
@@ -43,12 +44,13 @@ public final class UserApplicationAdapterService implements UserApplicationAdapt
     public UserApplicationAdapterService(
             @Nonnull UserService userService,
             @Nonnull VerificationService verificationService,
-            @Nonnull UserApplicationViewMapper userApplicationViewMapper
+            @Nonnull UserApplicationViewMapper userApplicationViewMapper,
+            @ConfigProperty(name = "verification.code.duration") Long codeDuration
     ) {
         this.userService = Objects.requireNonNull(userService);
         this.verificationService = Objects.requireNonNull(verificationService);
         this.userApplicationViewMapper = Objects.requireNonNull(userApplicationViewMapper);
-        this.codeDuration = 300L;
+        this.codeDuration = codeDuration;
     }
 
     @Override

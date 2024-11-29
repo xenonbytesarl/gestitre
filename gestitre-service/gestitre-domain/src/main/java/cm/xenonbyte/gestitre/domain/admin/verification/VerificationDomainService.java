@@ -125,9 +125,9 @@ public final class VerificationDomainService implements VerificationService {
     }
 
     private void initializeVerification(Verification verification) {
-        if (Objects.requireNonNull(verification.getType()) == VerificationType.PASSWORD) {
+        if (Objects.requireNonNull(verification.getType()) == VerificationType.PASSWORD || verification.getType() == VerificationType.ACCOUNT) {
             verification.initializeDefaultsWithUrl(verificationProvider.generateUrl(verification.getUrl(), verification.getType()));
-        } else if (verification.getType() == VerificationType.ACCOUNT || verification.getType() == VerificationType.MFA) {
+        } else if (verification.getType() == VerificationType.MFA) {
             verification.initializeDefaultsWithCode(verificationProvider.generateCode());
         }
     }
