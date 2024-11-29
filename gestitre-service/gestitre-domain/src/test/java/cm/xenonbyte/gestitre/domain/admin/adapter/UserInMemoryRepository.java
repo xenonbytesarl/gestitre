@@ -31,7 +31,7 @@ public final class UserInMemoryRepository implements UserRepository {
     }
 
     @Override
-    public Optional<User> findUserByEmail(@Nonnull Email email) {
+    public Optional<User> findByEmail(@Nonnull Email email) {
         return users.values().stream().filter(user ->
                 user.getEmail().equals(email))
                 .findFirst();

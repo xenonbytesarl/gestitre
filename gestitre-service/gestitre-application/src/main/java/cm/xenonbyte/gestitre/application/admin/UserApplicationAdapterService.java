@@ -4,12 +4,16 @@ import cm.xenonbyte.gestitre.application.admin.dto.CreateUserViewRequest;
 import cm.xenonbyte.gestitre.application.admin.dto.CreateUserViewResponse;
 import cm.xenonbyte.gestitre.application.admin.dto.LoginRequest;
 import cm.xenonbyte.gestitre.application.admin.dto.LoginResponse;
+import cm.xenonbyte.gestitre.application.admin.dto.ResendVerificationCodeRequest;
+import cm.xenonbyte.gestitre.application.admin.dto.VerifyCodeResponse;
+import cm.xenonbyte.gestitre.application.admin.dto.VerifyCodeRequest;
 import cm.xenonbyte.gestitre.domain.admin.User;
 import cm.xenonbyte.gestitre.domain.admin.event.UserCreatedEvent;
 import cm.xenonbyte.gestitre.domain.admin.ports.primary.UserService;
 import cm.xenonbyte.gestitre.domain.admin.verification.Verification;
 import cm.xenonbyte.gestitre.domain.admin.verification.event.VerificationCreatedEvent;
 import cm.xenonbyte.gestitre.domain.admin.verification.ports.primary.VerificationService;
+import cm.xenonbyte.gestitre.domain.admin.verification.vo.Code;
 import cm.xenonbyte.gestitre.domain.admin.verification.vo.Duration;
 import cm.xenonbyte.gestitre.domain.admin.verification.vo.VerificationType;
 import cm.xenonbyte.gestitre.domain.admin.vo.Password;
@@ -47,8 +51,8 @@ public final class UserApplicationAdapterService implements UserApplicationAdapt
         this.codeDuration = 300L;
     }
 
-    @Nonnull
     @Override
+    @Nonnull
     public CreateUserViewResponse createUser(@Nonnull CreateUserViewRequest createUserViewRequest)  {
         UserCreatedEvent userCreatedEvent = userService.createUser(
                 userApplicationViewMapper.toUser(createUserViewRequest)
@@ -57,6 +61,7 @@ public final class UserApplicationAdapterService implements UserApplicationAdapt
     }
 
     @Override
+    @Nonnull
     public LoginResponse login(@Nonnull LoginRequest loginRequest) {
         User user = userService.login(
                 Email.of(Text.of(loginRequest.getEmail())),
@@ -69,6 +74,7 @@ public final class UserApplicationAdapterService implements UserApplicationAdapt
                             .userId(user.getId())
                             .type(VerificationType.MFA)
                             .duration(Duration.of(codeDuration))
+                            .email(user.getEmail())
                             .build()
             );
             return LoginResponse.builder()
@@ -82,6 +88,29 @@ public final class UserApplicationAdapterService implements UserApplicationAdapt
                 .accessToken(token.accessToken().value())
                 .refreshToken(token.refreshToken().value())
                 .isMfa(false)
+                .build();
+    }
+
+    @Nonnull
+    @Override
+    public VerifyCodeResponse verifyCode(@Nonnull VerifyCodeRequest verifyCodeRequest) {
+        User user = verificationService.verifyCode(
+                Code.of(Text.of(verifyCodeRequest.getCode())), Email.of(Text.of(verifyCodeRequest.getEmail())));
+        Token token = userService.generateToken(user);
+        return VerifyCodeResponse.builder()
+                .accessToken(token.accessToken().value())
+                .refreshToken(token.refreshToken().value())
+                .build();
+    }
+
+    @Nonnull
+    @Override
+    public LoginResponse resendMfaVerification(@Nonnull ResendVerificationCodeRequest resendVerificationCodeRequest) {
+        VerificationCreatedEvent verificationCreatedEvent = verificationService.resendVerification(
+                Email.of(Text.of(resendVerificationCodeRequest.getEmail())), VerificationType.MFA, codeDuration);
+        return LoginResponse.builder()
+                .isMfa(true)
+                .code(verificationCreatedEvent.getVerification().getCode().text().value())
                 .build();
     }
 }

@@ -2,9 +2,11 @@ package cm.xenonbyte.gestitre.infrastructure.admin.verification;
 
 import cm.xenonbyte.gestitre.domain.admin.verification.Verification;
 import cm.xenonbyte.gestitre.domain.admin.verification.ports.secondary.VerificationRepository;
+import cm.xenonbyte.gestitre.domain.admin.verification.vo.Code;
 import cm.xenonbyte.gestitre.domain.admin.verification.vo.VerificationId;
 import cm.xenonbyte.gestitre.domain.admin.verification.vo.VerificationStatus;
 import cm.xenonbyte.gestitre.domain.admin.vo.UserId;
+import cm.xenonbyte.gestitre.domain.company.vo.contact.Email;
 import cm.xenonbyte.gestitre.infrastructure.admin.UserJpa;
 import jakarta.annotation.Nonnull;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -54,5 +56,11 @@ public final class VerificationJpaRepositoryAdapter implements VerificationRepos
         VerificationJpa newVerificationJpa = verificationJpaMapper.toVerificationJpa(newVerification);
         verificationJpaMapper.copyNewToOldVerificationJpa(newVerificationJpa, oldVerificationJpa);
         return verificationJpaMapper.toVerification(oldVerificationJpa);
+    }
+
+    @Override
+    public Optional<Verification> findByCodeAndEmail(@Nonnull Code code, @Nonnull Email email) {
+        return verificationJpaRepository.findByCodeAndEmail(code.text().value(), email.text().value())
+                .map(verificationJpaMapper::toVerification);
     }
 }

@@ -1,11 +1,13 @@
 package cm.xenonbyte.gestitre.infrastructure.admin;
 
 import cm.xenonbyte.gestitre.infrastructure.common.Tenantable;
+import cm.xenonbyte.gestitre.infrastructure.company.CompanyJpa;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -48,6 +50,9 @@ public class UserJpa extends Tenantable {
     private Boolean useMfa;
     @Column(name = "c_failed_login_attempt", nullable = false)
     private Long failedLoginAttempt;
+    @ManyToOne
+    @JoinColumn(name = "c_company_id")
+    private CompanyJpa companyJpa;
     @ManyToMany(fetch = LAZY)
     @JoinTable(
             name = "t_user_role",

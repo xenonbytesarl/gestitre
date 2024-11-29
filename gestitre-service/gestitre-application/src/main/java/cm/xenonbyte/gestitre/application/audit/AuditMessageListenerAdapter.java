@@ -3,6 +3,7 @@ package cm.xenonbyte.gestitre.application.audit;
 import cm.xenonbyte.gestitre.domain.admin.event.UserCreatedEvent;
 import cm.xenonbyte.gestitre.domain.admin.verification.event.VerificationCanceledEvent;
 import cm.xenonbyte.gestitre.domain.admin.verification.event.VerificationCreatedEvent;
+import cm.xenonbyte.gestitre.domain.admin.verification.event.VerificationVerifiedEvent;
 import cm.xenonbyte.gestitre.domain.audit.ports.message.listener.AuditMessageListener;
 import cm.xenonbyte.gestitre.domain.company.event.CompanyCreatedEvent;
 import cm.xenonbyte.gestitre.domain.company.event.CompanyUpdatedEvent;
@@ -18,6 +19,7 @@ import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.TENANT
 import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.USER_CREATED;
 import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.VERIFICATION_CANCELED;
 import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.VERIFICATION_CREATED;
+import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.VERIFICATION_VERIFIED;
 
 /**
  * @author bamk
@@ -68,5 +70,12 @@ public final class AuditMessageListenerAdapter implements AuditMessageListener {
     @ConsumeEvent(value = VERIFICATION_CANCELED)
     public void handle(VerificationCanceledEvent event) {
         log.info(">>>> Receiving event from VerificationMessagePublisher to create audit for canceled verification with of type {}", event.getVerification().getType().name());
+    }
+
+    @Override
+    @Blocking
+    @ConsumeEvent(value = VERIFICATION_VERIFIED)
+    public void handle(VerificationVerifiedEvent event) {
+        log.info(">>>> Receiving event from VerificationMessagePublisher to create audit for verified verification with of type {}", event.getVerification().getType().name());
     }
 }

@@ -6,5 +6,5 @@ package cm.xenonbyte.gestitre.domain.admin.verification.vo;
  * @since 28/11/2024
  */
 public enum VerificationEventType {
-    VERIFICATION_CREATED, VERIFICATION_CANCELED
+    VERIFICATION_CREATED, VERIFICATION_CANCELED, VERIFICATION_VERIFIED
 }

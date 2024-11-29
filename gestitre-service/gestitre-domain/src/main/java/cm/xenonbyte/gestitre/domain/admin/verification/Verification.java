@@ -10,6 +10,7 @@ import cm.xenonbyte.gestitre.domain.admin.vo.UserId;
 import cm.xenonbyte.gestitre.domain.common.entity.BaseEntity;
 import cm.xenonbyte.gestitre.domain.common.validation.Assert;
 import cm.xenonbyte.gestitre.domain.common.vo.Text;
+import cm.xenonbyte.gestitre.domain.company.vo.contact.Email;
 
 import java.time.ZonedDateTime;
 import java.util.Objects;
@@ -23,6 +24,7 @@ import java.util.UUID;
 public final class Verification extends BaseEntity<VerificationId> {
     private final VerificationType type;
     private final UserId userId;
+    private final Email email;
     private final Duration duration;
     private ZonedDateTime expiredAt;
     private ZonedDateTime createdAt;
@@ -30,10 +32,11 @@ public final class Verification extends BaseEntity<VerificationId> {
     private Code code;
     private Url url;
 
-    public Verification(VerificationType type, Duration duration, UserId userId) {
+    public Verification(VerificationType type, Duration duration, UserId userId, Email email) {
         this.type = Objects.requireNonNull(type);
         this.duration = Objects.requireNonNull(duration);
         this.userId = Objects.requireNonNull(userId);
+        this.email = Objects.requireNonNull(email);
     }
 
     private Verification(Builder builder) {
@@ -42,6 +45,7 @@ public final class Verification extends BaseEntity<VerificationId> {
         expiredAt = builder.expiredAt;
         duration = builder.duration;
         userId = builder.userId;
+        email = builder.email;
         createdAt = builder.createdAt;
         status = builder.status;
         code = builder.code;
@@ -57,6 +61,9 @@ public final class Verification extends BaseEntity<VerificationId> {
                 .notNull();
 
         Assert.field("User ID", userId)
+                .notNull();
+
+        Assert.field("Email", email)
                 .notNull();
 
         Assert.field("Duration", duration)
@@ -79,6 +86,14 @@ public final class Verification extends BaseEntity<VerificationId> {
     public void initializeDefaultsWithCode(String code) {
         this.code = Code.of(Text.of(code));
         initializeDefaults();
+    }
+
+    public void cancel() {
+        status = VerificationStatus.CANCELLED;
+    }
+
+    public void verify() {
+        status = VerificationStatus.VERIFIED;
     }
 
     public VerificationType getType() {
@@ -113,9 +128,10 @@ public final class Verification extends BaseEntity<VerificationId> {
         return url;
     }
 
-    public void cancel() {
-        status = VerificationStatus.CANCELLED;
+    public Email getEmail() {
+        return email;
     }
+
 
     public static final class Builder {
         private VerificationId id;
@@ -123,6 +139,7 @@ public final class Verification extends BaseEntity<VerificationId> {
         private ZonedDateTime expiredAt;
         private Duration duration;
         private UserId userId;
+        private Email email;
         private ZonedDateTime createdAt;
         private VerificationStatus status;
         private Code code;
@@ -153,6 +170,11 @@ public final class Verification extends BaseEntity<VerificationId> {
 
         public Builder userId(UserId val) {
             userId = val;
+            return this;
+        }
+
+        public Builder email(Email val) {
+            email = val;
             return this;
         }
 

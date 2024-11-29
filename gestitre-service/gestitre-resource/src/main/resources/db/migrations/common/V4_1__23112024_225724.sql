@@ -47,9 +47,11 @@ create table if not exists t_user
     c_use_mfa              boolean                     not null ,
     c_failed_login_attempt bigint                      not null ,
     c_tenant_id              uuid                      not null ,
+    c_company_id             uuid                      not null ,
     constraint Pk_t_user_c_id primary key (c_id),
     constraint Uk_t_user_c_email UNIQUE (c_email),
-    constraint Fk_t_tenant_c_tenant_id foreign key (c_tenant_id) references t_tenant (c_id)
+    constraint Fk_t_tenant_c_tenant_id foreign key (c_tenant_id) references t_tenant (c_id),
+    constraint Fk_t_company_c_company_id foreign key (c_company_id) references t_company (c_id)
 );
 
 -- Create table t_user_role

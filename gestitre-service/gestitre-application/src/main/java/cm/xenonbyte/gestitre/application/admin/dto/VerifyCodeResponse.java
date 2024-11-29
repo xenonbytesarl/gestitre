@@ -1,13 +1,10 @@
 package cm.xenonbyte.gestitre.application.admin.dto;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-
-import static cm.xenonbyte.gestitre.application.common.ApplicationConstant.NOT_NULL;
 
 /**
  * @author bamk
@@ -19,11 +16,8 @@ import static cm.xenonbyte.gestitre.application.common.ApplicationConstant.NOT_N
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public final class LoginResponse {
+public final class VerifyCodeResponse {
 
     private String accessToken;
     private String refreshToken;
-    @NotNull(message = NOT_NULL)
-    private Boolean isMfa;
-    private String code;
 }

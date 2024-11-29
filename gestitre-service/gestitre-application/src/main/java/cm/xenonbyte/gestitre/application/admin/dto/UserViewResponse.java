@@ -23,18 +23,18 @@ import static cm.xenonbyte.gestitre.application.common.ApplicationConstant.NOT_N
 @AllArgsConstructor
 public class UserViewResponse extends UserView {
     @NotNull(message = NOT_NULL)
-    private UUID id;
+    protected UUID id;
     @NotNull(message = NOT_NULL)
-    private UUID tenantId;
+    protected UUID tenantId;
     @NotNull(message = NOT_NULL)
-    private Boolean accountExpired;
+    protected Boolean accountExpired;
     @NotNull(message = NOT_NULL)
-    private Boolean accountLocked;
+    protected Boolean accountLocked;
     @NotNull(message = NOT_NULL)
-    private Boolean credentialExpired;
+    protected Boolean credentialExpired;
     @NotNull(message = NOT_NULL)
-    private Boolean accountEnabled;
+    protected Boolean accountEnabled;
     @NotNull(message = NOT_NULL)
-    private Long failedLoginAttempt;
+    protected Long failedLoginAttempt;
 
 }

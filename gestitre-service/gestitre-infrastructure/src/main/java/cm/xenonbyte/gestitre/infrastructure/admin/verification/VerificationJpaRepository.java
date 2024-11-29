@@ -24,4 +24,11 @@ public final class VerificationJpaRepository implements TenantPanacheRepository<
                         .and("status", verificationStatusJpa)
         ).firstResultOptional();
     }
+
+    public Optional<VerificationJpa> findByCodeAndEmail(String code, String email) {
+        return find(
+                "code = :code and email = :email",
+                Parameters.with("code", code).and("email", email)
+        ).firstResultOptional();
+    }
 }

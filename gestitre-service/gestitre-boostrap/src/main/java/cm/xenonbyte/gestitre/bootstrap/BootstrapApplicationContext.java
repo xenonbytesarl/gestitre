@@ -12,6 +12,7 @@ import cm.xenonbyte.gestitre.domain.admin.ports.secondary.message.publisher.User
 import cm.xenonbyte.gestitre.domain.admin.verification.VerificationDomainService;
 import cm.xenonbyte.gestitre.domain.admin.verification.event.VerificationCanceledEvent;
 import cm.xenonbyte.gestitre.domain.admin.verification.event.VerificationCreatedEvent;
+import cm.xenonbyte.gestitre.domain.admin.verification.event.VerificationVerifiedEvent;
 import cm.xenonbyte.gestitre.domain.admin.verification.ports.primary.VerificationService;
 import cm.xenonbyte.gestitre.domain.admin.verification.ports.secondary.VerificationProvider;
 import cm.xenonbyte.gestitre.domain.admin.verification.ports.secondary.VerificationRepository;
@@ -113,6 +114,7 @@ public final class BootstrapApplicationContext {
         eventBus.registerDefaultCodec(UserCreatedEvent.class, new GenericCodec<>(UserCreatedEvent.class));
         eventBus.registerDefaultCodec(VerificationCreatedEvent.class, new GenericCodec<>(VerificationCreatedEvent.class));
         eventBus.registerDefaultCodec(VerificationCanceledEvent.class, new GenericCodec<>(VerificationCanceledEvent.class));
+        eventBus.registerDefaultCodec(VerificationVerifiedEvent.class, new GenericCodec<>(VerificationVerifiedEvent.class));
         return eventBus;
     }
 
@@ -120,8 +122,10 @@ public final class BootstrapApplicationContext {
     public VerificationService verificationDomainService(
             VerificationProvider verificationProvider,
             VerificationRepository verificationRepository,
-            VerificationMessagePublisher verificationMessagePublisher) {
-        return new VerificationDomainService(verificationProvider, verificationRepository, verificationMessagePublisher);
+            VerificationMessagePublisher verificationMessagePublisher,
+            UserRepository userRepository
+    ) {
+        return new VerificationDomainService(verificationProvider, verificationRepository, verificationMessagePublisher, userRepository);
     }
 
 

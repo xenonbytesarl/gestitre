@@ -19,4 +19,5 @@ public final class CommonConstant {
     public static final String USER_CREATED = "USER_CREATED";
     public static final String VERIFICATION_CREATED = "VERIFICATION_CREATED";
     public static final String VERIFICATION_CANCELED = "VERIFICATION_CANCELED";
+    public static final String VERIFICATION_VERIFIED = "VERIFICATION_VERIFIED";
 }

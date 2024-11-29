@@ -82,7 +82,7 @@ public final class UserDomainService implements UserService {
     @Nonnull
     @Override
     public User login(@Nonnull Email email, @Nonnull Password password) {
-        Optional<User> optionalUser = userRepository.findUserByEmail(email);
+        Optional<User> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isPresent()) {
             User user = loginGuard(optionalUser.get());
             if (Boolean.FALSE.equals(passwordEncryptProvider.checkCredentials(password, optionalUser.get().getPassword()))) {

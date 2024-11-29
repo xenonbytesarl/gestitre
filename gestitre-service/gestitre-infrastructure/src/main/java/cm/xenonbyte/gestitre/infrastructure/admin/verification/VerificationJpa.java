@@ -33,18 +33,20 @@ import static jakarta.persistence.EnumType.STRING;
 public class VerificationJpa extends Tenantable  {
 
     @Enumerated(STRING)
-    @Column(name = "c_type", nullable = false)
+    @Column(name = "c_type", nullable = false, length = 32)
     private VerificationTypeJpa type;
-    @Column(name = "c_code")
+    @Column(name = "c_code", length = 8)
     private String code;
-    @Column(name = "c_url", length = 1024)
+    @Column(name = "c_url", length = 512)
     private String url;
+    @Column(name = "c_email", nullable = false, length = 128)
+    private String email;
     @Column(name = "c_expired_at")
     private ZonedDateTime expiredAt;
     @Column(name = "c_creation_at", nullable = false)
     private ZonedDateTime creationAt;
     @Enumerated(STRING)
-    @Column(name = "c_status", nullable = false)
+    @Column(name = "c_status", nullable = false, length = 32)
     private VerificationStatusJpa status;
     @ManyToOne
     @JoinColumn(name = "c_user_id", nullable = false)

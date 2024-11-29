@@ -30,19 +30,19 @@ import static cm.xenonbyte.gestitre.application.common.ApplicationConstant.NOT_N
 @AllArgsConstructor
 public class UserView {
     @NotEmpty(message = NOT_EMPTY)
-    private String name;
+    protected String name;
     @NotEmpty(message = NOT_EMPTY)
     @Email(message = EMAIL)
-    private String email;
+    protected String email;
     @NotEmpty(message = NOT_EMPTY)
     @Size(min = 6, message = MIN_SIZE)
-    private String password;
+    protected String password;
     @NotEmpty(message = NOT_EMPTY)
     @Size(min = 6, message = MIN_SIZE)
-    private String confirmPassword;
+    protected String confirmPassword;
     @NotNull(message = NOT_NULL)
-    private Set<RoleView> roleViews;
+    protected Set<RoleView> roleViews;
     @NotNull(message = NOT_NULL)
-    private UUID companyId;
-    private Boolean useMfa;
+    protected UUID companyId;
+    protected Boolean useMfa;
 }

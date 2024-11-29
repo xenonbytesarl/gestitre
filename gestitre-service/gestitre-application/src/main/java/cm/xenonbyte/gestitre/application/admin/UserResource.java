@@ -2,6 +2,9 @@ package cm.xenonbyte.gestitre.application.admin;
 
 import cm.xenonbyte.gestitre.application.admin.dto.CreateUserViewRequest;
 import cm.xenonbyte.gestitre.application.admin.dto.LoginRequest;
+import cm.xenonbyte.gestitre.application.admin.dto.LoginResponse;
+import cm.xenonbyte.gestitre.application.admin.dto.ResendVerificationCodeRequest;
+import cm.xenonbyte.gestitre.application.admin.dto.VerifyCodeRequest;
 import cm.xenonbyte.gestitre.application.common.dto.SuccessApiResponse;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.security.PermitAll;
@@ -36,6 +39,8 @@ public class UserResource {
 
     private static final String USER_CREATED_SUCCESSFULLY = "UserResource.1";
     private static final String USER_LOGGED_IN_SUCCESSFULLY = "UserResource.2";
+    private static final String USER_VERIFICATION_MFA_SEND = "UserResource.3";
+
     private final UserApplicationAdapter userApplicationAdapter;
 
     public UserResource(@Nonnull UserApplicationAdapter userApplicationAdapter) {
@@ -73,6 +78,30 @@ public class UserResource {
             @HeaderParam("Accept-Language") String acceptLanguage,
             @Valid LoginRequest loginRequest
     ) {
+        LoginResponse loginResponse = userApplicationAdapter.login(loginRequest);
+        return Response.status(OK)
+                .entity(
+                        SuccessApiResponse.builder()
+                                .success(true)
+                                .status(OK.name())
+                                .code(OK.getStatusCode())
+                                .timestamp(ZonedDateTime.now())
+                                .message(getMessage(loginResponse.getIsMfa() != null && loginResponse.getIsMfa()? USER_VERIFICATION_MFA_SEND: USER_LOGGED_IN_SUCCESSFULLY, forLanguageTag(acceptLanguage)))
+                                .data(of(CONTENT, loginResponse))
+                                .build()
+                )
+                .build();
+    }
+
+    @POST
+    @Path("/auth/verify-code")
+    @Consumes(APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
+    @PermitAll
+    public Response verifyCode(
+            @HeaderParam("Accept-Language") String acceptLanguage,
+            @Valid VerifyCodeRequest verifyCodeRequest
+            ) {
         return Response.status(OK)
                 .entity(
                         SuccessApiResponse.builder()
@@ -81,7 +110,30 @@ public class UserResource {
                                 .code(OK.getStatusCode())
                                 .timestamp(ZonedDateTime.now())
                                 .message(getMessage(USER_LOGGED_IN_SUCCESSFULLY, forLanguageTag(acceptLanguage)))
-                                .data(of(CONTENT, userApplicationAdapter.login(loginRequest)))
+                                .data(of(CONTENT, userApplicationAdapter.verifyCode(verifyCodeRequest)))
+                                .build()
+                )
+                .build();
+    }
+
+    @POST
+    @Path("/auth/verify-code/resend")
+    @Consumes(APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
+    @PermitAll
+    public Response resendVerifyCode(
+            @HeaderParam("Accept-Language") String acceptLanguage,
+            @Valid ResendVerificationCodeRequest resendVerificationCodeRequest
+    ) {
+        return Response.status(OK)
+                .entity(
+                        SuccessApiResponse.builder()
+                                .success(true)
+                                .status(OK.name())
+                                .code(OK.getStatusCode())
+                                .timestamp(ZonedDateTime.now())
+                                .message(getMessage(USER_LOGGED_IN_SUCCESSFULLY, forLanguageTag(acceptLanguage)))
+                                .data(of(CONTENT, userApplicationAdapter.resendMfaVerification(resendVerificationCodeRequest)))
                                 .build()
                 )
                 .build();

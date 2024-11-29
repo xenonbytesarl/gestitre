@@ -16,5 +16,5 @@ public interface UserRepository {
 
     User create(@Nonnull User user);
 
-    Optional<User> findUserByEmail(@Nonnull Email email);
+    Optional<User> findByEmail(@Nonnull Email email);
 }
