@@ -2,6 +2,7 @@ package cm.xenonbyte.gestitre.domain.company.vo;
 
 import cm.xenonbyte.gestitre.domain.common.validation.Assert;
 import cm.xenonbyte.gestitre.domain.common.vo.Money;
+import cm.xenonbyte.gestitre.domain.common.vo.Quantity;
 import jakarta.annotation.Nonnull;
 
 import java.math.BigDecimal;

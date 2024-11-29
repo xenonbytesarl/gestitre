@@ -1,6 +1,7 @@
 package cm.xenonbyte.gestitre.domain.admin.ports.primary;
 
-import cm.xenonbyte.gestitre.domain.admin.vo.Password;
+
+import cm.xenonbyte.gestitre.domain.common.vo.Password;
 
 /**
  * @author bamk

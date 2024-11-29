@@ -1,5 +1,6 @@
 package cm.xenonbyte.gestitre.application.admin;
 
+import cm.xenonbyte.gestitre.application.admin.dto.ActivateUserResponse;
 import cm.xenonbyte.gestitre.application.admin.dto.CreateUserViewRequest;
 import cm.xenonbyte.gestitre.application.admin.dto.CreateUserViewResponse;
 import cm.xenonbyte.gestitre.application.admin.dto.PermissionView;
@@ -62,8 +63,6 @@ public interface UserApplicationViewMapper {
     @Mapping(target = "tenantId", source = "tenantId.value")
     @Mapping(target = "email", source = "email.text.value")
     @Mapping(target = "name", source = "name.text.value")
-    @Mapping(target = "password", source = "password.text.value")
-    @Mapping(target = "confirmPassword", source = "confirmPassword.text.value")
     @Mapping(target="useMfa", source = "useMfa.value")
     @Mapping(target="accountExpired", source = "accountExpired.value")
     @Mapping(target="accountLocked", source = "accountLocked.value")
@@ -90,4 +89,19 @@ public interface UserApplicationViewMapper {
     @Mapping(target = "id", source = "id.value")
     @Mapping(target = "name", source = "name.text.value")
     @Nonnull PermissionView toPermissionView(@Nonnull @Valid Permission permission);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", source = "id.value")
+    @Mapping(target = "companyId", source = "companyId.value")
+    @Mapping(target = "tenantId", source = "tenantId.value")
+    @Mapping(target = "email", source = "email.text.value")
+    @Mapping(target = "name", source = "name.text.value")
+    @Mapping(target="useMfa", source = "useMfa.value")
+    @Mapping(target="accountExpired", source = "accountExpired.value")
+    @Mapping(target="accountLocked", source = "accountLocked.value")
+    @Mapping(target="credentialExpired", source = "credentialExpired.value")
+    @Mapping(target="accountEnabled", source = "accountEnabled.value")
+    @Mapping(target="failedLoginAttempt", source = "failedLoginAttempt.value")
+    @Mapping(target = "roleViews", qualifiedByName = "toRoleViews", source = "roles")
+    @Nonnull @Valid ActivateUserResponse toActivateUserResponse(@Nonnull User user);
 }

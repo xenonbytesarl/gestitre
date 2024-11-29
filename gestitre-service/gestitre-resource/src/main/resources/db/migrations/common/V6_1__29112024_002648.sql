@@ -2,11 +2,10 @@
 create table if not exists t_verification
 (
     c_id         uuid                        not null,
-    c_tenant_id  uuid,
     c_created_at timestamp without time zone not null,
     c_updated_at timestamp without time zone,
     c_type       varchar(32)                not null,
-    c_code       varchar(8),
+    c_code       varchar(128),
     c_url        varchar(512),
     c_email      varchar(128) not null,
     c_creation_at timestamp without time zone not null,

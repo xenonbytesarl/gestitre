@@ -18,7 +18,6 @@ public final class TenantContext {
     }
 
     public static void set(UUID tenantId) {
-
         context.set(tenantId);
     }
 

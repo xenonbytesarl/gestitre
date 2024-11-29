@@ -1,5 +1,7 @@
 package cm.xenonbyte.gestitre.application.admin;
 
+import cm.xenonbyte.gestitre.application.admin.dto.ActivateAccountRequest;
+import cm.xenonbyte.gestitre.application.admin.dto.ActivateUserResponse;
 import cm.xenonbyte.gestitre.application.admin.dto.CreateUserViewRequest;
 import cm.xenonbyte.gestitre.application.admin.dto.CreateUserViewResponse;
 import cm.xenonbyte.gestitre.application.admin.dto.LoginRequest;
@@ -24,4 +26,6 @@ public interface UserApplicationAdapter {
     VerifyCodeResponse verifyCode(@Nonnull @Valid VerifyCodeRequest verifyCodeRequest);
 
     @Nonnull @Valid LoginResponse resendMfaVerification(@Nonnull @Valid ResendVerificationCodeRequest resendVerificationCodeRequest);
+
+    @Nonnull @Valid ActivateUserResponse activateUser(@Nonnull @Valid ActivateAccountRequest activateAccountRequest);
 }

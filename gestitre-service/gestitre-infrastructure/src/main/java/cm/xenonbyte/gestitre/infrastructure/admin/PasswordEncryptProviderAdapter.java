@@ -1,7 +1,7 @@
 package cm.xenonbyte.gestitre.infrastructure.admin;
 
 import cm.xenonbyte.gestitre.domain.admin.ports.primary.PasswordEncryptProvider;
-import cm.xenonbyte.gestitre.domain.admin.vo.Password;
+import cm.xenonbyte.gestitre.domain.common.vo.Password;
 import cm.xenonbyte.gestitre.domain.common.vo.Text;
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.extern.slf4j.Slf4j;

@@ -7,16 +7,16 @@ import cm.xenonbyte.gestitre.domain.admin.ports.secondary.RoleRepository;
 import cm.xenonbyte.gestitre.domain.admin.ports.secondary.TokenProvider;
 import cm.xenonbyte.gestitre.domain.admin.ports.secondary.UserRepository;
 import cm.xenonbyte.gestitre.domain.admin.ports.secondary.message.publisher.UserMessagePublisher;
-import cm.xenonbyte.gestitre.domain.admin.vo.Password;
 import cm.xenonbyte.gestitre.domain.admin.vo.Token;
-import cm.xenonbyte.gestitre.domain.admin.vo.UserId;
 import cm.xenonbyte.gestitre.domain.common.annotation.DomainService;
 import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
+import cm.xenonbyte.gestitre.domain.common.vo.Email;
 import cm.xenonbyte.gestitre.domain.common.vo.Name;
+import cm.xenonbyte.gestitre.domain.common.vo.Password;
+import cm.xenonbyte.gestitre.domain.common.vo.UserId;
 import cm.xenonbyte.gestitre.domain.company.entity.Company;
 import cm.xenonbyte.gestitre.domain.company.ports.CompanyNotFoundException;
 import cm.xenonbyte.gestitre.domain.company.ports.primary.CompanyService;
-import cm.xenonbyte.gestitre.domain.company.vo.contact.Email;
 import cm.xenonbyte.gestitre.domain.tenant.Tenant;
 import cm.xenonbyte.gestitre.domain.tenant.ports.primary.message.listener.TenantService;
 import jakarta.annotation.Nonnull;
@@ -27,6 +27,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import static cm.xenonbyte.gestitre.domain.admin.vo.UserEventType.USER_ACTIVATED;
 import static cm.xenonbyte.gestitre.domain.admin.vo.UserEventType.USER_CREATED;
 
 /**
@@ -44,7 +45,7 @@ public final class UserDomainService implements UserService {
     private final TenantService tenantService;
     private final CompanyService companyService;
     private final PasswordEncryptProvider passwordEncryptProvider;
-    private final UserMessagePublisher userEventPublisher;
+    private final UserMessagePublisher userMessagePublisher;
     private final TokenProvider tokenProvider;
 
     public UserDomainService(
@@ -53,13 +54,13 @@ public final class UserDomainService implements UserService {
             @Nonnull TenantService tenantService,
             @Nonnull CompanyService companyService,
             @Nonnull PasswordEncryptProvider passwordEncryptProvider,
-            @Nonnull UserMessagePublisher userEventPublisher, TokenProvider tokenProvider) {
+            @Nonnull UserMessagePublisher userMessagePublisher, TokenProvider tokenProvider) {
         this.userRepository = Objects.requireNonNull(userRepository);
         this.roleRepository = Objects.requireNonNull(roleRepository);
         this.tenantService = Objects.requireNonNull(tenantService);
         this.companyService = Objects.requireNonNull(companyService);
         this.passwordEncryptProvider = Objects.requireNonNull(passwordEncryptProvider);
-        this.userEventPublisher = Objects.requireNonNull(userEventPublisher);
+        this.userMessagePublisher = Objects.requireNonNull(userMessagePublisher);
         this.tokenProvider = Objects.requireNonNull(tokenProvider);
     }
 
@@ -75,7 +76,7 @@ public final class UserDomainService implements UserService {
         userRepository.create(user);
         LOGGER.info("User created with id " + user.getId().getValue());
         UserCreatedEvent userCreatedEvent = new UserCreatedEvent(user, ZonedDateTime.now());
-        userEventPublisher.publish(userCreatedEvent, USER_CREATED);
+        userMessagePublisher.publish(userCreatedEvent, USER_CREATED);
         return userCreatedEvent;
     }
 
@@ -113,6 +114,17 @@ public final class UserDomainService implements UserService {
     @Override
     public Token generateToken(@Nonnull User user) {
         return tokenProvider.generateToken(user);
+    }
+
+    @Nonnull
+    @Override
+    public User activateUser(User user) {
+        user.activate();
+        user = userRepository.update(user.getId(), user);
+        LOGGER.info("User with id " + user.getId().getValue() + " activated.");
+        UserUpdatedEvent userUpdatedEvent = new UserUpdatedEvent(user, ZonedDateTime.now());
+        userMessagePublisher.publish(userUpdatedEvent, USER_ACTIVATED);
+        return user;
     }
 
     private void validateUser(User user) {

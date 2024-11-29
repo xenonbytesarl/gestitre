@@ -2,9 +2,9 @@ package cm.xenonbyte.gestitre.domain.admin.ports.primary;
 
 import cm.xenonbyte.gestitre.domain.admin.User;
 import cm.xenonbyte.gestitre.domain.admin.event.UserCreatedEvent;
-import cm.xenonbyte.gestitre.domain.admin.vo.Password;
 import cm.xenonbyte.gestitre.domain.admin.vo.Token;
-import cm.xenonbyte.gestitre.domain.company.vo.contact.Email;
+import cm.xenonbyte.gestitre.domain.common.vo.Email;
+import cm.xenonbyte.gestitre.domain.common.vo.Password;
 import jakarta.annotation.Nonnull;
 
 /**
@@ -19,4 +19,5 @@ public interface UserService {
 
     @Nonnull Token generateToken(@Nonnull User user);
 
+    @Nonnull User activateUser(User user);
 }

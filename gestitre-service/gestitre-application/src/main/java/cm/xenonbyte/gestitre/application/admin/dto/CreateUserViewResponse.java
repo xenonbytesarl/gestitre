@@ -1,5 +1,6 @@
 package cm.xenonbyte.gestitre.application.admin.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,5 +15,9 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @SuperBuilder
 @NoArgsConstructor
+@JsonIgnoreProperties(
+        value = {"password", "confirmPassword"},
+        allowGetters = true
+)
 public final class CreateUserViewResponse extends UserViewResponse {
 }

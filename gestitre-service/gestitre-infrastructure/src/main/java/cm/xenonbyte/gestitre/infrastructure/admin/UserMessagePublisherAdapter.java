@@ -3,6 +3,8 @@ package cm.xenonbyte.gestitre.infrastructure.admin;
 import cm.xenonbyte.gestitre.domain.admin.event.UserEvent;
 import cm.xenonbyte.gestitre.domain.admin.ports.secondary.message.publisher.UserMessagePublisher;
 import cm.xenonbyte.gestitre.domain.admin.vo.UserEventType;
+import cm.xenonbyte.gestitre.domain.tenant.TenantContext;
+import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.eventbus.EventBus;
 import jakarta.annotation.Nonnull;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -27,8 +29,10 @@ public final class UserMessagePublisherAdapter implements UserMessagePublisher {
 
     @Override
     public void publish(UserEvent event, UserEventType type) {
+        DeliveryOptions options = new DeliveryOptions();
+        options.addHeader("tenantId", TenantContext.current().toString());
         log.info("Publishing event {} for user with name {}  in the bus",
                 type.name(), event.getUser().getName().text().value());
-        eventBus.publish(type.name(), event);
+        eventBus.publish(type.name(), event, options);
     }
 }

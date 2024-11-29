@@ -4,7 +4,7 @@ import cm.xenonbyte.gestitre.domain.admin.User;
 import cm.xenonbyte.gestitre.domain.admin.event.UserEvent;
 import cm.xenonbyte.gestitre.domain.admin.ports.secondary.message.publisher.UserMessagePublisher;
 import cm.xenonbyte.gestitre.domain.admin.vo.UserEventType;
-import cm.xenonbyte.gestitre.domain.admin.vo.UserId;
+import cm.xenonbyte.gestitre.domain.common.vo.UserId;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

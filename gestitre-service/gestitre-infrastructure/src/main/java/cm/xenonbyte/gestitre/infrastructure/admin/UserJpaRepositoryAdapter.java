@@ -1,8 +1,9 @@
 package cm.xenonbyte.gestitre.infrastructure.admin;
 
-import cm.xenonbyte.gestitre.domain.company.vo.contact.Email;
 import cm.xenonbyte.gestitre.domain.admin.User;
 import cm.xenonbyte.gestitre.domain.admin.ports.secondary.UserRepository;
+import cm.xenonbyte.gestitre.domain.common.vo.Email;
+import cm.xenonbyte.gestitre.domain.common.vo.UserId;
 import jakarta.annotation.Nonnull;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
@@ -47,5 +48,20 @@ public final class UserJpaRepositoryAdapter implements UserRepository {
     public Optional<User> findByEmail(@Nonnull Email email) {
         return userJpaRepository.findByEmail(email.text().value())
                 .map(userJpaMapper::toUser);
+    }
+
+    @Override
+    public Optional<User> findById(@Nonnull UserId userId) {
+        return userJpaRepository.findByIdOptional(userId.getValue())
+                .map(userJpaMapper::toUser);
+    }
+
+    @Override
+    @Transactional
+    public User update(@Nonnull UserId userId, @Nonnull User newUser) {
+        UserJpa oldUserJpa = userJpaRepository.findById(userId.getValue());
+        UserJpa newUserJpa = userJpaMapper.toUserJpa(newUser);
+        userJpaMapper.copyNewToOldUserJpa(newUserJpa, oldUserJpa);
+        return userJpaMapper.toUser(oldUserJpa);
     }
 }

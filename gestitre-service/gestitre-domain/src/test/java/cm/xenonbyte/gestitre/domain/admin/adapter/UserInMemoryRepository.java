@@ -1,9 +1,9 @@
 package cm.xenonbyte.gestitre.domain.admin.adapter;
 
-import cm.xenonbyte.gestitre.domain.company.vo.contact.Email;
 import cm.xenonbyte.gestitre.domain.admin.User;
-import cm.xenonbyte.gestitre.domain.admin.vo.UserId;
 import cm.xenonbyte.gestitre.domain.admin.ports.secondary.UserRepository;
+import cm.xenonbyte.gestitre.domain.common.vo.Email;
+import cm.xenonbyte.gestitre.domain.common.vo.UserId;
 import jakarta.annotation.Nonnull;
 
 import java.util.LinkedHashMap;
@@ -35,5 +35,17 @@ public final class UserInMemoryRepository implements UserRepository {
         return users.values().stream().filter(user ->
                 user.getEmail().equals(email))
                 .findFirst();
+    }
+
+    @Override
+    public Optional<User> findById(@Nonnull UserId userId) {
+        User user = users.get(userId);
+        return user == null ? Optional.empty() : Optional.of(user);
+    }
+
+    @Override
+    public User update(@Nonnull UserId userId, @Nonnull User newUser) {
+        users.replace(userId, newUser);
+        return newUser;
     }
 }

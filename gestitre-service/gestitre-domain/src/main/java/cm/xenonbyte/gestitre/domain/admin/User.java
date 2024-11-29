@@ -5,15 +5,15 @@ import cm.xenonbyte.gestitre.domain.admin.vo.AccountExpired;
 import cm.xenonbyte.gestitre.domain.admin.vo.AccountLocked;
 import cm.xenonbyte.gestitre.domain.admin.vo.CredentialExpired;
 import cm.xenonbyte.gestitre.domain.admin.vo.FailedLoginAttempt;
-import cm.xenonbyte.gestitre.domain.admin.vo.Password;
 import cm.xenonbyte.gestitre.domain.admin.vo.UseMfa;
-import cm.xenonbyte.gestitre.domain.admin.vo.UserId;
 import cm.xenonbyte.gestitre.domain.common.entity.AggregateRoot;
 import cm.xenonbyte.gestitre.domain.common.validation.Assert;
 import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
+import cm.xenonbyte.gestitre.domain.common.vo.Email;
 import cm.xenonbyte.gestitre.domain.common.vo.Name;
+import cm.xenonbyte.gestitre.domain.common.vo.Password;
 import cm.xenonbyte.gestitre.domain.common.vo.TenantId;
-import cm.xenonbyte.gestitre.domain.company.vo.contact.Email;
+import cm.xenonbyte.gestitre.domain.common.vo.UserId;
 import jakarta.annotation.Nonnull;
 
 import java.util.Objects;
@@ -164,6 +164,10 @@ public final class User extends AggregateRoot<UserId> {
         if (!password.equals(confirmPassword)) {
             throw new UserPasswordNotMatchException();
         }
+    }
+
+    public void activate() {
+        accountEnabled = AccountEnabled.with(true);
     }
 
     public void encryptPassword(Password encryptPassword) {

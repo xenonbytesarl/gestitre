@@ -1,10 +1,11 @@
 package cm.xenonbyte.gestitre.application.audit;
 
+import cm.xenonbyte.gestitre.domain.admin.UserUpdatedEvent;
 import cm.xenonbyte.gestitre.domain.admin.event.UserCreatedEvent;
-import cm.xenonbyte.gestitre.domain.admin.verification.event.VerificationCanceledEvent;
-import cm.xenonbyte.gestitre.domain.admin.verification.event.VerificationCreatedEvent;
-import cm.xenonbyte.gestitre.domain.admin.verification.event.VerificationVerifiedEvent;
 import cm.xenonbyte.gestitre.domain.audit.ports.message.listener.AuditMessageListener;
+import cm.xenonbyte.gestitre.domain.common.verification.event.VerificationCanceledEvent;
+import cm.xenonbyte.gestitre.domain.common.verification.event.VerificationCreatedEvent;
+import cm.xenonbyte.gestitre.domain.common.verification.event.VerificationVerifiedEvent;
 import cm.xenonbyte.gestitre.domain.company.event.CompanyCreatedEvent;
 import cm.xenonbyte.gestitre.domain.company.event.CompanyUpdatedEvent;
 import cm.xenonbyte.gestitre.domain.tenant.TenantCreatedEvent;
@@ -16,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.COMPANY_CREATED;
 import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.COMPANY_UPDATED;
 import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.TENANT_CREATED;
+import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.USER_ACTIVATED;
 import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.USER_CREATED;
 import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.VERIFICATION_CANCELED;
 import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.VERIFICATION_CREATED;
@@ -49,6 +51,13 @@ public final class AuditMessageListenerAdapter implements AuditMessageListener {
     @ConsumeEvent(value = USER_CREATED)
     public void handle(UserCreatedEvent event) {
         log.info(">>>> Receiving event from UserMessagePublisher to create audit for new user with name {}", event.getUser().getName().text().value());
+    }
+
+    @Override
+    @Blocking
+    @ConsumeEvent(value = USER_ACTIVATED)
+    public void handle(UserUpdatedEvent event) {
+        log.info(">>>> Receiving event from UserMessagePublisher to create audit for activated user with name {}", event.getUser().getName().text().value());
     }
 
     @Override

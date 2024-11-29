@@ -9,14 +9,14 @@ import cm.xenonbyte.gestitre.domain.admin.ports.secondary.RoleRepository;
 import cm.xenonbyte.gestitre.domain.admin.ports.secondary.TokenProvider;
 import cm.xenonbyte.gestitre.domain.admin.ports.secondary.UserRepository;
 import cm.xenonbyte.gestitre.domain.admin.ports.secondary.message.publisher.UserMessagePublisher;
-import cm.xenonbyte.gestitre.domain.admin.verification.VerificationDomainService;
-import cm.xenonbyte.gestitre.domain.admin.verification.event.VerificationCanceledEvent;
-import cm.xenonbyte.gestitre.domain.admin.verification.event.VerificationCreatedEvent;
-import cm.xenonbyte.gestitre.domain.admin.verification.event.VerificationVerifiedEvent;
-import cm.xenonbyte.gestitre.domain.admin.verification.ports.primary.VerificationService;
-import cm.xenonbyte.gestitre.domain.admin.verification.ports.secondary.VerificationProvider;
-import cm.xenonbyte.gestitre.domain.admin.verification.ports.secondary.VerificationRepository;
-import cm.xenonbyte.gestitre.domain.admin.verification.ports.secondary.message.publisher.VerificationMessagePublisher;
+import cm.xenonbyte.gestitre.domain.common.verification.VerificationDomainService;
+import cm.xenonbyte.gestitre.domain.common.verification.event.VerificationCanceledEvent;
+import cm.xenonbyte.gestitre.domain.common.verification.event.VerificationCreatedEvent;
+import cm.xenonbyte.gestitre.domain.common.verification.event.VerificationVerifiedEvent;
+import cm.xenonbyte.gestitre.domain.common.verification.ports.primary.VerificationService;
+import cm.xenonbyte.gestitre.domain.common.verification.ports.secondary.VerificationProvider;
+import cm.xenonbyte.gestitre.domain.common.verification.ports.secondary.VerificationRepository;
+import cm.xenonbyte.gestitre.domain.common.verification.ports.secondary.message.publisher.VerificationMessagePublisher;
 import cm.xenonbyte.gestitre.domain.company.CertificateTemplateDomainService;
 import cm.xenonbyte.gestitre.domain.company.CompanyDomainService;
 import cm.xenonbyte.gestitre.domain.company.event.CompanyCreatedEvent;
@@ -28,6 +28,10 @@ import cm.xenonbyte.gestitre.domain.company.ports.secondary.repository.Certifica
 import cm.xenonbyte.gestitre.domain.company.ports.secondary.repository.CompanyRepository;
 import cm.xenonbyte.gestitre.domain.file.StorageManagerDomainService;
 import cm.xenonbyte.gestitre.domain.file.port.primary.StorageManager;
+import cm.xenonbyte.gestitre.domain.notification.MailServerDomainService;
+import cm.xenonbyte.gestitre.domain.notification.ports.primary.MailServerService;
+import cm.xenonbyte.gestitre.domain.notification.ports.secondary.MailServerRepository;
+import cm.xenonbyte.gestitre.domain.notification.ports.secondary.message.MailServerMessagePublisher;
 import cm.xenonbyte.gestitre.domain.tenant.TenantCreatedEvent;
 import cm.xenonbyte.gestitre.domain.tenant.TenantDomainService;
 import cm.xenonbyte.gestitre.domain.tenant.ports.primary.message.listener.TenantService;
@@ -41,6 +45,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.EventBus;
 import jakarta.enterprise.context.ApplicationScoped;
+import lombok.extern.slf4j.Slf4j;
 
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
 
@@ -49,6 +54,7 @@ import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
  * @version 1.0
  * @since 02/11/2024
  */
+@Slf4j
 public final class BootstrapApplicationContext {
 
     @ApplicationScoped
@@ -123,10 +129,25 @@ public final class BootstrapApplicationContext {
             VerificationProvider verificationProvider,
             VerificationRepository verificationRepository,
             VerificationMessagePublisher verificationMessagePublisher,
-            UserRepository userRepository
+            UserRepository userRepository,
+            MailServerRepository mailServerRepository
     ) {
-        return new VerificationDomainService(verificationProvider, verificationRepository, verificationMessagePublisher, userRepository);
+        return new VerificationDomainService(
+                verificationProvider,
+                verificationRepository,
+                verificationMessagePublisher,
+                userRepository,
+                mailServerRepository
+        );
     }
 
+    @ApplicationScoped
+    public MailServerService mailServerService(
+            MailServerRepository mailServerRepository,
+            MailServerMessagePublisher mailServerMessagePublisher,
+            VerificationService verificationService
+    ) {
+        return new MailServerDomainService(mailServerRepository, mailServerMessagePublisher, verificationService);
+    }
 
 }

@@ -1,7 +1,8 @@
 package cm.xenonbyte.gestitre.domain.admin.ports.secondary;
 
-import cm.xenonbyte.gestitre.domain.company.vo.contact.Email;
 import cm.xenonbyte.gestitre.domain.admin.User;
+import cm.xenonbyte.gestitre.domain.common.vo.Email;
+import cm.xenonbyte.gestitre.domain.common.vo.UserId;
 import jakarta.annotation.Nonnull;
 
 import java.util.Optional;
@@ -17,4 +18,8 @@ public interface UserRepository {
     User create(@Nonnull User user);
 
     Optional<User> findByEmail(@Nonnull Email email);
+
+    Optional<User> findById(@Nonnull UserId userId);
+
+    User update(@Nonnull UserId userId, @Nonnull User newUser);
 }

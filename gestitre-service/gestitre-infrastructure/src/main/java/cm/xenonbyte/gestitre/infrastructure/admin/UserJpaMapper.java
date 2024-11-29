@@ -8,6 +8,7 @@ import org.mapstruct.BeanMapping;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 
 import java.util.Set;
@@ -92,4 +93,6 @@ public interface UserJpaMapper {
     @Mapping(target = "id.value", source = "id")
     @Mapping(target = "name.text.value", source = "name")
     @Nonnull Permission toPermission(@Nonnull PermissionJpa permissionJpa);
+
+    void copyNewToOldUserJpa(@Nonnull UserJpa newUserJpa, @Nonnull @MappingTarget UserJpa oldUserJpa);
 }

@@ -1,25 +1,27 @@
 package cm.xenonbyte.gestitre.application.admin;
 
+import cm.xenonbyte.gestitre.application.admin.dto.ActivateAccountRequest;
+import cm.xenonbyte.gestitre.application.admin.dto.ActivateUserResponse;
 import cm.xenonbyte.gestitre.application.admin.dto.CreateUserViewRequest;
 import cm.xenonbyte.gestitre.application.admin.dto.CreateUserViewResponse;
 import cm.xenonbyte.gestitre.application.admin.dto.LoginRequest;
 import cm.xenonbyte.gestitre.application.admin.dto.LoginResponse;
 import cm.xenonbyte.gestitre.application.admin.dto.ResendVerificationCodeRequest;
-import cm.xenonbyte.gestitre.application.admin.dto.VerifyCodeResponse;
 import cm.xenonbyte.gestitre.application.admin.dto.VerifyCodeRequest;
+import cm.xenonbyte.gestitre.application.admin.dto.VerifyCodeResponse;
 import cm.xenonbyte.gestitre.domain.admin.User;
 import cm.xenonbyte.gestitre.domain.admin.event.UserCreatedEvent;
 import cm.xenonbyte.gestitre.domain.admin.ports.primary.UserService;
-import cm.xenonbyte.gestitre.domain.admin.verification.Verification;
-import cm.xenonbyte.gestitre.domain.admin.verification.event.VerificationCreatedEvent;
-import cm.xenonbyte.gestitre.domain.admin.verification.ports.primary.VerificationService;
-import cm.xenonbyte.gestitre.domain.admin.verification.vo.Code;
-import cm.xenonbyte.gestitre.domain.admin.verification.vo.Duration;
-import cm.xenonbyte.gestitre.domain.admin.verification.vo.VerificationType;
-import cm.xenonbyte.gestitre.domain.admin.vo.Password;
 import cm.xenonbyte.gestitre.domain.admin.vo.Token;
+import cm.xenonbyte.gestitre.domain.common.verification.Verification;
+import cm.xenonbyte.gestitre.domain.common.verification.event.VerificationCreatedEvent;
+import cm.xenonbyte.gestitre.domain.common.verification.ports.primary.VerificationService;
+import cm.xenonbyte.gestitre.domain.common.verification.vo.Duration;
+import cm.xenonbyte.gestitre.domain.common.verification.vo.VerificationType;
+import cm.xenonbyte.gestitre.domain.common.vo.Code;
+import cm.xenonbyte.gestitre.domain.common.vo.Email;
+import cm.xenonbyte.gestitre.domain.common.vo.Password;
 import cm.xenonbyte.gestitre.domain.common.vo.Text;
-import cm.xenonbyte.gestitre.domain.company.vo.contact.Email;
 import jakarta.annotation.Nonnull;
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.extern.slf4j.Slf4j;
@@ -114,5 +116,11 @@ public final class UserApplicationAdapterService implements UserApplicationAdapt
                 .isMfa(true)
                 .code(verificationCreatedEvent.getVerification().getCode().text().value())
                 .build();
+    }
+
+    @Override
+    public ActivateUserResponse activateUser(@Nonnull ActivateAccountRequest activateAccountRequest) {
+        User user = verificationService.verifyCode(Code.of(Text.of(activateAccountRequest.getCode())), VerificationType.ACCOUNT);
+        return userApplicationViewMapper.toActivateUserResponse(userService.activateUser(user));
     }
 }

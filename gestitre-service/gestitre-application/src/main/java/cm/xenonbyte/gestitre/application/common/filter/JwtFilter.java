@@ -16,6 +16,7 @@ import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.Provider;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import java.io.IOException;
@@ -32,6 +33,7 @@ import static jakarta.ws.rs.core.Response.Status.UNAUTHORIZED;
  * @version 1.0
  * @since 29/11/2024
  */
+@Slf4j
 @Provider
 @Priority(Priorities.AUTHENTICATION)
 public final class JwtFilter implements ContainerRequestFilter {
@@ -64,11 +66,11 @@ public final class JwtFilter implements ContainerRequestFilter {
                     TenantContext.set(tenant.getId().getValue());
                     return;
                 }
-            } else {
                 abortWithUnAuthorized(context, JWT_FILTER_AUTHORIZATION_MISSING);
                 return;
             }
-
+            abortWithUnAuthorized(context, JWT_FILTER_AUTHORIZATION_MISSING);
+            return;
         }
 
         String token = bearerToken.substring(7);
@@ -82,18 +84,20 @@ public final class JwtFilter implements ContainerRequestFilter {
     }
 
     private void abortWithUnAuthorized(ContainerRequestContext context, String message) {
+        ErrorApiResponse errorApiResponse = ErrorApiResponse.builder()
+                .timestamp(ZonedDateTime.now())
+                .code(UNAUTHORIZED.getStatusCode())
+                .status(UNAUTHORIZED.name())
+                .success(false)
+                .reason(LocalizationUtil.getMessage(message, localeResolver.getLocaleFromRequest(), ""))
+                .build();
         context.abortWith(
                 Response.status(UNAUTHORIZED)
                         .entity(
-                            ErrorApiResponse.builder()
-                                .timestamp(ZonedDateTime.now())
-                                .code(UNAUTHORIZED.getStatusCode())
-                                .status(UNAUTHORIZED.name())
-                                .success(false)
-                                .reason(LocalizationUtil.getMessage(message, localeResolver.getLocaleFromRequest(), ""))
-                                .build()
+                                errorApiResponse
                         )
                         .build()
         );
+        log.error("{}", errorApiResponse.getReason());
     }
 }

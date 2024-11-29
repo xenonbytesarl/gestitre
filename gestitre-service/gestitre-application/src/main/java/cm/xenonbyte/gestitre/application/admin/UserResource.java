@@ -1,5 +1,6 @@
 package cm.xenonbyte.gestitre.application.admin;
 
+import cm.xenonbyte.gestitre.application.admin.dto.ActivateAccountRequest;
 import cm.xenonbyte.gestitre.application.admin.dto.CreateUserViewRequest;
 import cm.xenonbyte.gestitre.application.admin.dto.LoginRequest;
 import cm.xenonbyte.gestitre.application.admin.dto.LoginResponse;
@@ -13,6 +14,7 @@ import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Response;
@@ -35,11 +37,12 @@ import static java.util.Map.of;
  * @since 24/11/2024
  */
 @Path(USER_API_PATH)
-public class UserResource {
+public class  UserResource {
 
     private static final String USER_CREATED_SUCCESSFULLY = "UserResource.1";
     private static final String USER_LOGGED_IN_SUCCESSFULLY = "UserResource.2";
     private static final String USER_VERIFICATION_MFA_SEND = "UserResource.3";
+    private static final String USER_ACTIVATED_IN_SUCCESSFULLY = "UserResource.4";
 
     private final UserApplicationAdapter userApplicationAdapter;
 
@@ -111,6 +114,29 @@ public class UserResource {
                                 .timestamp(ZonedDateTime.now())
                                 .message(getMessage(USER_LOGGED_IN_SUCCESSFULLY, forLanguageTag(acceptLanguage)))
                                 .data(of(CONTENT, userApplicationAdapter.verifyCode(verifyCodeRequest)))
+                                .build()
+                )
+                .build();
+    }
+
+    @PUT
+    @Path("/auth/activate-account")
+    @Consumes(APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
+    @PermitAll
+    public Response verifyCode(
+            @HeaderParam("Accept-Language") String acceptLanguage,
+            @Valid ActivateAccountRequest activateAccountRequest
+    ) {
+        return Response.status(OK)
+                .entity(
+                        SuccessApiResponse.builder()
+                                .success(true)
+                                .status(OK.name())
+                                .code(OK.getStatusCode())
+                                .timestamp(ZonedDateTime.now())
+                                .message(getMessage(USER_ACTIVATED_IN_SUCCESSFULLY, forLanguageTag(acceptLanguage)))
+                                .data(of(CONTENT, userApplicationAdapter.activateUser(activateAccountRequest)))
                                 .build()
                 )
                 .build();
