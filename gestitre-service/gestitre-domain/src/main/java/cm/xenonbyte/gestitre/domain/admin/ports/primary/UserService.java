@@ -15,6 +15,8 @@ import jakarta.annotation.Nonnull;
 public interface UserService {
     @Nonnull UserCreatedEvent createUser(@Nonnull User user);
 
-    @Nonnull Token login(@Nonnull Email email, @Nonnull Password password);
+    @Nonnull User login(@Nonnull Email email, @Nonnull Password password);
+
+    @Nonnull Token generateToken(@Nonnull User user);
 
 }

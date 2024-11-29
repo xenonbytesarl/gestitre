@@ -170,6 +170,22 @@ public final class User extends AggregateRoot<UserId> {
         this.password = encryptPassword;
     }
 
+    public Boolean isAccountDisabled() {
+        return !accountEnabled.value();
+    }
+
+    public Boolean isCredentialExpired() {
+        return credentialExpired.value();
+    }
+
+    public Boolean isAccountExpired() {
+        return accountExpired.value();
+    }
+
+    public Boolean isAccountLocked() {
+        return accountLocked.value();
+    }
+
     public static final class Builder {
         private UserId id;
         private TenantId tenantId;

@@ -1,9 +1,25 @@
 package cm.xenonbyte.gestitre.domain.admin;
 
+import cm.xenonbyte.gestitre.domain.admin.adapter.PasswordInMemoryProvider;
+import cm.xenonbyte.gestitre.domain.admin.adapter.RoleInMemoryRepository;
+import cm.xenonbyte.gestitre.domain.admin.adapter.TenantInMemoryRepository;
 import cm.xenonbyte.gestitre.domain.admin.adapter.TokenInMemoryProvider;
+import cm.xenonbyte.gestitre.domain.admin.adapter.UserInMemoryRepository;
 import cm.xenonbyte.gestitre.domain.admin.adapter.UserMessageInMemoryPublisher;
+import cm.xenonbyte.gestitre.domain.admin.event.UserCreatedEvent;
+import cm.xenonbyte.gestitre.domain.admin.ports.primary.PasswordEncryptProvider;
+import cm.xenonbyte.gestitre.domain.admin.ports.primary.UserService;
+import cm.xenonbyte.gestitre.domain.admin.ports.secondary.RoleRepository;
 import cm.xenonbyte.gestitre.domain.admin.ports.secondary.TokenProvider;
-import cm.xenonbyte.gestitre.domain.admin.vo.Token;
+import cm.xenonbyte.gestitre.domain.admin.ports.secondary.UserRepository;
+import cm.xenonbyte.gestitre.domain.admin.ports.secondary.message.publisher.UserMessagePublisher;
+import cm.xenonbyte.gestitre.domain.admin.vo.AccountEnabled;
+import cm.xenonbyte.gestitre.domain.admin.vo.AccountExpired;
+import cm.xenonbyte.gestitre.domain.admin.vo.AccountLocked;
+import cm.xenonbyte.gestitre.domain.admin.vo.CredentialExpired;
+import cm.xenonbyte.gestitre.domain.admin.vo.Password;
+import cm.xenonbyte.gestitre.domain.admin.vo.PermissionId;
+import cm.xenonbyte.gestitre.domain.admin.vo.RoleId;
 import cm.xenonbyte.gestitre.domain.admin.vo.UserId;
 import cm.xenonbyte.gestitre.domain.common.vo.Active;
 import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
@@ -31,19 +47,6 @@ import cm.xenonbyte.gestitre.domain.company.vo.address.ZipCode;
 import cm.xenonbyte.gestitre.domain.company.vo.contact.Contact;
 import cm.xenonbyte.gestitre.domain.company.vo.contact.Email;
 import cm.xenonbyte.gestitre.domain.company.vo.contact.Phone;
-import cm.xenonbyte.gestitre.domain.admin.adapter.PasswordInMemoryProvider;
-import cm.xenonbyte.gestitre.domain.admin.adapter.RoleInMemoryRepository;
-import cm.xenonbyte.gestitre.domain.admin.adapter.TenantInMemoryRepository;
-import cm.xenonbyte.gestitre.domain.admin.adapter.UserInMemoryRepository;
-import cm.xenonbyte.gestitre.domain.admin.event.UserCreatedEvent;
-import cm.xenonbyte.gestitre.domain.admin.ports.primary.PasswordEncryptProvider;
-import cm.xenonbyte.gestitre.domain.admin.ports.primary.UserService;
-import cm.xenonbyte.gestitre.domain.admin.ports.secondary.RoleRepository;
-import cm.xenonbyte.gestitre.domain.admin.ports.secondary.UserRepository;
-import cm.xenonbyte.gestitre.domain.admin.ports.secondary.message.publisher.UserMessagePublisher;
-import cm.xenonbyte.gestitre.domain.admin.vo.Password;
-import cm.xenonbyte.gestitre.domain.admin.vo.PermissionId;
-import cm.xenonbyte.gestitre.domain.admin.vo.RoleId;
 import cm.xenonbyte.gestitre.domain.tenant.Tenant;
 import cm.xenonbyte.gestitre.domain.tenant.TenantDomainService;
 import cm.xenonbyte.gestitre.domain.tenant.ports.primary.message.listener.TenantService;
@@ -55,11 +58,15 @@ import org.junit.jupiter.api.Test;
 import java.util.Set;
 import java.util.UUID;
 
-import static cm.xenonbyte.gestitre.domain.admin.UserEmailUnAuthorizedException.USER_EMAIL_UN_AUTHORIZED;
-import static cm.xenonbyte.gestitre.domain.admin.UserPasswordUnAuthorizedException.USER_PASSWORD_UN_AUTHORIZED;
-import static cm.xenonbyte.gestitre.domain.company.ports.CompanyNotFoundException.COMPANY_NOT_FOUND;
 import static cm.xenonbyte.gestitre.domain.admin.RoleNotFoundException.ROLE_NOT_FOUND;
 import static cm.xenonbyte.gestitre.domain.admin.UserEmailConflictException.USER_EMAIL_CONFLICT;
+import static cm.xenonbyte.gestitre.domain.admin.UserLoginAccountDisableUnAuthorizedException.USER_LOGIN_ACCOUNT_DISABLE_UN_AUTHORIZED;
+import static cm.xenonbyte.gestitre.domain.admin.UserLoginAccountExpiredUnAuthorizedException.USER_LOGIN_ACCOUNT_EXPIRED_UN_AUTHORIZED;
+import static cm.xenonbyte.gestitre.domain.admin.UserLoginAccountLockedUnAuthorizedException.USER_LOGIN_ACCOUNT_LOCKED_UN_AUTHORIZED;
+import static cm.xenonbyte.gestitre.domain.admin.UserLoginCredentialExpiredUnAuthorizedException.USER_LOGIN_CREDENTIAL_EXPIRED_UN_AUTHORIZED;
+import static cm.xenonbyte.gestitre.domain.admin.UserLoginEmailUnAuthorizedException.USER_LOGIN_EMAIL_UN_AUTHORIZED;
+import static cm.xenonbyte.gestitre.domain.admin.UserLoginPasswordUnAuthorizedException.USER_LOGIN_PASSWORD_UN_AUTHORIZED;
+import static cm.xenonbyte.gestitre.domain.company.ports.CompanyNotFoundException.COMPANY_NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -278,16 +285,18 @@ class UserDomainServiceTest {
             .confirmPassword(password)
             .roles(roles)
             .companyId(new CompanyId(UUID.fromString("019353d5-b63c-7874-9d44-22622626500e")))
+            .accountEnabled(AccountEnabled.with(true))
+            .accountExpired(AccountExpired.with(false))
+            .accountLocked(AccountLocked.with(false))
+            .credentialExpired(CredentialExpired.with(false))
             .build();
         userRepository.create(user);
 
         //Act
-        Token actual = userService.login(email, password);
+        User actual = userService.login(email, password);
 
         //Then
         assertThat(actual).isNotNull();
-        assertThat(actual.accessToken()).isNotNull();
-        assertThat(actual.refreshToken()).isNotNull();
     }
 
     @Test
@@ -302,12 +311,16 @@ class UserDomainServiceTest {
                 .confirmPassword(password)
                 .roles(roles)
                 .companyId(new CompanyId(UUID.fromString("019353d5-b63c-7874-9d44-22622626500e")))
+                .accountEnabled(AccountEnabled.with(true))
+                .accountExpired(AccountExpired.with(false))
+                .accountLocked(AccountLocked.with(false))
+                .credentialExpired(CredentialExpired.with(false))
                 .build();
         userRepository.create(user);
         //Act + Then
         assertThatThrownBy(() -> userService.login(email, password))
-                .isInstanceOf(UserEmailUnAuthorizedException.class)
-                .hasMessage(USER_EMAIL_UN_AUTHORIZED);
+                .isInstanceOf(UserLoginEmailUnAuthorizedException.class)
+                .hasMessage(USER_LOGIN_EMAIL_UN_AUTHORIZED);
     }
 
     @Test
@@ -322,11 +335,111 @@ class UserDomainServiceTest {
                 .confirmPassword(Password.of(Text.of("test123")))
                 .roles(roles)
                 .companyId(new CompanyId(UUID.fromString("019353d5-b63c-7874-9d44-22622626500e")))
+                .accountEnabled(AccountEnabled.with(true))
+                .accountExpired(AccountExpired.with(false))
+                .accountLocked(AccountLocked.with(false))
+                .credentialExpired(CredentialExpired.with(false))
                 .build();
         userRepository.create(user);
         //Act + Then
         assertThatThrownBy(() -> userService.login(email, password))
-                .isInstanceOf(UserPasswordUnAuthorizedException.class)
-                .hasMessage(USER_PASSWORD_UN_AUTHORIZED);
+                .isInstanceOf(UserLoginPasswordUnAuthorizedException.class)
+                .hasMessage(USER_LOGIN_PASSWORD_UN_AUTHORIZED);
+    }
+
+    @Test
+    void should_fail_when_login_with_non_enable_account() {
+        Email email = Email.of(Text.of("test1@gmail.com"));
+        Password password = Password.of(Text.of("test123"));
+        User user = User.builder()
+                .id(new UserId(UUID.fromString("01937040-0104-7f64-a292-29d12581d41d")))
+                .name(Name.of(Text.of("First User")))
+                .email(email)
+                .password(Password.of(Text.of("test123")))
+                .confirmPassword(Password.of(Text.of("test123")))
+                .roles(roles)
+                .companyId(new CompanyId(UUID.fromString("019353d5-b63c-7874-9d44-22622626500e")))
+                .accountEnabled(AccountEnabled.with(false))
+                .accountExpired(AccountExpired.with(false))
+                .accountLocked(AccountLocked.with(false))
+                .credentialExpired(CredentialExpired.with(false))
+                .build();
+        userRepository.create(user);
+        //Act + Then
+        assertThatThrownBy(() -> userService.login(email, password))
+                .isInstanceOf(UserLoginAccountDisableUnAuthorizedException.class)
+                .hasMessage(USER_LOGIN_ACCOUNT_DISABLE_UN_AUTHORIZED);
+    }
+
+    @Test
+    void should_fail_when_login_with_expired_account() {
+        Email email = Email.of(Text.of("test1@gmail.com"));
+        Password password = Password.of(Text.of("test123"));
+        User user = User.builder()
+                .id(new UserId(UUID.fromString("01937040-0104-7f64-a292-29d12581d41d")))
+                .name(Name.of(Text.of("First User")))
+                .email(email)
+                .password(Password.of(Text.of("test123")))
+                .confirmPassword(Password.of(Text.of("test123")))
+                .roles(roles)
+                .companyId(new CompanyId(UUID.fromString("019353d5-b63c-7874-9d44-22622626500e")))
+                .accountEnabled(AccountEnabled.with(true))
+                .accountExpired(AccountExpired.with(true))
+                .accountLocked(AccountLocked.with(false))
+                .credentialExpired(CredentialExpired.with(false))
+                .build();
+        userRepository.create(user);
+        //Act + Then
+        assertThatThrownBy(() -> userService.login(email, password))
+                .isInstanceOf(UserLoginAccountExpiredUnAuthorizedException.class)
+                .hasMessage(USER_LOGIN_ACCOUNT_EXPIRED_UN_AUTHORIZED);
+    }
+
+    @Test
+    void should_fail_when_login_with_credential_expired() {
+        Email email = Email.of(Text.of("test1@gmail.com"));
+        Password password = Password.of(Text.of("test123"));
+        User user = User.builder()
+                .id(new UserId(UUID.fromString("01937040-0104-7f64-a292-29d12581d41d")))
+                .name(Name.of(Text.of("First User")))
+                .email(email)
+                .password(Password.of(Text.of("test123")))
+                .confirmPassword(Password.of(Text.of("test123")))
+                .roles(roles)
+                .companyId(new CompanyId(UUID.fromString("019353d5-b63c-7874-9d44-22622626500e")))
+                .accountEnabled(AccountEnabled.with(true))
+                .accountExpired(AccountExpired.with(false))
+                .accountLocked(AccountLocked.with(false))
+                .credentialExpired(CredentialExpired.with(true))
+                .build();
+        userRepository.create(user);
+        //Act + Then
+        assertThatThrownBy(() -> userService.login(email, password))
+                .isInstanceOf(UserLoginCredentialExpiredUnAuthorizedException.class)
+                .hasMessage(USER_LOGIN_CREDENTIAL_EXPIRED_UN_AUTHORIZED);
+    }
+
+    @Test
+    void should_fail_when_login_with_account_locked() {
+        Email email = Email.of(Text.of("test1@gmail.com"));
+        Password password = Password.of(Text.of("test123"));
+        User user = User.builder()
+                .id(new UserId(UUID.fromString("01937040-0104-7f64-a292-29d12581d41d")))
+                .name(Name.of(Text.of("First User")))
+                .email(email)
+                .password(Password.of(Text.of("test123")))
+                .confirmPassword(Password.of(Text.of("test123")))
+                .roles(roles)
+                .companyId(new CompanyId(UUID.fromString("019353d5-b63c-7874-9d44-22622626500e")))
+                .accountEnabled(AccountEnabled.with(true))
+                .accountExpired(AccountExpired.with(false))
+                .accountLocked(AccountLocked.with(true))
+                .credentialExpired(CredentialExpired.with(false))
+                .build();
+        userRepository.create(user);
+        //Act + Then
+        assertThatThrownBy(() -> userService.login(email, password))
+                .isInstanceOf(UserLoginAccountLockedUnAuthorizedException.class)
+                .hasMessage(USER_LOGIN_ACCOUNT_LOCKED_UN_AUTHORIZED);
     }
 }

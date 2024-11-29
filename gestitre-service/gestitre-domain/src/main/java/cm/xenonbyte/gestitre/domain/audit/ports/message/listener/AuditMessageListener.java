@@ -1,6 +1,8 @@
 package cm.xenonbyte.gestitre.domain.audit.ports.message.listener;
 
 import cm.xenonbyte.gestitre.domain.admin.event.UserCreatedEvent;
+import cm.xenonbyte.gestitre.domain.admin.verification.event.VerificationCanceledEvent;
+import cm.xenonbyte.gestitre.domain.admin.verification.event.VerificationCreatedEvent;
 import cm.xenonbyte.gestitre.domain.company.event.CompanyCreatedEvent;
 import cm.xenonbyte.gestitre.domain.company.event.CompanyUpdatedEvent;
 import cm.xenonbyte.gestitre.domain.tenant.TenantCreatedEvent;
@@ -16,4 +18,6 @@ public interface AuditMessageListener {
     void handle(CompanyUpdatedEvent event);
     void handle(UserCreatedEvent event);
     void handle(TenantCreatedEvent event);
+    void handle(VerificationCreatedEvent event);
+    void handle(VerificationCanceledEvent event);
 }

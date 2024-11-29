@@ -4,6 +4,7 @@ import cm.xenonbyte.gestitre.domain.tenant.TenantContext;
 import cm.xenonbyte.gestitre.infrastructure.common.Tenantable;
 import cm.xenonbyte.gestitre.infrastructure.common.annotation.DisableTenantFilter;
 import cm.xenonbyte.gestitre.infrastructure.common.annotation.TenantPanacheInterceptor;
+import jakarta.annotation.Priority;
 import jakarta.interceptor.AroundInvoke;
 import jakarta.interceptor.Interceptor;
 import jakarta.interceptor.InvocationContext;
@@ -21,6 +22,7 @@ import java.util.Objects;
  */
 @Slf4j
 @Interceptor
+@Priority(Interceptor.Priority.APPLICATION)
 @TenantPanacheInterceptor
 public final class TenantInterceptor {
 

@@ -1,13 +1,10 @@
 package cm.xenonbyte.gestitre.application.admin.dto;
 
-import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-
-import static cm.xenonbyte.gestitre.application.common.ApplicationConstant.NOT_EMPTY;
 
 /**
  * @author bamk
@@ -20,8 +17,9 @@ import static cm.xenonbyte.gestitre.application.common.ApplicationConstant.NOT_E
 @NoArgsConstructor
 @AllArgsConstructor
 public final class LoginResponse {
-    @NotEmpty(message = NOT_EMPTY)
+
     private String accessToken;
-    @NotEmpty(message = NOT_EMPTY)
     private String refreshToken;
+    private Boolean isMfa;
+    private String code;
 }

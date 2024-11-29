@@ -81,15 +81,38 @@ public final class UserDomainService implements UserService {
 
     @Nonnull
     @Override
-    public Token login(@Nonnull Email email, @Nonnull Password password) {
+    public User login(@Nonnull Email email, @Nonnull Password password) {
         Optional<User> optionalUser = userRepository.findUserByEmail(email);
         if (optionalUser.isPresent()) {
+            User user = loginGuard(optionalUser.get());
             if (Boolean.FALSE.equals(passwordEncryptProvider.checkCredentials(password, optionalUser.get().getPassword()))) {
-                throw new UserPasswordUnAuthorizedException();
+                throw new UserLoginPasswordUnAuthorizedException();
             }
-            return tokenProvider.generateToken(optionalUser.get());
+            return user;
         }
-        throw new UserEmailUnAuthorizedException();
+        throw new UserLoginEmailUnAuthorizedException();
+    }
+
+    private static User loginGuard(User user) {
+        if(Boolean.TRUE.equals(user.isAccountDisabled())) {
+            throw new UserLoginAccountDisableUnAuthorizedException();
+        }
+        if(Boolean.TRUE.equals(user.isCredentialExpired())) {
+            throw new UserLoginCredentialExpiredUnAuthorizedException();
+        }
+        if(Boolean.TRUE.equals(user.isAccountExpired())) {
+            throw new UserLoginAccountExpiredUnAuthorizedException();
+        }
+        if(Boolean.TRUE.equals(user.isAccountLocked())) {
+            throw new UserLoginAccountLockedUnAuthorizedException();
+        }
+        return user;
+    }
+
+    @Nonnull
+    @Override
+    public Token generateToken(@Nonnull User user) {
+        return tokenProvider.generateToken(user);
     }
 
     private void validateUser(User user) {

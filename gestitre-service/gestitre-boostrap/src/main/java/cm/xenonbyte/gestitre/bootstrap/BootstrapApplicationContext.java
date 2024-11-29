@@ -9,6 +9,13 @@ import cm.xenonbyte.gestitre.domain.admin.ports.secondary.RoleRepository;
 import cm.xenonbyte.gestitre.domain.admin.ports.secondary.TokenProvider;
 import cm.xenonbyte.gestitre.domain.admin.ports.secondary.UserRepository;
 import cm.xenonbyte.gestitre.domain.admin.ports.secondary.message.publisher.UserMessagePublisher;
+import cm.xenonbyte.gestitre.domain.admin.verification.VerificationDomainService;
+import cm.xenonbyte.gestitre.domain.admin.verification.event.VerificationCanceledEvent;
+import cm.xenonbyte.gestitre.domain.admin.verification.event.VerificationCreatedEvent;
+import cm.xenonbyte.gestitre.domain.admin.verification.ports.primary.VerificationService;
+import cm.xenonbyte.gestitre.domain.admin.verification.ports.secondary.VerificationProvider;
+import cm.xenonbyte.gestitre.domain.admin.verification.ports.secondary.VerificationRepository;
+import cm.xenonbyte.gestitre.domain.admin.verification.ports.secondary.message.publisher.VerificationMessagePublisher;
 import cm.xenonbyte.gestitre.domain.company.CertificateTemplateDomainService;
 import cm.xenonbyte.gestitre.domain.company.CompanyDomainService;
 import cm.xenonbyte.gestitre.domain.company.event.CompanyCreatedEvent;
@@ -104,7 +111,17 @@ public final class BootstrapApplicationContext {
         eventBus.registerDefaultCodec(CompanyUpdatedEvent.class, new GenericCodec<>(CompanyUpdatedEvent.class));
         eventBus.registerDefaultCodec(TenantCreatedEvent.class, new GenericCodec<>(TenantCreatedEvent.class));
         eventBus.registerDefaultCodec(UserCreatedEvent.class, new GenericCodec<>(UserCreatedEvent.class));
+        eventBus.registerDefaultCodec(VerificationCreatedEvent.class, new GenericCodec<>(VerificationCreatedEvent.class));
+        eventBus.registerDefaultCodec(VerificationCanceledEvent.class, new GenericCodec<>(VerificationCanceledEvent.class));
         return eventBus;
+    }
+
+    @ApplicationScoped
+    public VerificationService verificationDomainService(
+            VerificationProvider verificationProvider,
+            VerificationRepository verificationRepository,
+            VerificationMessagePublisher verificationMessagePublisher) {
+        return new VerificationDomainService(verificationProvider, verificationRepository, verificationMessagePublisher);
     }
 
 
