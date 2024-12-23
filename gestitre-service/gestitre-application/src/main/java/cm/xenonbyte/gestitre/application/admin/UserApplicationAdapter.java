@@ -7,8 +7,10 @@ import cm.xenonbyte.gestitre.application.admin.dto.CreateUserViewResponse;
 import cm.xenonbyte.gestitre.application.admin.dto.LoginRequest;
 import cm.xenonbyte.gestitre.application.admin.dto.LoginResponse;
 import cm.xenonbyte.gestitre.application.admin.dto.ResendVerificationCodeRequest;
-import cm.xenonbyte.gestitre.application.admin.dto.VerifyCodeResponse;
+import cm.xenonbyte.gestitre.application.admin.dto.ResetPasswordRequest;
+import cm.xenonbyte.gestitre.application.admin.dto.SendResetPasswordCodeRequest;
 import cm.xenonbyte.gestitre.application.admin.dto.VerifyCodeRequest;
+import cm.xenonbyte.gestitre.application.admin.dto.VerifyCodeResponse;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.Valid;
 
@@ -22,10 +24,13 @@ public interface UserApplicationAdapter {
 
     @Nonnull @Valid LoginResponse login(@Nonnull @Valid LoginRequest loginRequest);
 
-    @Nonnull @Valid
-    VerifyCodeResponse verifyCode(@Nonnull @Valid VerifyCodeRequest verifyCodeRequest);
+    @Nonnull @Valid VerifyCodeResponse verifyCode(@Nonnull @Valid VerifyCodeRequest verifyCodeRequest);
 
     @Nonnull @Valid LoginResponse resendMfaVerification(@Nonnull @Valid ResendVerificationCodeRequest resendVerificationCodeRequest);
 
     @Nonnull @Valid ActivateUserResponse activateUser(@Nonnull @Valid ActivateAccountRequest activateAccountRequest);
+
+    void resetPassword(@Nonnull @Valid ResetPasswordRequest resetPasswordRequest);
+
+    void sendResetPasswordCode(@Valid SendResetPasswordCodeRequest sendResetPasswordCodeRequest);
 }

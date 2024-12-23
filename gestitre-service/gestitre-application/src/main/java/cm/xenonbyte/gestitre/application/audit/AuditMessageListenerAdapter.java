@@ -1,6 +1,7 @@
 package cm.xenonbyte.gestitre.application.audit;
 
-import cm.xenonbyte.gestitre.domain.admin.UserUpdatedEvent;
+import cm.xenonbyte.gestitre.domain.admin.event.UserPasswordResetedEvent;
+import cm.xenonbyte.gestitre.domain.admin.event.UserUpdatedEvent;
 import cm.xenonbyte.gestitre.domain.admin.event.UserCreatedEvent;
 import cm.xenonbyte.gestitre.domain.audit.ports.message.listener.AuditMessageListener;
 import cm.xenonbyte.gestitre.domain.common.verification.event.VerificationCanceledEvent;
@@ -19,6 +20,7 @@ import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.COMPAN
 import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.TENANT_CREATED;
 import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.USER_ACTIVATED;
 import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.USER_CREATED;
+import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.USER_PASSWORD_RESET;
 import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.VERIFICATION_CANCELED;
 import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.VERIFICATION_CREATED;
 import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.VERIFICATION_VERIFIED;
@@ -58,6 +60,13 @@ public final class AuditMessageListenerAdapter implements AuditMessageListener {
     @ConsumeEvent(value = USER_ACTIVATED)
     public void handle(UserUpdatedEvent event) {
         log.info(">>>> Receiving event from UserMessagePublisher to create audit for activated user with name {}", event.getUser().getName().text().value());
+    }
+
+    @Override
+    @Blocking
+    @ConsumeEvent(value = USER_PASSWORD_RESET)
+    public void handle(UserPasswordResetedEvent event) {
+        log.info(">>>> Receiving event from UserMessagePublisher to create audit for password reset for user with name {}", event.getUser().getName().text().value());
     }
 
     @Override

@@ -7,6 +7,8 @@ import cm.xenonbyte.gestitre.application.admin.dto.CreateUserViewResponse;
 import cm.xenonbyte.gestitre.application.admin.dto.LoginRequest;
 import cm.xenonbyte.gestitre.application.admin.dto.LoginResponse;
 import cm.xenonbyte.gestitre.application.admin.dto.ResendVerificationCodeRequest;
+import cm.xenonbyte.gestitre.application.admin.dto.ResetPasswordRequest;
+import cm.xenonbyte.gestitre.application.admin.dto.SendResetPasswordCodeRequest;
 import cm.xenonbyte.gestitre.application.admin.dto.VerifyCodeRequest;
 import cm.xenonbyte.gestitre.application.admin.dto.VerifyCodeResponse;
 import cm.xenonbyte.gestitre.domain.admin.User;
@@ -17,6 +19,7 @@ import cm.xenonbyte.gestitre.domain.common.verification.Verification;
 import cm.xenonbyte.gestitre.domain.common.verification.event.VerificationCreatedEvent;
 import cm.xenonbyte.gestitre.domain.common.verification.ports.primary.VerificationService;
 import cm.xenonbyte.gestitre.domain.common.verification.vo.Duration;
+import cm.xenonbyte.gestitre.domain.common.verification.vo.Url;
 import cm.xenonbyte.gestitre.domain.common.verification.vo.VerificationType;
 import cm.xenonbyte.gestitre.domain.common.vo.Code;
 import cm.xenonbyte.gestitre.domain.common.vo.Email;
@@ -24,10 +27,14 @@ import cm.xenonbyte.gestitre.domain.common.vo.Password;
 import cm.xenonbyte.gestitre.domain.common.vo.Text;
 import jakarta.annotation.Nonnull;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.util.Objects;
+
+import static cm.xenonbyte.gestitre.domain.common.verification.vo.VerificationType.ACCOUNT;
+import static cm.xenonbyte.gestitre.domain.common.verification.vo.VerificationType.PASSWORD;
 
 /**
  * @author bamk
@@ -42,21 +49,28 @@ public final class UserApplicationAdapterService implements UserApplicationAdapt
     private final VerificationService verificationService;
     private final UserApplicationViewMapper userApplicationViewMapper;
     private final Long codeDuration;
+    private final Long urlDuration;
+    private final String baseUrl;
 
     public UserApplicationAdapterService(
             @Nonnull UserService userService,
             @Nonnull VerificationService verificationService,
             @Nonnull UserApplicationViewMapper userApplicationViewMapper,
-            @ConfigProperty(name = "verification.code.duration") Long codeDuration
+            @ConfigProperty(name = "verification.code.duration") Long codeDuration,
+            @ConfigProperty(name = "verification.url.duration") Long urlDuration,
+            @ConfigProperty(name = "verification.url.baseUrl") String baseUrl
     ) {
         this.userService = Objects.requireNonNull(userService);
         this.verificationService = Objects.requireNonNull(verificationService);
         this.userApplicationViewMapper = Objects.requireNonNull(userApplicationViewMapper);
         this.codeDuration = codeDuration;
+        this.urlDuration = urlDuration;
+        this.baseUrl = baseUrl;
     }
 
     @Override
     @Nonnull
+    @Transactional
     public CreateUserViewResponse createUser(@Nonnull CreateUserViewRequest createUserViewRequest)  {
         UserCreatedEvent userCreatedEvent = userService.createUser(
                 userApplicationViewMapper.toUser(createUserViewRequest)
@@ -66,6 +80,7 @@ public final class UserApplicationAdapterService implements UserApplicationAdapt
 
     @Override
     @Nonnull
+    @Transactional
     public LoginResponse login(@Nonnull LoginRequest loginRequest) {
         User user = userService.login(
                 Email.of(Text.of(loginRequest.getEmail())),
@@ -97,6 +112,7 @@ public final class UserApplicationAdapterService implements UserApplicationAdapt
 
     @Nonnull
     @Override
+    @Transactional
     public VerifyCodeResponse verifyCode(@Nonnull VerifyCodeRequest verifyCodeRequest) {
         User user = verificationService.verifyCode(
                 Code.of(Text.of(verifyCodeRequest.getCode())), Email.of(Text.of(verifyCodeRequest.getEmail())));
@@ -109,6 +125,7 @@ public final class UserApplicationAdapterService implements UserApplicationAdapt
 
     @Nonnull
     @Override
+    @Transactional
     public LoginResponse resendMfaVerification(@Nonnull ResendVerificationCodeRequest resendVerificationCodeRequest) {
         VerificationCreatedEvent verificationCreatedEvent = verificationService.resendVerification(
                 Email.of(Text.of(resendVerificationCodeRequest.getEmail())), VerificationType.MFA, codeDuration);
@@ -118,9 +135,37 @@ public final class UserApplicationAdapterService implements UserApplicationAdapt
                 .build();
     }
 
+    @Nonnull
     @Override
+    @Transactional
     public ActivateUserResponse activateUser(@Nonnull ActivateAccountRequest activateAccountRequest) {
-        User user = verificationService.verifyCode(Code.of(Text.of(activateAccountRequest.getCode())), VerificationType.ACCOUNT);
+        User user = verificationService.verifyCode(Code.of(Text.of(activateAccountRequest.getCode())), ACCOUNT);
         return userApplicationViewMapper.toActivateUserResponse(userService.activateUser(user));
+    }
+
+    @Override
+    @Transactional
+    public void resetPassword(@Nonnull ResetPasswordRequest resetPasswordRequest) {
+        User user = verificationService.verifyCode(Code.of(Text.of(resetPasswordRequest.getCode())), PASSWORD);
+        userService.resetPassword(
+                Password.of(Text.of(resetPasswordRequest.getOldPassword())),
+                Password.of(Text.of(resetPasswordRequest.getNewPassword())),
+                user
+        );
+    }
+
+    @Override
+    @Transactional
+    public void sendResetPasswordCode(SendResetPasswordCodeRequest sendResetPasswordCodeRequest) {
+        User user = userService.findUserByEmail(Email.of(Text.of(sendResetPasswordCodeRequest.getEmail())));
+        verificationService.createVerification(
+                Verification.builder()
+                        .userId(user.getId())
+                        .type(PASSWORD)
+                        .url(Url.of(Text.of(baseUrl)))
+                        .duration(Duration.of(urlDuration))
+                        .email(user.getEmail())
+                        .build()
+        );
     }
 }

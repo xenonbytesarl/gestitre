@@ -20,4 +20,8 @@ public interface UserService {
     @Nonnull Token generateToken(@Nonnull User user);
 
     @Nonnull User activateUser(User user);
+
+    void resetPassword(@Nonnull Password oldPassword, @Nonnull Password newPassword, @Nonnull User user);
+
+    @Nonnull User findUserByEmail(@Nonnull Email email);
 }

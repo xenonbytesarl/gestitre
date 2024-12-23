@@ -6,5 +6,5 @@ package cm.xenonbyte.gestitre.domain.admin.vo;
  * @since 23/11/2024
  */
 public enum UserEventType {
-    USER_CREATED, USER_UPDATED, USER_DELETED, USER_ACTIVATED
+    USER_CREATED, USER_UPDATED, USER_DELETED, USER_ACTIVATED, USER_PASSWORD_RESET
 }

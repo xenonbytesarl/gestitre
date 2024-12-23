@@ -1,6 +1,6 @@
-package cm.xenonbyte.gestitre.domain.admin;
+package cm.xenonbyte.gestitre.domain.admin.event;
 
-import cm.xenonbyte.gestitre.domain.admin.event.UserEvent;
+import cm.xenonbyte.gestitre.domain.admin.User;
 import cm.xenonbyte.gestitre.domain.common.annotation.DomainEvent;
 
 import java.time.ZonedDateTime;

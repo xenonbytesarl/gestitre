@@ -5,6 +5,8 @@ import cm.xenonbyte.gestitre.application.admin.dto.CreateUserViewRequest;
 import cm.xenonbyte.gestitre.application.admin.dto.LoginRequest;
 import cm.xenonbyte.gestitre.application.admin.dto.LoginResponse;
 import cm.xenonbyte.gestitre.application.admin.dto.ResendVerificationCodeRequest;
+import cm.xenonbyte.gestitre.application.admin.dto.ResetPasswordRequest;
+import cm.xenonbyte.gestitre.application.admin.dto.SendResetPasswordCodeRequest;
 import cm.xenonbyte.gestitre.application.admin.dto.VerifyCodeRequest;
 import cm.xenonbyte.gestitre.application.common.dto.SuccessApiResponse;
 import jakarta.annotation.Nonnull;
@@ -43,6 +45,8 @@ public class  UserResource {
     private static final String USER_LOGGED_IN_SUCCESSFULLY = "UserResource.2";
     private static final String USER_VERIFICATION_MFA_SEND = "UserResource.3";
     private static final String USER_ACTIVATED_IN_SUCCESSFULLY = "UserResource.4";
+    private static final String USER_SEND_RESET_PASSWORD_SUCCESSFULLY = "UserResource.5";
+    private static final String USER_PASSWORD_RESET_SUCCESSFULLY = "UserResource.6";
 
     private final UserApplicationAdapter userApplicationAdapter;
 
@@ -160,6 +164,52 @@ public class  UserResource {
                                 .timestamp(ZonedDateTime.now())
                                 .message(getMessage(USER_LOGGED_IN_SUCCESSFULLY, forLanguageTag(acceptLanguage)))
                                 .data(of(CONTENT, userApplicationAdapter.resendMfaVerification(resendVerificationCodeRequest)))
+                                .build()
+                )
+                .build();
+    }
+
+    @POST
+    @Path("/auth/reset-password/send-code")
+    @Consumes(APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
+    @PermitAll
+    public Response sendResetPasswordCode(
+            @HeaderParam("Accept-Language") String acceptLanguage,
+            @Valid SendResetPasswordCodeRequest sendResetPasswordCodeRequest
+    ) {
+        userApplicationAdapter.sendResetPasswordCode(sendResetPasswordCodeRequest);
+        return Response.status(OK)
+                .entity(
+                        SuccessApiResponse.builder()
+                                .success(true)
+                                .status(OK.name())
+                                .code(OK.getStatusCode())
+                                .timestamp(ZonedDateTime.now())
+                                .message(getMessage(USER_SEND_RESET_PASSWORD_SUCCESSFULLY, forLanguageTag(acceptLanguage)))
+                                .build()
+                )
+                .build();
+    }
+
+    @POST
+    @Path("/auth/reset-password")
+    @Consumes(APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
+    @PermitAll
+    public Response resetPassword(
+            @HeaderParam("Accept-Language") String acceptLanguage,
+            @Valid ResetPasswordRequest resetPasswordRequest
+    ) {
+        userApplicationAdapter.resetPassword(resetPasswordRequest);
+        return Response.status(OK)
+                .entity(
+                        SuccessApiResponse.builder()
+                                .success(true)
+                                .status(OK.name())
+                                .code(OK.getStatusCode())
+                                .timestamp(ZonedDateTime.now())
+                                .message(getMessage(USER_PASSWORD_RESET_SUCCESSFULLY, forLanguageTag(acceptLanguage)))
                                 .build()
                 )
                 .build();

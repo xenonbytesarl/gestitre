@@ -1,6 +1,8 @@
 package cm.xenonbyte.gestitre.domain.admin;
 
 import cm.xenonbyte.gestitre.domain.admin.event.UserCreatedEvent;
+import cm.xenonbyte.gestitre.domain.admin.event.UserPasswordResetedEvent;
+import cm.xenonbyte.gestitre.domain.admin.event.UserUpdatedEvent;
 import cm.xenonbyte.gestitre.domain.admin.ports.primary.PasswordEncryptProvider;
 import cm.xenonbyte.gestitre.domain.admin.ports.primary.UserService;
 import cm.xenonbyte.gestitre.domain.admin.ports.secondary.RoleRepository;
@@ -29,6 +31,7 @@ import java.util.logging.Logger;
 
 import static cm.xenonbyte.gestitre.domain.admin.vo.UserEventType.USER_ACTIVATED;
 import static cm.xenonbyte.gestitre.domain.admin.vo.UserEventType.USER_CREATED;
+import static cm.xenonbyte.gestitre.domain.admin.vo.UserEventType.USER_PASSWORD_RESET;
 
 /**
  * @author bamk
@@ -126,6 +129,29 @@ public final class UserDomainService implements UserService {
         userMessagePublisher.publish(userUpdatedEvent, USER_ACTIVATED);
         return user;
     }
+
+
+    @Override
+    public void resetPassword(@Nonnull Password oldPassword, @Nonnull Password newPassword, @Nonnull User user) {
+        if(Boolean.TRUE.equals(passwordEncryptProvider.checkCredentials(oldPassword, user.getPassword()))) {
+            user.encryptPassword(passwordEncryptProvider.encrypt(newPassword));
+            userRepository.update(user.getId(), user);
+            LOGGER.info("Password of user with id " + user.getId().getValue() + " was reset.");
+            UserPasswordResetedEvent userPasswordResetedEvent = new UserPasswordResetedEvent(user, ZonedDateTime.now());
+            userMessagePublisher.publish(userPasswordResetedEvent, USER_PASSWORD_RESET);
+        } else {
+            throw new UserPasswordResetBadRequestException();
+        }
+    }
+
+    @Nonnull
+    @Override
+    public User findUserByEmail(@Nonnull Email email) {
+        return userRepository.findByEmail(email).orElseThrow(
+                () -> new UserEmailNotFoundException(new String[] {email.text().value()})
+        );
+    }
+
 
     private void validateUser(User user) {
         validateEmail(user.getId(), user.getEmail());
