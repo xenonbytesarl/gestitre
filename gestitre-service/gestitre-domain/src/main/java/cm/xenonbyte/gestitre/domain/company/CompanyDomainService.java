@@ -29,6 +29,7 @@ import cm.xenonbyte.gestitre.domain.company.vo.IsinCode;
 import cm.xenonbyte.gestitre.domain.company.vo.RegistrationNumber;
 import cm.xenonbyte.gestitre.domain.company.vo.TaxNumber;
 import cm.xenonbyte.gestitre.domain.company.vo.WebSiteUrl;
+import cm.xenonbyte.gestitre.domain.company.vo.contact.Fax;
 import cm.xenonbyte.gestitre.domain.company.vo.contact.Phone;
 import cm.xenonbyte.gestitre.domain.tenant.Tenant;
 import jakarta.annotation.Nonnull;
@@ -144,6 +145,7 @@ public final class CompanyDomainService implements CompanyService {
         validateCompanyName(company.getId(), company.getCompanyName());
         validateCompanyEmail(company.getId(), company.getContact().email());
         validateCompanyPhone(company.getId(), company.getContact().phone());
+        validateCompanyFax(company.getId(), company.getContact().fax());
         validateRegistrationNumber(company.getId(), company.getRegistrationNumber());
         validateTaxNumber(company.getId(), company.getTaxNumber());
         validateIsinCode(company.getId(), company.getIsinCode());
@@ -217,6 +219,19 @@ public final class CompanyDomainService implements CompanyService {
                throw new CompanyPhoneConflictException(new String[] {phone.text().value()});
            }
        }
+    }
+
+    private void validateCompanyFax(CompanyId companyId, Fax fax) {
+        if(fax != null) {
+            if(companyId == null && companyRepository.existsByFax(fax)) {
+                throw new CompanyFaxConflictException(new String[] {fax.text().value()});
+            }
+
+            Optional<Company> oldCompany = companyRepository.findByFax(fax);
+            if(companyId != null && oldCompany.isPresent() && !oldCompany.get().getId().equals(companyId)) {
+                throw new CompanyFaxConflictException(new String[] {fax.text().value()});
+            }
+        }
     }
 
     private void validateCompanyEmail(CompanyId companyId, Email email) {

@@ -14,6 +14,7 @@ import cm.xenonbyte.gestitre.domain.company.vo.IsinCode;
 import cm.xenonbyte.gestitre.domain.company.vo.RegistrationNumber;
 import cm.xenonbyte.gestitre.domain.company.vo.TaxNumber;
 import cm.xenonbyte.gestitre.domain.company.vo.WebSiteUrl;
+import cm.xenonbyte.gestitre.domain.company.vo.contact.Fax;
 import cm.xenonbyte.gestitre.domain.company.vo.contact.Phone;
 import jakarta.annotation.Nonnull;
 
@@ -65,4 +66,8 @@ public interface CompanyRepository {
     Optional<Company> findByWebSiteUrl(@Nonnull WebSiteUrl webSiteUrl);
 
     Boolean existsById(@Nonnull CompanyId companyId);
+
+    Boolean existsByFax(@Nonnull Fax fax);
+
+    Optional<Company> findByFax(@Nonnull Fax fax);
 }

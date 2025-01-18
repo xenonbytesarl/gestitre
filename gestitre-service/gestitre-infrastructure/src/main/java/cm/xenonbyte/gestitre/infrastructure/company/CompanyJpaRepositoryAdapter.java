@@ -15,6 +15,7 @@ import cm.xenonbyte.gestitre.domain.company.vo.IsinCode;
 import cm.xenonbyte.gestitre.domain.company.vo.RegistrationNumber;
 import cm.xenonbyte.gestitre.domain.company.vo.TaxNumber;
 import cm.xenonbyte.gestitre.domain.company.vo.WebSiteUrl;
+import cm.xenonbyte.gestitre.domain.company.vo.contact.Fax;
 import cm.xenonbyte.gestitre.domain.company.vo.contact.Phone;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
@@ -218,5 +219,16 @@ public final class CompanyJpaRepositoryAdapter implements CompanyRepository {
     @Override
     public Boolean existsById(@Nonnull CompanyId companyId) {
         return companyJpaRepository.findByIdOptional(companyId.getValue()).isPresent();
+    }
+
+    @Override
+    public Boolean existsByFax(@Nonnull Fax fax) {
+        return companyJpaRepository.existsByFax(fax.text().value());
+    }
+
+    @Override
+    public Optional<Company> findByFax(@Nonnull Fax fax) {
+        return companyJpaRepository.findByFax(fax.text().value())
+                .map(companyJpaMapper::toCompany);
     }
 }

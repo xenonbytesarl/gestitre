@@ -7,7 +7,9 @@ package cm.xenonbyte.gestitre.application.common;
  */
 public final class ApplicationConstant {
 
-    public static final String ROOT_API_PATH = "/api/v1";
+    private ApplicationConstant() {}
+
+    public static final String ROOT_API_PATH = "/api/v1/gestitre";
     public static final String CERTIFICATE_TEMPLATE_API_PATH = ROOT_API_PATH + "/certificate-templates";
     public static final String COMPANY_API_PATH = ROOT_API_PATH + "/companies";
     public static final String USER_API_PATH = ROOT_API_PATH + "/users";

@@ -15,6 +15,7 @@ import cm.xenonbyte.gestitre.domain.company.vo.IsinCode;
 import cm.xenonbyte.gestitre.domain.company.vo.RegistrationNumber;
 import cm.xenonbyte.gestitre.domain.company.vo.TaxNumber;
 import cm.xenonbyte.gestitre.domain.company.vo.WebSiteUrl;
+import cm.xenonbyte.gestitre.domain.company.vo.contact.Fax;
 import cm.xenonbyte.gestitre.domain.company.vo.contact.Phone;
 import jakarta.annotation.Nonnull;
 
@@ -174,5 +175,18 @@ public final class CompanyInMemoryRepository implements CompanyRepository {
     @Override
     public Boolean existsById(@Nonnull CompanyId companyId) {
         return companies.containsKey(companyId);
+    }
+
+    @Override
+    public Boolean existsByFax(@Nonnull Fax fax) {
+        return companies.values().stream().anyMatch(company ->
+                company.getContact().fax() != null && company.getContact().fax().text().value().equalsIgnoreCase(fax.text().value()));
+    }
+
+    @Override
+    public Optional<Company> findByFax(@Nonnull Fax fax) {
+        return companies.values().stream().filter(company ->
+                company.getContact().fax() != null && company.getContact().fax().text().value().equalsIgnoreCase(fax.text().value()))
+                .findFirst();
     }
 }
