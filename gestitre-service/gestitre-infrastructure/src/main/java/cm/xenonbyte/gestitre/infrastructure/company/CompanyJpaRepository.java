@@ -70,4 +70,11 @@ public final class CompanyJpaRepository implements PanacheRepositoryBase<Company
         return find("webSiteUrl", webSiteUrl).firstResultOptional();
     }
 
+    public Boolean existsByFax(String fax) {
+        return find("replace(contactJpa.fax, ' ', '') = :fax", Parameters.with("fax", fax.replaceAll("\\s", ""))).count() > 0;
+    }
+
+    public Optional<CompanyJpa> findByFax(String fax) {
+        return find("replace(contactJpa.fax, ' ', '') = :fax", Parameters.with("fax", fax.replaceAll("\\s", ""))).firstResultOptional();
+    }
 }
