@@ -5,10 +5,31 @@ import cm.xenonbyte.gestitre.application.company.dto.AddressView;
 import cm.xenonbyte.gestitre.application.company.dto.ContactView;
 import cm.xenonbyte.gestitre.application.company.dto.CreateCompanyViewRequest;
 import cm.xenonbyte.gestitre.application.company.dto.UpdateCompanyViewRequest;
+import cm.xenonbyte.gestitre.domain.admin.Permission;
+import cm.xenonbyte.gestitre.domain.admin.Role;
+import cm.xenonbyte.gestitre.domain.admin.User;
+import cm.xenonbyte.gestitre.domain.admin.ports.secondary.TokenProvider;
+import cm.xenonbyte.gestitre.domain.admin.vo.AccountEnabled;
+import cm.xenonbyte.gestitre.domain.admin.vo.AccountExpired;
+import cm.xenonbyte.gestitre.domain.admin.vo.AccountLocked;
+import cm.xenonbyte.gestitre.domain.admin.vo.CredentialExpired;
+import cm.xenonbyte.gestitre.domain.admin.vo.FailedLoginAttempt;
+import cm.xenonbyte.gestitre.domain.admin.vo.PermissionId;
+import cm.xenonbyte.gestitre.domain.admin.vo.RoleId;
+import cm.xenonbyte.gestitre.domain.admin.vo.Token;
+import cm.xenonbyte.gestitre.domain.admin.vo.UseMfa;
+import cm.xenonbyte.gestitre.domain.common.vo.Active;
+import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
+import cm.xenonbyte.gestitre.domain.common.vo.Email;
+import cm.xenonbyte.gestitre.domain.common.vo.Name;
+import cm.xenonbyte.gestitre.domain.common.vo.TenantId;
+import cm.xenonbyte.gestitre.domain.common.vo.Text;
+import cm.xenonbyte.gestitre.domain.common.vo.UserId;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
 import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.specification.MultiPartSpecification;
+import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -16,7 +37,10 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -48,6 +72,9 @@ import static org.hamcrest.Matchers.notNullValue;
 @QuarkusTest
 @TestProfile(ITProfile.class)
 class CompanyTest {
+
+    @Inject
+    TokenProvider tokenProvider;
 
     static Stream<Arguments> createCompanySuccessMethodSource() {
         return Stream.of(
@@ -170,10 +197,9 @@ class CompanyTest {
             MultiPartSpecification logo,
             MultiPartSpecification stamp
     ) {
-
         //Act + Then
         given()
-            .header("Accept-Language", FR_LANGUAGE)
+            .headers(getHeaders(getToken().accessToken().value()))
             .multiPart("createCompanyViewRequest", createCompanyViewRequest)
             .multiPart(logo)
             .multiPart(stamp)
@@ -439,7 +465,7 @@ class CompanyTest {
     ) {
         //Act + Then
         given()
-            .header("Accept-Language", FR_LANGUAGE)
+            .headers(getHeaders(getToken().accessToken().value()))
             .multiPart("createCompanyViewRequest", createCompanyViewRequest)
         .when()
             .post(COMPANY_API_PATH)
@@ -458,7 +484,7 @@ class CompanyTest {
         UUID companyId = UUID.fromString("019359ab-12ea-77d1-8a37-984affddd14f");
         //Act + Then
         given()
-            .header("Accept-Language", FR_LANGUAGE)
+            .headers(getHeaders(getToken().accessToken().value()))
         .when()
             .get(COMPANY_API_PATH +  "/" + companyId)
         .then()
@@ -482,7 +508,7 @@ class CompanyTest {
 
         //Act
         given()
-            .header("Accept-Language", FR_LANGUAGE)
+            .headers(getHeaders(getToken().accessToken().value()))
             .queryParam("page", page)
             .queryParam("size", size)
             .queryParam("field", field)
@@ -514,24 +540,24 @@ class CompanyTest {
 
         //Act
         given()
-                .header("Accept-Language", FR_LANGUAGE)
-                .queryParam("page", page)
-                .queryParam("size", size)
-                .queryParam("field", field)
-                .queryParam("direction", direction)
-                .queryParam("keyword", keyword)
-                .when()
-                .get(COMPANY_API_PATH +  "/search")
-                .then()
-                .log().all()
-                .statusCode(200)
-                .body("code", equalTo(200))
-                .body("status", equalTo("OK"))
-                .body("success", equalTo(true))
-                .body("data", notNullValue())
-                .body("data.content", notNullValue())
-                .body("data.content.elements", notNullValue())
-                .body("message", equalTo(LocalizationUtil.getMessage(COMPANY_FINDS_SUCCESSFULLY, Locale.forLanguageTag(FR_LANGUAGE))));
+            .headers(getHeaders(getToken().accessToken().value()))
+            .queryParam("page", page)
+            .queryParam("size", size)
+            .queryParam("field", field)
+            .queryParam("direction", direction)
+            .queryParam("keyword", keyword)
+        .when()
+            .get(COMPANY_API_PATH +  "/search")
+        .then()
+            .log().all()
+            .statusCode(200)
+            .body("code", equalTo(200))
+            .body("status", equalTo("OK"))
+            .body("success", equalTo(true))
+            .body("data", notNullValue())
+            .body("data.content", notNullValue())
+            .body("data.content.elements", notNullValue())
+            .body("message", equalTo(LocalizationUtil.getMessage(COMPANY_FINDS_SUCCESSFULLY, Locale.forLanguageTag(FR_LANGUAGE))));
 
 
     }
@@ -592,7 +618,7 @@ class CompanyTest {
 
         //Act + Then
         given()
-            .header("Accept-Language", FR_LANGUAGE)
+            .headers(getHeaders(getToken().accessToken().value()))
             .multiPart("updateCompanyViewRequest", updateCompanyViewRequest)
             .multiPart(logo)
             .multiPart(stamp)
@@ -886,7 +912,7 @@ class CompanyTest {
     ) {
         //Act + Then
         given()
-            .header("Accept-Language", FR_LANGUAGE)
+            .headers(getHeaders(getToken().accessToken().value()))
             .multiPart("updateCompanyViewRequest", updateCompanyViewRequest)
         .when()
                 .put(COMPANY_API_PATH + "/" + companyId)
@@ -897,5 +923,50 @@ class CompanyTest {
             .body("status", equalTo(status))
             .body("success", equalTo(false))
             .body("reason", equalTo(LocalizationUtil.getMessage(exceptionMessage, forLanguageTag(FR_LANGUAGE), exceptionArgs)));
+    }
+    private Token getToken() {
+        User user = User.builder()
+                .id(new UserId(UUID.fromString("01937564-456e-7514-8c6c-1db19c1614d6")))
+                .failedLoginAttempt(FailedLoginAttempt.of(0L))
+                .accountEnabled(AccountEnabled.with(true))
+                .accountExpired(AccountExpired.with(true))
+                .accountLocked(AccountLocked.with(false))
+                .credentialExpired(CredentialExpired.with(false))
+                .companyId(new CompanyId(UUID.fromString("01937563-f905-7965-a014-da683621056c")))
+                .tenantId(new TenantId(UUID.fromString("01937563-b2fc-79f9-bf40-d03bc39383f1")))
+                .name(Name.of(Text.of("ROOT")))
+                .email(Email.of(Text.of("ambiandji@gmail.com")))
+                .useMfa(UseMfa.with(true))
+                .roles(Set.of(
+                        Role.builder()
+                                .id(new RoleId(UUID.fromString("01935bdb-8ca1-768a-88d6-82335f785612")))
+                                .name(Name.of(Text.of("System")))
+                                .active(Active.with(true))
+                                .permissions(Set.of(
+                                        Permission.builder()
+                                                .id(new PermissionId(UUID.fromString("01935bd9-2c9f-72a8-840b-ae72e943c715")))
+                                                .name(Name.of(Text.of("create:company")))
+                                                .build(),
+                                        Permission.builder()
+                                                .id(new PermissionId(UUID.fromString("01935bd9-2c9f-7951-bfc5-3c02921ac515")))
+                                                .name(Name.of(Text.of("update:company")))
+                                                .build(),
+                                        Permission.builder()
+                                                .id(new PermissionId(UUID.fromString("01935bd9-2c9f-7147-8f3e-97dbf32b3a08")))
+                                                .name(Name.of(Text.of("read:company")))
+                                                .build()
+                                ))
+                                .build()
+                ))
+                .build();
+        return tokenProvider.generateToken(user);
+    }
+
+    private Map<String, String> getHeaders(String token) {
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Accept-Language", FR_LANGUAGE);
+        headers.put("Authorization", String.format("Bearer %s", token));
+        headers.put("X-Gestitre-Tenant-Code", "ROOT");
+        return headers;
     }
 }

@@ -3,13 +3,37 @@ package cm.xenonbyte.gestitre.bootstrap.company;
 import cm.xenonbyte.gestitre.application.common.in18.LocalizationUtil;
 import cm.xenonbyte.gestitre.application.company.certificatetemplate.dto.CreateCertificateTemplateViewRequest;
 import cm.xenonbyte.gestitre.application.company.certificatetemplate.dto.UpdateCertificateTemplateViewRequest;
+import cm.xenonbyte.gestitre.domain.admin.Permission;
+import cm.xenonbyte.gestitre.domain.admin.Role;
+import cm.xenonbyte.gestitre.domain.admin.User;
+import cm.xenonbyte.gestitre.domain.admin.ports.secondary.TokenProvider;
+import cm.xenonbyte.gestitre.domain.admin.vo.AccountEnabled;
+import cm.xenonbyte.gestitre.domain.admin.vo.AccountExpired;
+import cm.xenonbyte.gestitre.domain.admin.vo.AccountLocked;
+import cm.xenonbyte.gestitre.domain.admin.vo.CredentialExpired;
+import cm.xenonbyte.gestitre.domain.admin.vo.FailedLoginAttempt;
+import cm.xenonbyte.gestitre.domain.admin.vo.PermissionId;
+import cm.xenonbyte.gestitre.domain.admin.vo.RoleId;
+import cm.xenonbyte.gestitre.domain.admin.vo.Token;
+import cm.xenonbyte.gestitre.domain.admin.vo.UseMfa;
+import cm.xenonbyte.gestitre.domain.common.vo.Active;
+import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
+import cm.xenonbyte.gestitre.domain.common.vo.Email;
+import cm.xenonbyte.gestitre.domain.common.vo.Name;
+import cm.xenonbyte.gestitre.domain.common.vo.TenantId;
+import cm.xenonbyte.gestitre.domain.common.vo.Text;
+import cm.xenonbyte.gestitre.domain.common.vo.UserId;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
+import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import static cm.xenonbyte.gestitre.application.common.ApplicationConstant.CERTIFICATE_TEMPLATE_API_PATH;
@@ -37,7 +61,8 @@ import static org.hamcrest.Matchers.notNullValue;
 @TestProfile(ITProfile.class)
 final class CertificateTemplateTest {
 
-
+    @Inject
+    TokenProvider tokenProvider;
 
     @Test
     void should_create_certificate_template() throws JsonProcessingException {
@@ -48,7 +73,7 @@ final class CertificateTemplateTest {
         given()
             .contentType("application/json")
             .accept("application/json")
-            .header("Accept-Language", FR_LANGUAGE)
+            .headers(getHeaders(getToken().accessToken().value()))
             .body(new ObjectMapper().writeValueAsString(createCertificateTemplateViewRequest))
             .when()
             .post(CERTIFICATE_TEMPLATE_API_PATH)
@@ -72,7 +97,7 @@ final class CertificateTemplateTest {
         given()
             .contentType("application/json")
             .accept("application/json")
-            .header("Accept-Language", FR_LANGUAGE)
+            .headers(getHeaders(getToken().accessToken().value()))
             .body(new ObjectMapper().writeValueAsString(createCertificateTemplateViewRequest))
         .when()
             .post(CERTIFICATE_TEMPLATE_API_PATH)
@@ -95,7 +120,7 @@ final class CertificateTemplateTest {
         given()
             .contentType("application/json")
             .accept("application/json")
-            .header("Accept-Language", FR_LANGUAGE)
+            .headers(getHeaders(getToken().accessToken().value()))
             .body(new ObjectMapper().writeValueAsString(createCertificateTemplateViewRequest))
         .when()
             .post(CERTIFICATE_TEMPLATE_API_PATH)
@@ -116,7 +141,7 @@ final class CertificateTemplateTest {
 
 
         given()
-            .header("Accept-Language", FR_LANGUAGE)
+            .headers(getHeaders(getToken().accessToken().value()))
         .when()
             .get(CERTIFICATE_TEMPLATE_API_PATH + "/" + certificateTemplateId)
         .then()
@@ -136,7 +161,7 @@ final class CertificateTemplateTest {
 
 
         given()
-            .header("Accept-Language", FR_LANGUAGE)
+            .headers(getHeaders(getToken().accessToken().value()))
         .when()
             .get(CERTIFICATE_TEMPLATE_API_PATH + "/" + certificateTemplateId)
         .then()
@@ -157,7 +182,7 @@ final class CertificateTemplateTest {
         String direction = "DESC";
 
         given()
-            .header("Accept-Language", FR_LANGUAGE)
+            .headers(getHeaders(getToken().accessToken().value()))
             .param("page", String.valueOf(page))
             .param("size", String.valueOf(size))
             .param("field", field)
@@ -184,7 +209,7 @@ final class CertificateTemplateTest {
         String keyword = "1";
 
         given()
-            .header("Accept-Language", FR_LANGUAGE)
+            .headers(getHeaders(getToken().accessToken().value()))
             .param("page", String.valueOf(page))
             .param("size", String.valueOf(size))
             .param("field", field)
@@ -213,7 +238,7 @@ final class CertificateTemplateTest {
         String keyword = "xxxxx";
 
         given()
-            .header("Accept-Language", FR_LANGUAGE)
+            .headers(getHeaders(getToken().accessToken().value()))
             .param("page", String.valueOf(page))
             .param("size", String.valueOf(size))
             .param("field", field)
@@ -246,7 +271,7 @@ final class CertificateTemplateTest {
         given()
                 .contentType("application/json")
                 .accept("application/json")
-                .header("Accept-Language", FR_LANGUAGE)
+                .headers(getHeaders(getToken().accessToken().value()))
                 .body(new ObjectMapper().writeValueAsString(updateCertificateTemplateViewRequest))
             .when()
                 .put(CERTIFICATE_TEMPLATE_API_PATH + "/" + certificateTemplateId)
@@ -274,7 +299,7 @@ final class CertificateTemplateTest {
         given()
             .contentType("application/json")
             .accept("application/json")
-            .header("Accept-Language", FR_LANGUAGE)
+            .headers(getHeaders(getToken().accessToken().value()))
             .body(new ObjectMapper().writeValueAsString(updateCertificateTemplateViewRequest))
         .when()
             .put(CERTIFICATE_TEMPLATE_API_PATH + "/" + certificateTemplateId)
@@ -302,7 +327,7 @@ final class CertificateTemplateTest {
         given()
             .contentType("application/json")
             .accept("application/json")
-            .header("Accept-Language", FR_LANGUAGE)
+            .headers(getHeaders(getToken().accessToken().value()))
             .body(new ObjectMapper().writeValueAsString(updateCertificateTemplateViewRequest))
         .when()
             .put(CERTIFICATE_TEMPLATE_API_PATH + "/" + certificateTemplateId)
@@ -313,5 +338,51 @@ final class CertificateTemplateTest {
             .body("status", equalTo("CONFLICT"))
             .body("success", equalTo(false))
             .body("reason", equalTo(LocalizationUtil.getMessage(CERTIFICATE_TEMPLATE_NAME_CONFLICT, forLanguageTag(FR_LANGUAGE), name)));
+    }
+
+    private Token getToken() {
+        User user = User.builder()
+                .id(new UserId(UUID.fromString("01937564-456e-7514-8c6c-1db19c1614d6")))
+                .failedLoginAttempt(FailedLoginAttempt.of(0L))
+                .accountEnabled(AccountEnabled.with(true))
+                .accountExpired(AccountExpired.with(true))
+                .accountLocked(AccountLocked.with(false))
+                .credentialExpired(CredentialExpired.with(false))
+                .companyId(new CompanyId(UUID.fromString("01937563-f905-7965-a014-da683621056c")))
+                .tenantId(new TenantId(UUID.fromString("01937563-b2fc-79f9-bf40-d03bc39383f1")))
+                .name(Name.of(Text.of("ROOT")))
+                .email(Email.of(Text.of("ambiandji@gmail.com")))
+                .useMfa(UseMfa.with(true))
+                .roles(Set.of(
+                        Role.builder()
+                                .id(new RoleId(UUID.fromString("01935bdb-8ca1-768a-88d6-82335f785612")))
+                                .name(Name.of(Text.of("System")))
+                                .active(Active.with(true))
+                                .permissions(Set.of(
+                                        Permission.builder()
+                                                .id(new PermissionId(UUID.fromString("01935bd8-b568-7b70-bf61-cbbbdc707687")))
+                                                .name(Name.of(Text.of("create:certificate:template")))
+                                                .build(),
+                                        Permission.builder()
+                                                .id(new PermissionId(UUID.fromString("01935bd8-d4d3-76a6-8bec-7edf01ea264d")))
+                                                .name(Name.of(Text.of("update:certificate:template")))
+                                                .build(),
+                                        Permission.builder()
+                                                .id(new PermissionId(UUID.fromString("01935bd9-2c9f-7be6-8800-e0e332a9fe34")))
+                                                .name(Name.of(Text.of("read:certificate:template")))
+                                                .build()
+                                ))
+                                .build()
+                ))
+                .build();
+        return tokenProvider.generateToken(user);
+    }
+
+    private Map<String, String> getHeaders(String token) {
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Accept-Language", FR_LANGUAGE);
+        headers.put("Authorization", String.format("Bearer %s", token));
+        headers.put("X-Gestitre-Tenant-Code", "ROOT");
+        return headers;
     }
 }
