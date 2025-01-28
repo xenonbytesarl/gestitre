@@ -1,0 +1,133 @@
+name: CIPipelineGestitreService
+on:
+  workflow_dispatch:
+    inputs:
+      Build:
+        default: false
+        description: Build docker image
+        type: boolean
+        required: false
+  pull_request:
+    branches:
+      - 'develop'
+    paths:
+      - gestitre-service/**
+      - docker/gestitre-service/**
+      - 'docker-compose.yml'
+      - .github/workflows/**
+  push:
+    branches:
+      - 'develop'
+jobs:
+  compile:
+    runs-on: self-hosted
+    name: Compile project
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: 'corretto'
+
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v5
+        with:
+          maven-version: 3.9.8
+      - name: Compile project
+        run: |
+          cd gestitre-service
+          mvn clean compile
+  unit-tests:
+    runs-on: self-hosted
+    name: Unit test project
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: 'corretto'
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v5
+        with:
+          maven-version: 3.9.8
+      - name: Test the project
+        run: |
+          cd gestitre-service
+          mvn clean test
+  integration-tests:
+    runs-on: self-hosted
+    name: Integration test the project
+    needs: [compile, unit-tests]
+    steps:
+      - name: Build the Project
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: 'corretto'
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v5
+        with:
+          maven-version: 3.9.8
+      - name: Test the project
+        run: |
+          cd gestitre-service
+          mvn clean verify
+  build-image:
+    runs-on: self-hosted
+    name: Build docker image
+    needs: [integration-tests]
+    if: ${{ github.event.inputs.Build }}
+    steps:
+      - name: Build the Project
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: 'corretto'
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v5
+        with:
+          maven-version: 3.9.8
+      - name: Build project
+        run: |
+          cd gestitre-service
+          mvn clean package -DskipTests
+      - name: Extract project version
+        id: extract_version
+        run: |
+          cd gestitre-service
+          echo "VERSION=$(mvn -q -Dexec.executable='echo' -Dexec.args='${project.version}' --non-recursive exec:exec)" >> $GITHUB_OUTPUT
+      - name: Login to Dockerhub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Get current date in number
+        id: current_date
+        run: |
+          echo "CURRENT_DATE=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
+      - name: Build image and push to docker registry
+        uses: docker/build-push-action@v5
+        with:
+          context: gestitre-service
+          file: docker/gestitre-service/Dockerfile
+          push: true
+          platforms: linux/amd64
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/gestitre-service:${{ steps.extract_version.outputs.VERSION }}.${{ steps.current_date.outputs.CURRENT_DATE }}, ${{ secrets.DOCKERHUB_USERNAME }}/gestitre-service:latest
+          build-args: |
+            APP_VERSION=${{ steps.extract_version.outputs.VERSION }}
