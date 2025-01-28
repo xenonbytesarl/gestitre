@@ -1,0 +1,51 @@
+services:
+  gestitre-postgresql:
+    container_name: gestitre-postgresql
+    image: postgres:16.4
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - PGDATA=/var/lib/postgresql/data
+      - POSTGRES_DB=${DB_NAME}
+      - PGPORT=${DB_PORT}
+    volumes:
+      - ./gestitre_postgresql/data:/var/lib/postgresql/data
+    ports:
+      - '${DB_PORT}:${DB_PORT}'
+    networks:
+      - gestitre-network
+    restart: unless-stopped
+  gestitre-service:
+    container_name: gestitre-service
+    image: xenonbytesarl/gestitre-service:latest
+    environment:
+      - ENV_APP_PROFILE=${APP_PROFILE}
+      - ENV_DB_SERVER=${DB_SERVER}
+      - ENV_DB_PORT=${DB_PORT}
+      - ENV_DB_NAME=${DB_NAME}
+      - ENV_DB_USER=${DB_USER}
+      - ENV_DB_PASSWORD=${DB_PASSWORD}
+      - ENV_APP_PORT=${APP_PORT}
+    volumes:
+      - ./gestitre_images/data:/root/gestitre
+    ports:
+      - '${APP_PORT}:${APP_PORT}'
+    depends_on:
+      - gestitre-postgresql
+    networks:
+      - gestitre-network
+  gestitre-ui:
+    container_name: gestitre-ui
+    image: xenonbytesarl/gestitre-ui:latest
+    environment:
+      - UI_PORT=${UI_PORT}
+      - VITE_API_BACKEND_URL=${API_BACKEND_URL}
+    ports:
+      - '${UI_PORT}:80'
+    depends_on:
+      - gestitre-api
+    networks:
+      - gestitre-network
+networks:
+  gestitre-network:
+    driver: bridge
