@@ -43,7 +43,7 @@ services:
     ports:
       - '${UI_PORT}:80'
     depends_on:
-      - gestitre-api
+      - gestitre-service
     networks:
       - gestitre-network
 networks:
