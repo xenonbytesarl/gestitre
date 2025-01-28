@@ -13,7 +13,7 @@
         <module>gestitre-infrastructure</module>
         <module>gestitre-resource</module>
         <module>gestitre-application</module>
-        <module>gestitre-boostrap</module>
+        <module>gestitre-bootstrap</module>
     </modules>
 
     <properties>

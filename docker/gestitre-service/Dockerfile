@@ -2,6 +2,7 @@
 FROM maven:3.9.9-amazoncorretto-21 AS build
 
 VOLUME /root/gestitre
+WORKDIR /build
 COPY . .
 RUN mvn dependency:go-offline
 RUN mvn clean package -DskipTests=true
@@ -16,8 +17,11 @@ ARG ARG_DB_NAME=missing_db_name
 ARG ARG_DB_USER=missing_db_user
 ARG ARG_DB_PASSWORD=missing_db_password
 
-WORKDIR /app
-COPY --from=build /build/gestitre-bootstrap/target/quarkus-app/quarkus-run*.jar /app/
+WORKDIR /deployments
+COPY  --chown=185 --from=build /build/gestitre-bootstrap/target/quarkus-app/lib/ /deployments/lib/
+COPY  --chown=185 --from=build /build/gestitre-bootstrap/target/quarkus-app/*.jar /deployments/
+COPY  --chown=185 --from=build /build/gestitre-bootstrap/target/quarkus-app/app/ /deployments/app/
+COPY  --chown=185 --from=build /build/gestitre-bootstrap/target/quarkus-app/quarkus/ /deployments/quarkus/
 
 
 ENV ENV_APP_VERSION=${ARG_APP_VERSION}
@@ -36,4 +40,4 @@ CMD java -jar \
     -Dquarkus.datasource.username=${ENV_DB_USER} \
     -Dquarkus.datasource.password=${ENV_DB_PASSWORD} \
     -Dquarkus.datasource.url=jdbc:postgresql://${ENV_DB_SERVER}:${ENV_APP_PORT}/${ENV_DB_NAME} \
-    quarkus-run-${ENV_APP_VERSION}.jar
+    quarkus-run.jar

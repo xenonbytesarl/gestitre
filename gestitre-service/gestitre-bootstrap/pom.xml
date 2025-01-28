@@ -7,7 +7,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>gestitre-boostrap</artifactId>
+    <artifactId>gestitre-bootstrap</artifactId>
     <packaging>jar</packaging>
 
     <properties>
