@@ -39,7 +39,7 @@ jobs:
           maven-version: 3.9.8
       - name: Compile project
         run: |
-          cd farm-byte-service
+          cd gestitre-service
           mvn clean compile
   unit-tests:
     runs-on: self-hosted
