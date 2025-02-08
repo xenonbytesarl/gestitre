@@ -1,8 +1,10 @@
 package cm.xenonbyte.gestitre.application.shareholder.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,6 +18,7 @@ import java.time.ZonedDateTime;
 import static cm.xenonbyte.gestitre.application.common.ApplicationConstant.MAX_SIZE;
 import static cm.xenonbyte.gestitre.application.common.ApplicationConstant.NOT_BLANK;
 import static cm.xenonbyte.gestitre.application.common.ApplicationConstant.NOT_NULL;
+import static cm.xenonbyte.gestitre.application.common.ApplicationConstant.POSITIVE_OR_ZERO;
 
 /**
  * @author bamk
@@ -40,6 +43,7 @@ public class ShareHolderView {
     @Size(max = 128, message = MAX_SIZE)
     private String taxResidence;
     @NotNull(message = NOT_NULL)
+    @PositiveOrZero(message = POSITIVE_OR_ZERO)
     private BigDecimal initialBalance;
     private String bankAccountNumber;
     private String administrator;
@@ -53,7 +57,7 @@ public class ShareHolderView {
     @Valid
     private SuccessorView successorView;
     @NotNull(message = NOT_NULL)
-    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ssZ")
     private ZonedDateTime createdDate;
     private Boolean active;
 }

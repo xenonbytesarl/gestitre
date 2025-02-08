@@ -60,7 +60,9 @@ public final class CompanyJpaRepositoryAdapter implements CompanyRepository {
     @Transactional
     public Company create(@Nonnull Company company) {
         companyJpaRepository.persist(companyJpaMapper.toCompanyJpa(company));
-        return company;
+        return companyJpaMapper.toCompany(
+                companyJpaRepository.findById(company.getId().getValue())
+        );
     }
 
     @Override

@@ -56,7 +56,7 @@ public final class MailServerDomainService implements MailServerService {
         mailServer.validateMandatoryFields();
         validateMailServer(mailServer);
         mailServer.initializeDefaultValues();
-        mailServerRepository.create(mailServer);
+        mailServer = mailServerRepository.create(mailServer);
         LOGGER.info("Mail server is created with id " + mailServer.getId().getValue());
         MailServerCreatedEvent mailServerCreatedEvent = new MailServerCreatedEvent(mailServer, ZonedDateTime.now());
         mailServerMessagePublisher.publish(mailServerCreatedEvent, MAIL_SERVER_CREATED);

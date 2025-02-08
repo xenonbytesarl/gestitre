@@ -71,7 +71,7 @@ public final class CompanyDomainService implements CompanyService {
         company.validateMandatoryFields();
         validateCompany(company);
         company.initializeDefaultValues();
-        companyRepository.create(company);
+        company = companyRepository.create(company);
         LOGGER.info("Company is created with id " + company.getId().getValue());
         CompanyCreatedEvent companyCreatedEvent = new CompanyCreatedEvent(company, ZonedDateTime.now());
         companyMessagePublisher.publish(companyCreatedEvent, COMPANY_CREATED);

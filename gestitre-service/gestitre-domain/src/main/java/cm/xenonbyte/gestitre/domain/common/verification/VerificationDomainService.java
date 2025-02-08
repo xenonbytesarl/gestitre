@@ -87,7 +87,7 @@ public final class VerificationDomainService implements VerificationService {
         cancelExistingVerification(verification);
         initializeVerification(verification);
         verification.initializeDefaults();
-        verificationRepository.create(verification);
+        verification = verificationRepository.create(verification);
         LOGGER.info("Verification created with id  " + verification.getId().getValue());
         VerificationCreatedEvent verificationCreatedEvent = new VerificationCreatedEvent(verification, ZonedDateTime.now());
         verificationMessagePublish.publish(verificationCreatedEvent, VERIFICATION_CREATED);

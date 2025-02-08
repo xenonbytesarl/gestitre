@@ -38,7 +38,7 @@ public final class TenantDomainService implements TenantService {
         tenant.validateMandatoryFields();
         validateTenant(tenant);
         tenant.initializeDefaults();
-        tenantRepository.create(tenant);
+        tenant = tenantRepository.create(tenant);
         LOGGER.info("tenant is created with id " + tenant.getId().getValue());
         TenantCreatedEvent tenantCreatedEvent = new TenantCreatedEvent(tenant, ZonedDateTime.now());
         tenantMessagePublisher.publish(tenantCreatedEvent, TENANT_CREATED);

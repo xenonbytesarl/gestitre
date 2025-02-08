@@ -6,6 +6,7 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,6 +15,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
 /**
@@ -78,4 +80,9 @@ public class ShareHolderJpa extends Tenantable {
 
     @Column(name = "c_active", nullable = false)
     private Boolean active;
+
+    @PrePersist
+    public void convertToUTC() {
+        this.createdDate = this.createdDate.withZoneSameInstant(ZoneOffset.UTC);
+    }
 }

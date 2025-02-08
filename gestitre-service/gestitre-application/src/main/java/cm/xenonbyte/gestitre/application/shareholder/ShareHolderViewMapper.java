@@ -46,7 +46,7 @@ public interface ShareHolderViewMapper {
     @Mapping(expression = "java(createShareHolderViewRequest.getActive() == null? null: cm.xenonbyte.gestitre.domain.common.vo.Active.with(createShareHolderViewRequest.getActive()))", target="active")
     @Mapping(source = "representativeView", qualifiedByName = "representativeViewRequestToRepresentative", target = "representative")
     @Mapping(source = "successorView", qualifiedByName = "successorViewRequestToSuccessor", target = "successor")
-    @Mapping(source = "createdDate", target="createdDate")
+    @Mapping(expression = "java(createShareHolderViewRequest.getCreatedDate().withZoneSameInstant(java.time.ZoneOffset.UTC))", target="createdDate")
     @Nonnull ShareHolder toShareHolder(@Nonnull @Valid CreateShareHolderViewRequest createShareHolderViewRequest);
 
     @Named("representativeViewRequestToRepresentative")

@@ -42,7 +42,9 @@ public final class TenantJpaRepositoryAdapter implements TenantRepository {
     @Transactional
     public Tenant create(@Nonnull Tenant tenant) {
         tenantJpaRepository.persist(tenantJpaMapper.toTenantJpa(tenant));
-        return tenant;
+        return tenantJpaMapper.toTenant(
+                tenantJpaRepository.findById(tenant.getId().getValue())
+        );
     }
 
     @Override
