@@ -23,4 +23,5 @@ public final class CommonConstant {
     public static final String VERIFICATION_CANCELED = "VERIFICATION_CANCELED";
     public static final String VERIFICATION_VERIFIED = "VERIFICATION_VERIFIED";
     public static final String MAIL_SERVER_CREATED = "MAIL_SERVER_CREATED";
+    public static final String SHAREHOLDER_CREATED = "SHAREHOLDER_CREATED";
 }

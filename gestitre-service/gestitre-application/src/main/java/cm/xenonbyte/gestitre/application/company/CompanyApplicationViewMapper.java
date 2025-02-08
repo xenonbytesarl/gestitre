@@ -59,14 +59,14 @@ public interface CompanyApplicationViewMapper {
     @Named("companyViewToAddress")
     @BeanMapping(ignoreByDefault = true)
     @Mapping(expression = "java(addressView.getStreet() == null || addressView.getStreet().isEmpty() ? null: cm.xenonbyte.gestitre.domain.company.vo.address.Street.of(cm.xenonbyte.gestitre.domain.common.vo.Text.of(addressView.getStreet())))", target="street")
-    @Mapping(expression = "java(cm.xenonbyte.gestitre.domain.company.vo.address.City.of(cm.xenonbyte.gestitre.domain.common.vo.Text.of(addressView.getCity())))", target="city")
-    @Mapping(expression = "java(cm.xenonbyte.gestitre.domain.company.vo.address.ZipCode.of(cm.xenonbyte.gestitre.domain.common.vo.Text.of(addressView.getZipCode())))", target="zipCode")
-    @Mapping(expression = "java(cm.xenonbyte.gestitre.domain.company.vo.address.Country.of(cm.xenonbyte.gestitre.domain.common.vo.Text.of(addressView.getCountry())))", target="country")
+    @Mapping(expression = "java(cm.xenonbyte.gestitre.domain.common.vo.City.of(cm.xenonbyte.gestitre.domain.common.vo.Text.of(addressView.getCity())))", target="city")
+    @Mapping(expression = "java(cm.xenonbyte.gestitre.domain.common.vo.ZipCode.of(cm.xenonbyte.gestitre.domain.common.vo.Text.of(addressView.getZipCode())))", target="zipCode")
+    @Mapping(expression = "java(cm.xenonbyte.gestitre.domain.common.vo.Country.of(cm.xenonbyte.gestitre.domain.common.vo.Text.of(addressView.getCountry())))", target="country")
     @Nonnull Address toAddress(@Nonnull @Valid AddressView addressView);
 
     @Named("companyViewToContact")
     @BeanMapping(ignoreByDefault = true)
-    @Mapping(expression = "java(contactView.getPhone() == null || contactView.getPhone().isEmpty()? null: cm.xenonbyte.gestitre.domain.company.vo.contact.Phone.of(cm.xenonbyte.gestitre.domain.common.vo.Text.of(contactView.getPhone())))", target="phone")
+    @Mapping(expression = "java(contactView.getPhone() == null || contactView.getPhone().isEmpty()? null: cm.xenonbyte.gestitre.domain.common.vo.Phone.of(cm.xenonbyte.gestitre.domain.common.vo.Text.of(contactView.getPhone())))", target="phone")
     @Mapping(expression = "java(contactView.getFax() == null || contactView.getFax().isEmpty()? null: cm.xenonbyte.gestitre.domain.company.vo.contact.Fax.of(cm.xenonbyte.gestitre.domain.common.vo.Text.of(contactView.getFax())))", target="fax")
     @Mapping(source = "email", target="email.text.value")
     @Mapping(source = "name", target="name.text.value")

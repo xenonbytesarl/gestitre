@@ -1,7 +1,6 @@
 package cm.xenonbyte.gestitre.infrastructure.company;
 
 import cm.xenonbyte.gestitre.domain.company.event.CompanyEvent;
-import cm.xenonbyte.gestitre.domain.company.event.CompanyUpdatedEvent;
 import cm.xenonbyte.gestitre.domain.company.ports.secondary.message.CompanyMessagePublisher;
 import cm.xenonbyte.gestitre.domain.company.vo.CompanyEventType;
 import io.vertx.core.eventbus.EventBus;

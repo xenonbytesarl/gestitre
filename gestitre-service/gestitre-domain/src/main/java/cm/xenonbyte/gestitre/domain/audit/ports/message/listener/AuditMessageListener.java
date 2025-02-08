@@ -8,6 +8,7 @@ import cm.xenonbyte.gestitre.domain.common.verification.event.VerificationCreate
 import cm.xenonbyte.gestitre.domain.common.verification.event.VerificationVerifiedEvent;
 import cm.xenonbyte.gestitre.domain.company.event.CompanyCreatedEvent;
 import cm.xenonbyte.gestitre.domain.company.event.CompanyUpdatedEvent;
+import cm.xenonbyte.gestitre.domain.shareholder.event.ShareHolderCreatedEvent;
 import cm.xenonbyte.gestitre.domain.tenant.TenantCreatedEvent;
 
 /**
@@ -26,4 +27,5 @@ public interface AuditMessageListener {
     void handle(VerificationCreatedEvent event);
     void handle(VerificationCanceledEvent event);
     void handle(VerificationVerifiedEvent event);
+    void handle(ShareHolderCreatedEvent event);
 }

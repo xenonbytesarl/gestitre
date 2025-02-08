@@ -3,6 +3,7 @@ package cm.xenonbyte.gestitre.domain.company.vo.contact;
 import cm.xenonbyte.gestitre.domain.common.validation.Assert;
 import cm.xenonbyte.gestitre.domain.common.vo.Email;
 import cm.xenonbyte.gestitre.domain.common.vo.Name;
+import cm.xenonbyte.gestitre.domain.common.vo.Phone;
 
 import java.util.Objects;
 

@@ -9,13 +9,13 @@ import cm.xenonbyte.gestitre.domain.common.vo.PageInfoDirection;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoField;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoPage;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoSize;
+import cm.xenonbyte.gestitre.domain.common.vo.Phone;
 import cm.xenonbyte.gestitre.domain.company.entity.Company;
 import cm.xenonbyte.gestitre.domain.company.vo.IsinCode;
 import cm.xenonbyte.gestitre.domain.company.vo.RegistrationNumber;
 import cm.xenonbyte.gestitre.domain.company.vo.TaxNumber;
 import cm.xenonbyte.gestitre.domain.company.vo.WebSiteUrl;
 import cm.xenonbyte.gestitre.domain.company.vo.contact.Fax;
-import cm.xenonbyte.gestitre.domain.company.vo.contact.Phone;
 import jakarta.annotation.Nonnull;
 
 import java.util.Optional;
