@@ -101,7 +101,7 @@ public interface ShareHolderViewMapper {
     @Mapping(expression = "java(shareHolder.getActive() == null? null: shareHolder.getActive().value())", target="active")
     @Mapping(source = "representative", qualifiedByName = "representativeToRepresentativeView", target = "representativeView")
     @Mapping(source = "successor", qualifiedByName = "successorToSuccessorView", target = "successorView")
-    @Mapping(source = "createdDate", target="createdDate")
+    @Mapping(expression = "java(cm.xenonbyte.gestitre.domain.context.TimezoneContext.current() == null? null: shareHolder.getCreatedDate().withZoneSameInstant(java.time.ZoneId.of(cm.xenonbyte.gestitre.domain.context.TimezoneContext.current().getName())))", target="createdDate")
     @Mapping(source = "tenantId.value", target="tenantId")
     @Nonnull @Valid CreateShareHolderViewResponse toCreateShareHolderViewResponse(ShareHolder shareHolder);
 

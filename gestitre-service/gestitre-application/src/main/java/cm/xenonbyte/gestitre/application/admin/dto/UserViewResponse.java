@@ -51,5 +51,7 @@ public class UserViewResponse {
     protected Boolean accountEnabled;
     @NotNull(message = NOT_NULL)
     protected Long failedLoginAttempt;
+    @NotNull(message = NOT_NULL)
+    protected TimezoneView timezoneView;
 
 }

@@ -35,6 +35,7 @@ public interface UserApplicationViewMapper {
     @Mapping(source = "name", target = "name.text.value")
     @Mapping(source = "password", target = "password.text.value")
     @Mapping(source = "confirmPassword", target = "confirmPassword.text.value")
+    @Mapping(expression = "java(cm.xenonbyte.gestitre.domain.admin.vo.Timezone.valueOf(createUserViewRequest.getTimezoneView().name()))", target = "timezone")
     @Mapping(expression = "java(createUserViewRequest.getUseMfa() == null? null: cm.xenonbyte.gestitre.domain.admin.vo.UseMfa.with(createUserViewRequest.getUseMfa()))", target="useMfa")
     @Mapping(source = "roleViews", qualifiedByName = "toRoles", target = "roles")
     @Nonnull User toUser(@Nonnull @Valid CreateUserViewRequest createUserViewRequest);
@@ -63,6 +64,7 @@ public interface UserApplicationViewMapper {
     @Mapping(target = "tenantId", source = "tenantId.value")
     @Mapping(target = "email", source = "email.text.value")
     @Mapping(target = "name", source = "name.text.value")
+    @Mapping(target = "timezoneView", expression = "java(cm.xenonbyte.gestitre.application.admin.dto.TimezoneView.valueOf(user.getTimezone().name()))")
     @Mapping(target="useMfa", source = "useMfa.value")
     @Mapping(target="accountExpired", source = "accountExpired.value")
     @Mapping(target="accountLocked", source = "accountLocked.value")
@@ -96,6 +98,7 @@ public interface UserApplicationViewMapper {
     @Mapping(target = "tenantId", source = "tenantId.value")
     @Mapping(target = "email", source = "email.text.value")
     @Mapping(target = "name", source = "name.text.value")
+    @Mapping(target = "timezoneView", expression = "java(cm.xenonbyte.gestitre.application.admin.dto.TimezoneView.valueOf(user.getTimezone().name()))")
     @Mapping(target="useMfa", source = "useMfa.value")
     @Mapping(target="accountExpired", source = "accountExpired.value")
     @Mapping(target="accountLocked", source = "accountLocked.value")

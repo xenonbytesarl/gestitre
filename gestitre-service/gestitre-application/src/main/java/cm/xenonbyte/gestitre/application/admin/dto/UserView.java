@@ -44,5 +44,7 @@ public class UserView {
     protected Set<RoleView> roleViews;
     @NotNull(message = NOT_NULL)
     protected UUID companyId;
+    @NotNull(message = NOT_NULL)
+    protected TimezoneView timezoneView;
     protected Boolean useMfa;
 }

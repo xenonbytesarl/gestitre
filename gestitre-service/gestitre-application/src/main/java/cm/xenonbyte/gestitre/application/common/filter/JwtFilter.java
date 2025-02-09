@@ -5,8 +5,9 @@ import cm.xenonbyte.gestitre.application.common.in18.LocalizationResolver;
 import cm.xenonbyte.gestitre.application.common.in18.LocalizationUtil;
 import cm.xenonbyte.gestitre.domain.common.vo.Name;
 import cm.xenonbyte.gestitre.domain.common.vo.Text;
+import cm.xenonbyte.gestitre.domain.context.TenantContext;
+import cm.xenonbyte.gestitre.domain.context.TimezoneContext;
 import cm.xenonbyte.gestitre.domain.tenant.Tenant;
-import cm.xenonbyte.gestitre.domain.tenant.TenantContext;
 import cm.xenonbyte.gestitre.domain.tenant.ports.primary.message.listener.TenantService;
 import io.smallrye.jwt.auth.principal.JWTParser;
 import io.smallrye.jwt.auth.principal.ParseException;
@@ -39,6 +40,7 @@ import static jakarta.ws.rs.core.Response.Status.UNAUTHORIZED;
 public final class JwtFilter implements ContainerRequestFilter {
 
     private static final String TENANT_CODE_HEADER = "X-Gestitre-Tenant-Code";
+    private static final String TIMEZONE_HEADER = "X-Gestitre-Timezone";
     private static final String JWT_FILTER_AUTHORIZATION_MISSING = "JwtFilter.1";
     private static final String JWT_FILTER_INVALID_TOKEN = "JwtFilter.2";
 
@@ -63,6 +65,7 @@ public final class JwtFilter implements ContainerRequestFilter {
             if(tenantName != null) {
                 Tenant tenant = tenantService.findByName(Name.of(Text.of(tenantName)));
                 if(tenant != null) {
+                    setTimezoneContext(context);
                     TenantContext.set(tenant.getId().getValue());
                     return;
                 }
@@ -78,9 +81,22 @@ public final class JwtFilter implements ContainerRequestFilter {
             jwtParser.parse(token);
             Optional<Object> optionalTenantId = jsonWebToken.claim("tenantId");
             optionalTenantId.ifPresent(o -> TenantContext.set(UUID.fromString(o.toString())));
+            setTimezoneContext(context);
+            if(TimezoneContext.current() == null) {
+                Optional<Object> optionalTimezone = jsonWebToken.claim("timezone");
+                optionalTimezone.ifPresent(o -> TimezoneContext.set(o.toString()));
+            }
         } catch (ParseException e) {
             abortWithUnAuthorized(context, JWT_FILTER_INVALID_TOKEN);
         }
+    }
+
+    private void setTimezoneContext(ContainerRequestContext context) {
+        String timezoneHeader = context.getHeaderString(TIMEZONE_HEADER);
+        if (timezoneHeader == null) {
+            return;
+        }
+        TimezoneContext.set(timezoneHeader);
     }
 
     private void abortWithUnAuthorized(ContainerRequestContext context, String message) {

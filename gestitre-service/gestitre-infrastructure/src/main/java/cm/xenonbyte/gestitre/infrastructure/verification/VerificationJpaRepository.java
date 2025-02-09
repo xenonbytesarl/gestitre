@@ -1,7 +1,7 @@
 package cm.xenonbyte.gestitre.infrastructure.verification;
 
 import cm.xenonbyte.gestitre.infrastructure.admin.UserJpa;
-import cm.xenonbyte.gestitre.infrastructure.common.annotation.TenantPanacheInterceptor;
+import cm.xenonbyte.gestitre.infrastructure.common.annotation.TenantInterceptorBinding;
 import cm.xenonbyte.gestitre.infrastructure.notification.MailServerJpa;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import io.quarkus.panache.common.Parameters;
@@ -16,7 +16,7 @@ import java.util.UUID;
  * @since 28/11/2024
  */
 @ApplicationScoped
-@TenantPanacheInterceptor
+@TenantInterceptorBinding
 public final class VerificationJpaRepository implements PanacheRepositoryBase<VerificationJpa, UUID> {
     public Optional<VerificationJpa> findByUserAndStatus(UserJpa userJpa, VerificationStatusJpa verificationStatusJpa) {
         return find(

@@ -1,4 +1,4 @@
-package cm.xenonbyte.gestitre.domain.tenant;
+package cm.xenonbyte.gestitre.domain.context;
 
 
 import java.util.UUID;

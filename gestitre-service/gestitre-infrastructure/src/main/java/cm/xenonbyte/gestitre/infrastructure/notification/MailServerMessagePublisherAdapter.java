@@ -3,7 +3,7 @@ package cm.xenonbyte.gestitre.infrastructure.notification;
 import cm.xenonbyte.gestitre.domain.notification.event.MailServerEvent;
 import cm.xenonbyte.gestitre.domain.notification.ports.secondary.message.MailServerMessagePublisher;
 import cm.xenonbyte.gestitre.domain.notification.vo.MailServerEventType;
-import cm.xenonbyte.gestitre.domain.tenant.TenantContext;
+import cm.xenonbyte.gestitre.domain.context.TenantContext;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.eventbus.EventBus;
 import jakarta.annotation.Nonnull;

@@ -11,7 +11,7 @@ import cm.xenonbyte.gestitre.domain.common.verification.vo.VerificationType;
 import cm.xenonbyte.gestitre.domain.common.vo.Code;
 import cm.xenonbyte.gestitre.domain.common.vo.Text;
 import cm.xenonbyte.gestitre.domain.notification.event.MailServerCreatedEvent;
-import cm.xenonbyte.gestitre.domain.tenant.TenantContext;
+import cm.xenonbyte.gestitre.domain.context.TenantContext;
 import io.quarkus.vertx.ConsumeEvent;
 import io.smallrye.common.annotation.Blocking;
 import io.vertx.core.MultiMap;
