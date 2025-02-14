@@ -5,10 +5,12 @@ import cm.xenonbyte.gestitre.application.shareholder.dto.CreateShareHolderViewRe
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
 import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,6 +22,7 @@ import static cm.xenonbyte.gestitre.application.common.ApplicationConstant.SHARE
 import static cm.xenonbyte.gestitre.application.common.in18.LocalizationUtil.getMessage;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.CREATED;
+import static jakarta.ws.rs.core.Response.Status.OK;
 import static java.util.Locale.forLanguageTag;
 import static java.util.Map.of;
 
@@ -33,6 +36,7 @@ import static java.util.Map.of;
 public final class ShareHolderResource {
 
     private static final String SHARE_HOLDER_CREATED_SUCCESSFULLY = "ShareHolderResource.1";
+    private static final String SHARE_HOLDER_FINDS_SUCCESSFULLY = "ShareHolderResource.2";
     private final ShareHolderApplicationAdapter shareHolderApplicationAdapter;
 
 
@@ -59,6 +63,31 @@ public final class ShareHolderResource {
                                 .message(getMessage(SHARE_HOLDER_CREATED_SUCCESSFULLY, forLanguageTag(acceptLanguage)))
                                 .data(of(CONTENT, shareHolderApplicationAdapter.createShareHolder(createShareHolderViewRequest)))
                                 .build()
+                )
+                .build();
+    }
+
+    @GET
+    @Consumes(APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
+    @RolesAllowed({"read:shareholder"})
+    public Response findAllShareHolder(
+            @HeaderParam("Accept-Language") String acceptLanguage,
+            @QueryParam("page") Integer page,
+            @QueryParam("size") Integer size,
+            @QueryParam("field") String field,
+            @QueryParam("direction") String direction,
+            @QueryParam("keyword") String keyword
+    ) {
+        return Response.status(OK)
+                .entity(
+                        SuccessApiResponse.builder()
+                                .success(true)
+                                .status(OK.name())
+                                .code(OK.getStatusCode())
+                                .timestamp(ZonedDateTime.now())
+                                .message(getMessage(SHARE_HOLDER_FINDS_SUCCESSFULLY, forLanguageTag(acceptLanguage)))
+                                .data(of(CONTENT, shareHolderApplicationAdapter.findShareHolders(page, size, field, direction, keyword)))
                 )
                 .build();
     }

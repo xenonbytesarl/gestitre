@@ -2,11 +2,13 @@ package cm.xenonbyte.gestitre.domain.company.ports.primary;
 
 import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
 import cm.xenonbyte.gestitre.domain.common.vo.Keyword;
+import cm.xenonbyte.gestitre.domain.common.vo.Name;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfo;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoDirection;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoField;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoPage;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoSize;
+import cm.xenonbyte.gestitre.domain.common.vo.TenantId;
 import cm.xenonbyte.gestitre.domain.company.entity.Company;
 import cm.xenonbyte.gestitre.domain.company.event.CompanyCreatedEvent;
 import cm.xenonbyte.gestitre.domain.company.event.CompanyUpdatedEvent;
@@ -30,4 +32,8 @@ public interface CompanyService {
     @Nonnull CompanyUpdatedEvent updateCompany(@Nonnull CompanyId companyId, @Nonnull Company company);
 
     Boolean existsById(@Nonnull CompanyId companyId);
+
+    Company findCompanyByTenantBy(@Nonnull TenantId tenantId);
+
+    Company findCompanyByName(@Nonnull Name name);
 }

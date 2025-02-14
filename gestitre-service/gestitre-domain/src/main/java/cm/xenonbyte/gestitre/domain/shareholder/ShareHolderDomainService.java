@@ -1,7 +1,14 @@
 package cm.xenonbyte.gestitre.domain.shareholder;
 
 import cm.xenonbyte.gestitre.domain.common.annotation.DomainService;
+import cm.xenonbyte.gestitre.domain.common.validation.Assert;
 import cm.xenonbyte.gestitre.domain.common.vo.Email;
+import cm.xenonbyte.gestitre.domain.common.vo.Keyword;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfo;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoDirection;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoField;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoPage;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoSize;
 import cm.xenonbyte.gestitre.domain.common.vo.Phone;
 import cm.xenonbyte.gestitre.domain.shareholder.event.ShareHolderCreatedEvent;
 import cm.xenonbyte.gestitre.domain.shareholder.ports.primary.ShareHolderService;
@@ -50,6 +57,16 @@ public final class ShareHolderDomainService implements ShareHolderService {
         ShareHolderCreatedEvent shareHolderCreatedEvent = new ShareHolderCreatedEvent(shareHolder, ZonedDateTime.now());
         shareHolderMessagePublisher.publish(shareHolderCreatedEvent, SHAREHOLDER_CREATED);
         return shareHolderCreatedEvent;
+    }
+
+    @Override
+    public PageInfo<ShareHolder> findShareHolders(
+            PageInfoPage pageInfoPage, PageInfoSize pageInfoSize, PageInfoField pageInfoField, PageInfoDirection pageInfoDirection, Keyword keyword) {
+        validatePageParameters(pageInfoPage, pageInfoSize, pageInfoField, pageInfoDirection);
+        Assert.field("Keyword", keyword).notNull();
+        PageInfo<ShareHolder> shareHolderPageInfo = shareHolderRepository.findAll(pageInfoPage, pageInfoSize, pageInfoField, pageInfoDirection, keyword);
+        LOGGER.info("Found " + shareHolderPageInfo.getTotalElements() + " shareholder for keyword " + keyword.text().value());
+        return shareHolderPageInfo;
     }
 
     private void validateShareHolder(ShareHolder shareHolder) {
@@ -110,5 +127,16 @@ public final class ShareHolderDomainService implements ShareHolderService {
         if(shareHolderId != null && oldShareHolder.isPresent() && !oldShareHolder.get().getId().equals(shareHolderId)) {
             throw new ShareHolderAccountNumberConflictException(new String[] {accountNumber.text().value()});
         }
+    }
+
+    private static void validatePageParameters(
+            PageInfoPage pageInfoPage,
+            PageInfoSize pageInfoSize,
+            PageInfoField pageInfoField,
+            PageInfoDirection pageInfoDirection) {
+        Assert.field("Page", pageInfoPage).notNull();
+        Assert.field("Size", pageInfoSize).notNull();
+        Assert.field("Field", pageInfoField).notNull();
+        Assert.field("Direction", pageInfoDirection).notNull();
     }
 }

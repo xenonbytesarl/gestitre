@@ -77,4 +77,8 @@ public final class CompanyJpaRepository implements PanacheRepositoryBase<Company
     public Optional<CompanyJpa> findByFax(String fax) {
         return find("replace(contactJpa.fax, ' ', '') = :fax", Parameters.with("fax", fax.replaceAll("\\s", ""))).firstResultOptional();
     }
+
+    public Optional<CompanyJpa> findByTenantId(UUID tenantId) {
+        return find("tenantId", tenantId).firstResultOptional();
+    }
 }

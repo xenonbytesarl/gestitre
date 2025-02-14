@@ -1,5 +1,11 @@
 package cm.xenonbyte.gestitre.domain.shareholder.ports.primary;
 
+import cm.xenonbyte.gestitre.domain.common.vo.Keyword;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfo;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoDirection;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoField;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoPage;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoSize;
 import cm.xenonbyte.gestitre.domain.shareholder.ShareHolder;
 import cm.xenonbyte.gestitre.domain.shareholder.event.ShareHolderCreatedEvent;
 
@@ -12,4 +18,6 @@ public interface ShareHolderService {
 
     ShareHolderCreatedEvent createShareHolder(ShareHolder shareHolder);
 
+    PageInfo<ShareHolder> findShareHolders(
+            PageInfoPage pageInfoPage, PageInfoSize pageInfoSize, PageInfoField pageInfoField, PageInfoDirection pageInfoDirection, Keyword keyword);
 }

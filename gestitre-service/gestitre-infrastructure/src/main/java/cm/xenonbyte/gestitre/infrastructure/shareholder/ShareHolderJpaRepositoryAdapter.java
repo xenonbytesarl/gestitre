@@ -1,11 +1,20 @@
 package cm.xenonbyte.gestitre.infrastructure.shareholder;
 
 import cm.xenonbyte.gestitre.domain.common.vo.Email;
+import cm.xenonbyte.gestitre.domain.common.vo.Keyword;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfo;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoDirection;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoField;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoPage;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoSize;
 import cm.xenonbyte.gestitre.domain.common.vo.Phone;
 import cm.xenonbyte.gestitre.domain.shareholder.ShareHolder;
 import cm.xenonbyte.gestitre.domain.shareholder.ports.secondary.ShareHolderRepository;
 import cm.xenonbyte.gestitre.domain.shareholder.vo.AccountNumber;
 import cm.xenonbyte.gestitre.domain.shareholder.vo.BankAccountNumber;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
+import io.quarkus.panache.common.Page;
+import io.quarkus.panache.common.Sort;
 import jakarta.annotation.Nonnull;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
@@ -85,6 +94,39 @@ public final class ShareHolderJpaRepositoryAdapter implements ShareHolderReposit
         );
         return shareHolderJpaMapper.toShareHolder(
                 shareHolderJpaRepository.findById(shareHolder.getId().getValue())
+        );
+    }
+
+    @Nonnull
+    @Override
+    public PageInfo<ShareHolder> findAll(
+            @Nonnull PageInfoPage pageInfoPage,
+            @Nonnull PageInfoSize pageInfoSize,
+            @Nonnull PageInfoField pageInfoField,
+            @Nonnull PageInfoDirection pageInfoDirection,
+            @Nonnull Keyword keyword) {
+        PanacheQuery<ShareHolderJpa> shareholderQueryResult = shareHolderJpaRepository.findAll(
+                Sort
+                        .by(pageInfoField.text().value())
+                        .direction(
+                                pageInfoDirection.equals(PageInfoDirection.ASC)
+                                        ? Sort.Direction.Ascending
+                                        : Sort.Direction.Descending
+                        )
+        );
+        PanacheQuery<ShareHolderJpa> shareholderPageQueryResult =
+                shareholderQueryResult.page(Page.of(pageInfoPage.value(), pageInfoSize.value()));
+        return new PageInfo<>(
+                !shareholderPageQueryResult.hasPreviousPage(),
+                !shareholderPageQueryResult.hasNextPage(),
+                pageInfoSize.value(),
+                shareholderQueryResult.count(),
+                shareholderQueryResult.pageCount(),
+                shareholderPageQueryResult
+                        .list()
+                        .stream()
+                        .map(shareHolderJpaMapper::toShareHolder)
+                        .toList()
         );
     }
 }

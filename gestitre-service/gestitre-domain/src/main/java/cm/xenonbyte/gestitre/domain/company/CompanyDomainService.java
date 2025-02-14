@@ -13,6 +13,7 @@ import cm.xenonbyte.gestitre.domain.common.vo.PageInfoField;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoPage;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoSize;
 import cm.xenonbyte.gestitre.domain.common.vo.Phone;
+import cm.xenonbyte.gestitre.domain.common.vo.TenantId;
 import cm.xenonbyte.gestitre.domain.company.entity.Company;
 import cm.xenonbyte.gestitre.domain.company.event.CompanyCreatedEvent;
 import cm.xenonbyte.gestitre.domain.company.event.CompanyUpdatedEvent;
@@ -138,6 +139,19 @@ public final class CompanyDomainService implements CompanyService {
     @Override
     public Boolean existsById(@Nonnull CompanyId companyId) {
         return companyRepository.existsById(companyId);
+    }
+
+    @Override
+    public Company findCompanyByTenantBy(@Nonnull TenantId tenantId) {
+        return companyRepository.findByTenantId(tenantId)
+                .orElseThrow(() -> new CompanyTenantIdNotFoundException(new String[]{tenantId.getValue().toString()}));
+    }
+
+    @Override
+    public Company findCompanyByName(@Nonnull Name name) {
+        return companyRepository.findByCompanyName(CompanyName.of(name.text())).orElseThrow(
+                () -> new CompanyNameNotFoundException(new String[] {name.text().value()})
+        );
     }
 
 

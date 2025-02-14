@@ -57,4 +57,10 @@ public final class TenantJpaRepositoryAdapter implements TenantRepository {
     public Boolean existsByName(@Nonnull Name name) {
         return tenantJpaRepository.existsByName(name.text().value());
     }
+
+    @Override
+    public Optional<Tenant> findById(@Nonnull TenantId tenantId) {
+        return tenantJpaRepository.findByIdOptional(tenantId.getValue())
+                .map(tenantJpaMapper::toTenant);
+    }
 }

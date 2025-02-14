@@ -10,6 +10,7 @@ import cm.xenonbyte.gestitre.domain.common.vo.PageInfoField;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoPage;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoSize;
 import cm.xenonbyte.gestitre.domain.common.vo.Phone;
+import cm.xenonbyte.gestitre.domain.common.vo.TenantId;
 import cm.xenonbyte.gestitre.domain.company.entity.Company;
 import cm.xenonbyte.gestitre.domain.company.ports.secondary.repository.CompanyRepository;
 import cm.xenonbyte.gestitre.domain.company.vo.IsinCode;
@@ -188,5 +189,10 @@ public final class CompanyInMemoryRepository implements CompanyRepository {
         return companies.values().stream().filter(company ->
                 company.getContact().fax() != null && company.getContact().fax().text().value().equalsIgnoreCase(fax.text().value()))
                 .findFirst();
+    }
+
+    @Override
+    public Optional<Company> findByTenantId(@Nonnull TenantId tenantId) {
+        return Optional.empty();
     }
 }

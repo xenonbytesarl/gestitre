@@ -2,6 +2,7 @@ package cm.xenonbyte.gestitre.domain.tenant;
 
 import cm.xenonbyte.gestitre.domain.common.annotation.DomainEvent;
 import cm.xenonbyte.gestitre.domain.common.vo.Name;
+import cm.xenonbyte.gestitre.domain.common.vo.TenantId;
 import cm.xenonbyte.gestitre.domain.tenant.ports.secondary.message.TenantMessagePublisher;
 import cm.xenonbyte.gestitre.domain.tenant.ports.primary.message.listener.TenantService;
 import cm.xenonbyte.gestitre.domain.tenant.ports.secondary.repository.TenantRepository;
@@ -48,6 +49,11 @@ public final class TenantDomainService implements TenantService {
     @Override
     public Tenant findByName(@Nonnull Name name) {
         return tenantRepository.findByName(name).orElse(null);
+    }
+
+    @Override
+    public Tenant findTenantById(@Nonnull TenantId tenantId) {
+        return tenantRepository.findById(tenantId).orElse(null);
     }
 
     private void validateTenant(Tenant tenant) {

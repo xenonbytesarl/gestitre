@@ -43,4 +43,9 @@ public final class TenantInMemoryRepository implements TenantRepository {
     public Boolean existsByName(@Nonnull Name name) {
         return tenants.values().stream().anyMatch(tenant -> tenant.getName().text().value().equalsIgnoreCase(name.text().value()));
     }
+
+    @Override
+    public Optional<Tenant> findById(@Nonnull TenantId tenantId) {
+        return Optional.empty();
+    }
 }

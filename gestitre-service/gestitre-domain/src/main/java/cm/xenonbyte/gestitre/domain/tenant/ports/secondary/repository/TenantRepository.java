@@ -20,4 +20,6 @@ public interface TenantRepository {
     Optional<Tenant> findByName(Name name);
 
     Boolean existsByName(@Nonnull Name name);
+
+    Optional<Tenant> findById(@Nonnull TenantId tenantId);
 }

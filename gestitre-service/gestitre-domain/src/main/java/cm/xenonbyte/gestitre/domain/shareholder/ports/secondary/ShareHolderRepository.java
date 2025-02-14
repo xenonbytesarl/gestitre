@@ -1,6 +1,12 @@
 package cm.xenonbyte.gestitre.domain.shareholder.ports.secondary;
 
 import cm.xenonbyte.gestitre.domain.common.vo.Email;
+import cm.xenonbyte.gestitre.domain.common.vo.Keyword;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfo;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoDirection;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoField;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoPage;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoSize;
 import cm.xenonbyte.gestitre.domain.common.vo.Phone;
 import cm.xenonbyte.gestitre.domain.shareholder.ShareHolder;
 import cm.xenonbyte.gestitre.domain.shareholder.vo.AccountNumber;
@@ -32,4 +38,6 @@ public interface ShareHolderRepository {
     Optional<ShareHolder> findByEmail(@Nonnull Email email);
 
     @Nonnull ShareHolder create(@Nonnull ShareHolder shareHolder);
+
+    @Nonnull PageInfo<ShareHolder> findAll(@Nonnull PageInfoPage pageInfoPage, @Nonnull PageInfoSize pageInfoSize, @Nonnull PageInfoField pageInfoField, @Nonnull PageInfoDirection pageInfoDirection, @Nonnull Keyword keyword);
 }
