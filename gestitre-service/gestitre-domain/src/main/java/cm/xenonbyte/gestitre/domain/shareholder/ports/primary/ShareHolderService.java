@@ -18,6 +18,6 @@ public interface ShareHolderService {
 
     ShareHolderCreatedEvent createShareHolder(ShareHolder shareHolder);
 
-    PageInfo<ShareHolder> findShareHolders(
+    PageInfo<ShareHolder> searchShareHolders(
             PageInfoPage pageInfoPage, PageInfoSize pageInfoSize, PageInfoField pageInfoField, PageInfoDirection pageInfoDirection, Keyword keyword);
 }

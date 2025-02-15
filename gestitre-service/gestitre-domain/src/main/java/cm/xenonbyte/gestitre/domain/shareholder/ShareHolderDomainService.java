@@ -24,6 +24,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Logger;
 
+import static cm.xenonbyte.gestitre.domain.common.vo.PageInfo.validatePageParameters;
 import static cm.xenonbyte.gestitre.domain.shareholder.event.ShareHolderEventType.SHAREHOLDER_CREATED;
 
 /**
@@ -60,11 +61,11 @@ public final class ShareHolderDomainService implements ShareHolderService {
     }
 
     @Override
-    public PageInfo<ShareHolder> findShareHolders(
+    public PageInfo<ShareHolder> searchShareHolders(
             PageInfoPage pageInfoPage, PageInfoSize pageInfoSize, PageInfoField pageInfoField, PageInfoDirection pageInfoDirection, Keyword keyword) {
         validatePageParameters(pageInfoPage, pageInfoSize, pageInfoField, pageInfoDirection);
         Assert.field("Keyword", keyword).notNull();
-        PageInfo<ShareHolder> shareHolderPageInfo = shareHolderRepository.findAll(pageInfoPage, pageInfoSize, pageInfoField, pageInfoDirection, keyword);
+        PageInfo<ShareHolder> shareHolderPageInfo = shareHolderRepository.search(pageInfoPage, pageInfoSize, pageInfoField, pageInfoDirection, keyword);
         LOGGER.info("Found " + shareHolderPageInfo.getTotalElements() + " shareholder for keyword " + keyword.text().value());
         return shareHolderPageInfo;
     }
@@ -127,16 +128,5 @@ public final class ShareHolderDomainService implements ShareHolderService {
         if(shareHolderId != null && oldShareHolder.isPresent() && !oldShareHolder.get().getId().equals(shareHolderId)) {
             throw new ShareHolderAccountNumberConflictException(new String[] {accountNumber.text().value()});
         }
-    }
-
-    private static void validatePageParameters(
-            PageInfoPage pageInfoPage,
-            PageInfoSize pageInfoSize,
-            PageInfoField pageInfoField,
-            PageInfoDirection pageInfoDirection) {
-        Assert.field("Page", pageInfoPage).notNull();
-        Assert.field("Size", pageInfoSize).notNull();
-        Assert.field("Field", pageInfoField).notNull();
-        Assert.field("Direction", pageInfoDirection).notNull();
     }
 }

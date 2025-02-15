@@ -14,14 +14,17 @@ import cm.xenonbyte.gestitre.domain.shareholder.vo.AccountNumber;
 import cm.xenonbyte.gestitre.domain.shareholder.vo.BankAccountNumber;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
-import io.quarkus.panache.common.Sort;
 import jakarta.annotation.Nonnull;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+
+import static cm.xenonbyte.gestitre.domain.common.vo.PageInfo.computeOderBy;
+import static cm.xenonbyte.gestitre.infrastructure.common.InsfrastructureConstant.KEYWORD_PARAM;
 
 /**
  * @author bamk
@@ -31,6 +34,10 @@ import java.util.Optional;
 @Slf4j
 @ApplicationScoped
 public final class ShareHolderJpaRepositoryAdapter implements ShareHolderRepository {
+
+    private static final String SHARE_HOLDER_SEARCH_BY_KEYWORD_QUERY = "select sh from ShareHolderJpa sh where lower(concat(sh.name, '', sh.accountNumber, '', sh.bankAccountNumber, '', cast(sh.initialBalance as text), '', cast(sh.createdDate as text), '', \n" +
+            "sh.taxResidence)) like lower(concat('%',:" + KEYWORD_PARAM + ",'%')) order by sh.";
+
 
     private final ShareHolderJpaRepository shareHolderJpaRepository;
     private final ShareHolderJpaMapper shareHolderJpaMapper;
@@ -99,30 +106,26 @@ public final class ShareHolderJpaRepositoryAdapter implements ShareHolderReposit
 
     @Nonnull
     @Override
-    public PageInfo<ShareHolder> findAll(
+    public PageInfo<ShareHolder> search(
             @Nonnull PageInfoPage pageInfoPage,
             @Nonnull PageInfoSize pageInfoSize,
             @Nonnull PageInfoField pageInfoField,
             @Nonnull PageInfoDirection pageInfoDirection,
             @Nonnull Keyword keyword) {
-        PanacheQuery<ShareHolderJpa> shareholderQueryResult = shareHolderJpaRepository.findAll(
-                Sort
-                        .by(pageInfoField.text().value())
-                        .direction(
-                                pageInfoDirection.equals(PageInfoDirection.ASC)
-                                        ? Sort.Direction.Ascending
-                                        : Sort.Direction.Descending
-                        )
-        );
-        PanacheQuery<ShareHolderJpa> shareholderPageQueryResult =
-                shareholderQueryResult.page(Page.of(pageInfoPage.value(), pageInfoSize.value()));
+        PanacheQuery<ShareHolderJpa> queryResult =
+                shareHolderJpaRepository.find(
+                        SHARE_HOLDER_SEARCH_BY_KEYWORD_QUERY + computeOderBy(pageInfoField, pageInfoDirection),
+                        Map.of(KEYWORD_PARAM, keyword.text().value())
+                );
+        PanacheQuery<ShareHolderJpa> shareHolderPageQueryResult =
+                queryResult.page(Page.of(pageInfoPage.value(), pageInfoSize.value()));
         return new PageInfo<>(
-                !shareholderPageQueryResult.hasPreviousPage(),
-                !shareholderPageQueryResult.hasNextPage(),
+                !shareHolderPageQueryResult.hasPreviousPage(),
+                !shareHolderPageQueryResult.hasNextPage(),
                 pageInfoSize.value(),
-                shareholderQueryResult.count(),
-                shareholderQueryResult.pageCount(),
-                shareholderPageQueryResult
+                shareHolderPageQueryResult.count(),
+                shareHolderPageQueryResult.pageCount(),
+                shareHolderPageQueryResult
                         .list()
                         .stream()
                         .map(shareHolderJpaMapper::toShareHolder)

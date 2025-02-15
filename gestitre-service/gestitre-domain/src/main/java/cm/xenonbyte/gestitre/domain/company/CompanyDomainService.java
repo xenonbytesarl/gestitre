@@ -41,6 +41,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Logger;
 
+import static cm.xenonbyte.gestitre.domain.common.vo.PageInfo.validatePageParameters;
 import static cm.xenonbyte.gestitre.domain.company.vo.CompanyEventType.COMPANY_CREATED;
 import static cm.xenonbyte.gestitre.domain.company.vo.CompanyEventType.COMPANY_UPDATED;
 
@@ -290,16 +291,5 @@ public final class CompanyDomainService implements CompanyService {
         if(Boolean.FALSE.equals(certificateTemplateRepository.existsById(certificateTemplateId))) {
             throw new CertificateTemplateNotFoundException(new String[] {certificateTemplateId.getValue().toString()});
         }
-    }
-
-    private static void validatePageParameters(
-            PageInfoPage pageInfoPage,
-            PageInfoSize pageInfoSize,
-            PageInfoField pageInfoField,
-            PageInfoDirection pageInfoDirection) {
-        Assert.field("Page", pageInfoPage).notNull();
-        Assert.field("Size", pageInfoSize).notNull();
-        Assert.field("Field", pageInfoField).notNull();
-        Assert.field("Direction", pageInfoDirection).notNull();
     }
 }

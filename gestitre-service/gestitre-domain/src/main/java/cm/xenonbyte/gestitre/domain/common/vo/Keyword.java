@@ -23,6 +23,10 @@ public record Keyword(Text text) {
         return new Keyword(keyword);
     }
 
+    public String toLikeKeyword() {
+        return ("%" + text().value() + "%").replace("\"","");
+    }
+
 
     @Override
     public boolean equals(Object object) {

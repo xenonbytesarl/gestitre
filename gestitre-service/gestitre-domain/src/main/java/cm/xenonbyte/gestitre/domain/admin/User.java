@@ -147,15 +147,16 @@ public final class User extends AggregateRoot<UserId> {
         return failedLoginAttempt;
     }
 
-    public void validateMandatoryFields() {
-
-        Assert.field("Email", email)
-                .notNull();
-
+    public void validatePasswords() {
         Assert.field("Password", password)
                 .notNull();
 
         Assert.field("Confirm Password", confirmPassword)
+                .notNull();
+    }
+    public void validateMandatoryFields() {
+
+        Assert.field("Email", email)
                 .notNull();
 
         Assert.field("Name", name)
@@ -200,6 +201,14 @@ public final class User extends AggregateRoot<UserId> {
 
     public Boolean isAccountLocked() {
         return accountLocked.value();
+    }
+
+    public void assignEncryptedPassword(Password encryptedPassword) {
+        password = encryptedPassword;
+    }
+
+    public void assignTenant(TenantId tenantId) {
+        this.tenantId = tenantId;
     }
 
     public static final class Builder {

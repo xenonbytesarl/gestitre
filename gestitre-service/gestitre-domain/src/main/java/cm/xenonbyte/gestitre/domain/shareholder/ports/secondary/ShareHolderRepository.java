@@ -39,5 +39,5 @@ public interface ShareHolderRepository {
 
     @Nonnull ShareHolder create(@Nonnull ShareHolder shareHolder);
 
-    @Nonnull PageInfo<ShareHolder> findAll(@Nonnull PageInfoPage pageInfoPage, @Nonnull PageInfoSize pageInfoSize, @Nonnull PageInfoField pageInfoField, @Nonnull PageInfoDirection pageInfoDirection, @Nonnull Keyword keyword);
+    @Nonnull PageInfo<ShareHolder> search(@Nonnull PageInfoPage pageInfoPage, @Nonnull PageInfoSize pageInfoSize, @Nonnull PageInfoField pageInfoField, @Nonnull PageInfoDirection pageInfoDirection, @Nonnull Keyword keyword);
 }
