@@ -1,5 +1,6 @@
 package cm.xenonbyte.gestitre.domain.tenant.ports.secondary.repository;
 
+import cm.xenonbyte.gestitre.domain.common.vo.Code;
 import cm.xenonbyte.gestitre.domain.common.vo.Name;
 import cm.xenonbyte.gestitre.domain.tenant.Tenant;
 import cm.xenonbyte.gestitre.domain.common.vo.TenantId;
@@ -22,4 +23,8 @@ public interface TenantRepository {
     Boolean existsByName(@Nonnull Name name);
 
     Optional<Tenant> findById(@Nonnull TenantId tenantId);
+
+    Boolean existsByCode(@Nonnull Code code);
+
+    Optional<Tenant> findByCode(@Nonnull Code code);
 }

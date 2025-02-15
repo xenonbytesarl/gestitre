@@ -1,5 +1,6 @@
 package cm.xenonbyte.gestitre.domain.company.ports.secondary.repository;
 
+import cm.xenonbyte.gestitre.domain.common.vo.Code;
 import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
 import cm.xenonbyte.gestitre.domain.common.vo.CompanyName;
 import cm.xenonbyte.gestitre.domain.common.vo.Email;
@@ -73,4 +74,8 @@ public interface CompanyRepository {
     Optional<Company> findByFax(@Nonnull Fax fax);
 
     Optional<Company> findByTenantId(@Nonnull TenantId tenantId);
+
+    Boolean existsByCode(@Nonnull Code code);
+
+    Optional<Company> findByCode(@Nonnull Code code);
 }

@@ -53,6 +53,9 @@ public class CompanyJpa extends Auditable {
     @Embedded
     private ContactJpa contactJpa;
 
+    @Column(name = "c_code", unique = true, nullable = false,  length = 16)
+    private String code;
+
     @Column(name = "c_created_date", nullable = false)
     private ZonedDateTime createdDate;
 

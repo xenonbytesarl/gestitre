@@ -19,6 +19,7 @@ import cm.xenonbyte.gestitre.domain.admin.vo.AccountLocked;
 import cm.xenonbyte.gestitre.domain.admin.vo.CredentialExpired;
 import cm.xenonbyte.gestitre.domain.admin.vo.PermissionId;
 import cm.xenonbyte.gestitre.domain.admin.vo.RoleId;
+import cm.xenonbyte.gestitre.domain.admin.vo.Timezone;
 import cm.xenonbyte.gestitre.domain.common.vo.Active;
 import cm.xenonbyte.gestitre.domain.common.vo.City;
 import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
@@ -197,6 +198,7 @@ class UserDomainServiceTest {
                 .email(Email.of(Text.of("test@gmail.com")))
                 .password(Password.of(Text.of("test123")))
                 .confirmPassword(Password.of(Text.of("test123")))
+                .timezone(Timezone.Africa_Douala)
                 .roles(roles)
                 .companyId(companyId)
                 .build();
@@ -228,6 +230,7 @@ class UserDomainServiceTest {
                                 ))
                                 .build()
                 ))
+                .timezone(Timezone.Africa_Douala)
                 .companyId(companyId)
                 .build();
         //Act + Then
@@ -247,6 +250,7 @@ class UserDomainServiceTest {
                 .confirmPassword(Password.of(Text.of("test123")))
                 .roles(roles)
                 .companyId(new CompanyId(UUID.fromString("019353d5-b63c-7874-9d44-22622626500e")))
+                .timezone(Timezone.Africa_Douala)
                 .build();
         //Act + Then
         assertThatThrownBy(() -> userService.createUser(user))
@@ -263,6 +267,7 @@ class UserDomainServiceTest {
                 .email(Email.of(Text.of("emailsecond@gmail.com")))
                 .password(Password.of(Text.of("test123")))
                 .confirmPassword(Password.of(Text.of("test123")))
+                .timezone(Timezone.Africa_Douala)
                 .roles(roles)
                 .companyId(companyId)
                 .build();

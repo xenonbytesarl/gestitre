@@ -2,6 +2,7 @@ package cm.xenonbyte.gestitre.domain.company;
 
 import cm.xenonbyte.gestitre.domain.common.vo.Active;
 import cm.xenonbyte.gestitre.domain.common.vo.City;
+import cm.xenonbyte.gestitre.domain.common.vo.Code;
 import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
 import cm.xenonbyte.gestitre.domain.common.vo.CompanyName;
 import cm.xenonbyte.gestitre.domain.common.vo.Country;
@@ -107,6 +108,7 @@ final class CompanyDomainTest {
                 )
                 .activity(Activity.of(Text.of("activity0")))
                 .active(Active.with(true))
+                .code(Code.of(Text.of("CM20250200")))
                 .build();
         Company company1 = Company.builder()
                 .id(new CompanyId(UUID.fromString("0192e858-8eae-7441-99f8-d940d6bdef2f")))
@@ -133,6 +135,7 @@ final class CompanyDomainTest {
                                 .build()
                 )
                 .activity(Activity.of(Text.of("activity1")))
+                .code(Code.of(Text.of("CM20250201")))
                 .active(Active.with(true))
                 .build();
 
@@ -158,6 +161,7 @@ final class CompanyDomainTest {
                 )
                 .activity(Activity.of(Text.of("activity2")))
                 .active(Active.with(true))
+                .code(Code.of(Text.of("CM20250202")))
                 .build();
 
         Company company3 = Company.builder()
@@ -182,6 +186,7 @@ final class CompanyDomainTest {
                 )
                 .activity(Activity.of(Text.of("activity2")))
                 .active(Active.with(true))
+                .code(Code.of(Text.of("CM20250203")))
                 .build();
 
         companyRepository.create(company);
@@ -225,6 +230,7 @@ final class CompanyDomainTest {
                             .build()
                     )
                     .activity(Activity.of(Text.of("activityx")))
+                    .code(Code.of(Text.of("CM20250204")))
                     .certificateTemplateId(certificateTemplateId)
                     .build();
             //Act
@@ -265,6 +271,7 @@ final class CompanyDomainTest {
                                 .email(Email.of( Text.of("emaily@email.test")))
                                 .build()
                 )
+                .code(Code.of(Text.of("CM20250204")))
                 .activity(Activity.of(Text.of("activityy")))
                 .build();
         //Act + Then
@@ -297,6 +304,7 @@ final class CompanyDomainTest {
                                 .build()
                 )
                 .activity(Activity.of(Text.of("activityy")))
+                .code(Code.of(Text.of("CM20250204")))
                 .build();
         //Act + Then
         assertThatThrownBy(() -> companyService.createCompany(company))
@@ -328,6 +336,7 @@ final class CompanyDomainTest {
                                 .build()
                 )
                 .activity(Activity.of(Text.of("activityy")))
+                .code(Code.of(Text.of("CM20250204")))
                 .build();
         //Act + Then
         assertThatThrownBy(() -> companyService.createCompany(company))
@@ -360,6 +369,7 @@ final class CompanyDomainTest {
                                 .build()
                 )
                 .activity(Activity.of(Text.of("activityy")))
+                .code(Code.of(Text.of("CM20250204")))
                 .build();
         //Act + Then
         assertThatThrownBy(() -> companyService.createCompany(company))
@@ -392,6 +402,7 @@ final class CompanyDomainTest {
                                 .build()
                 )
                 .activity(Activity.of(Text.of("activityy")))
+                .code(Code.of(Text.of("CM20250204")))
                 .build();
         //Act + Then
         assertThatThrownBy(() -> companyService.createCompany(company))
@@ -424,6 +435,7 @@ final class CompanyDomainTest {
                                 .build()
                 )
                 .activity(Activity.of(Text.of("activityy")))
+                .code(Code.of(Text.of("CM20250204")))
                 .build();
         //Act + Then
         assertThatThrownBy(() -> companyService.createCompany(company))
@@ -457,6 +469,7 @@ final class CompanyDomainTest {
                                 .build()
                 )
                 .activity(Activity.of(Text.of("activityy")))
+                .code(Code.of(Text.of("CM20250204")))
                 .build();
         //Act + Then
         assertThatThrownBy(() -> companyService.createCompany(company))
@@ -490,6 +503,7 @@ final class CompanyDomainTest {
                                 .build()
                 )
                 .activity(Activity.of(Text.of("activityy")))
+                .code(Code.of(Text.of("CM20250204")))
                 .certificateTemplateId(certificateTemplateId1)
                 .build();
         //Act + Then
@@ -612,6 +626,7 @@ final class CompanyDomainTest {
                     .logoFilename(Filename.of(StorageLocation.computeStoragePtah(ROOT_PATH, LOGO_PATH).path()))
                     .stampFilename(Filename.of(StorageLocation.computeStoragePtah(ROOT_PATH, STAMP_PATH).path()))
                     .active(Active.with(true))
+                    .code(Code.of(Text.of("CM20250200")))
                     .build();
             //Act
             CompanyUpdatedEvent actual = companyService.updateCompany(companyId, company);
@@ -659,6 +674,7 @@ final class CompanyDomainTest {
                     .logoFilename(Filename.of(StorageLocation.computeStoragePtah(ROOT_PATH, LOGO_PATH).path()))
                     .stampFilename(Filename.of(StorageLocation.computeStoragePtah(ROOT_PATH, STAMP_PATH).path()))
                     .active(Active.with(true))
+                    .code(Code.of(Text.of("CM20250200")))
                     .build();
             //Act
             assertThatThrownBy(() -> companyService.updateCompany(companyId, company))
@@ -693,6 +709,7 @@ final class CompanyDomainTest {
                     .logoFilename(Filename.of(StorageLocation.computeStoragePtah(ROOT_PATH, LOGO_PATH).path()))
                     .stampFilename(Filename.of(StorageLocation.computeStoragePtah(ROOT_PATH, STAMP_PATH).path()))
                     .active(Active.with(true))
+                    .code(Code.of(Text.of("CM20250200")))
                     .build();
             //Act
             assertThatThrownBy(() -> companyService.updateCompany(companyId, company))
@@ -728,6 +745,7 @@ final class CompanyDomainTest {
                     .logoFilename(Filename.of(StorageLocation.computeStoragePtah(ROOT_PATH, LOGO_PATH).path()))
                     .stampFilename(Filename.of(StorageLocation.computeStoragePtah(ROOT_PATH, STAMP_PATH).path()))
                     .active(Active.with(true))
+                    .code(Code.of(Text.of("CM20250200")))
                     .build();
             //Act
             assertThatThrownBy(() -> companyService.updateCompany(companyId, company))
@@ -763,6 +781,7 @@ final class CompanyDomainTest {
                     .activity(Activity.of(Text.of("activity0")))
                     .logoFilename(Filename.of(StorageLocation.computeStoragePtah(ROOT_PATH, LOGO_PATH).path()))
                     .stampFilename(Filename.of(StorageLocation.computeStoragePtah(ROOT_PATH, STAMP_PATH).path()))
+                    .code(Code.of(Text.of("CM20250200")))
                     .active(Active.with(true))
                     .build();
             //Act
@@ -799,6 +818,7 @@ final class CompanyDomainTest {
                     .activity(Activity.of(Text.of("activity0")))
                     .logoFilename(Filename.of(StorageLocation.computeStoragePtah(ROOT_PATH, LOGO_PATH).path()))
                     .stampFilename(Filename.of(StorageLocation.computeStoragePtah(ROOT_PATH, STAMP_PATH).path()))
+                    .code(Code.of(Text.of("CM20250200")))
                     .active(Active.with(true))
                     .build();
             //Act
@@ -835,6 +855,7 @@ final class CompanyDomainTest {
                     .activity(Activity.of(Text.of("activity0")))
                     .logoFilename(Filename.of(StorageLocation.computeStoragePtah(ROOT_PATH, LOGO_PATH).path()))
                     .stampFilename(Filename.of(StorageLocation.computeStoragePtah(ROOT_PATH, STAMP_PATH).path()))
+                    .code(Code.of(Text.of("CM20250200")))
                     .active(Active.with(true))
                     .build();
             //Act
@@ -872,6 +893,7 @@ final class CompanyDomainTest {
                     .logoFilename(Filename.of(StorageLocation.computeStoragePtah(ROOT_PATH, LOGO_PATH).path()))
                     .stampFilename(Filename.of(StorageLocation.computeStoragePtah(ROOT_PATH, STAMP_PATH).path()))
                     .active(Active.with(true))
+                    .code(Code.of(Text.of("CM20250200")))
                     .build();
             //Act
             assertThatThrownBy(() -> companyService.updateCompany(companyId, company))
@@ -907,6 +929,7 @@ final class CompanyDomainTest {
                     .logoFilename(Filename.of(StorageLocation.computeStoragePtah(ROOT_PATH, LOGO_PATH).path()))
                     .stampFilename(Filename.of(StorageLocation.computeStoragePtah(ROOT_PATH, STAMP_PATH).path()))
                     .certificateTemplateId(new CertificateTemplateId(UUID.fromString("0192e8c4-8ef6-70d7-be93-9647d0a9b5c2")))
+                    .code(Code.of(Text.of("CM20250200")))
                     .active(Active.with(true))
                     .build();
             //Act

@@ -2,6 +2,7 @@ package cm.xenonbyte.gestitre.domain.company;
 
 import cm.xenonbyte.gestitre.domain.common.annotation.DomainService;
 import cm.xenonbyte.gestitre.domain.common.validation.Assert;
+import cm.xenonbyte.gestitre.domain.common.vo.Code;
 import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
 import cm.xenonbyte.gestitre.domain.common.vo.CompanyName;
 import cm.xenonbyte.gestitre.domain.common.vo.Email;
@@ -80,7 +81,8 @@ public final class CompanyDomainService implements CompanyService {
     }
 
     private Tenant tenantFrom(CompanyCreatedEvent companyCreatedEvent) {
-        Tenant tenant = Tenant.of(Name.of(companyCreatedEvent.getCompany().getCompanyName().text()));
+        Company company = companyCreatedEvent.getCompany();
+        Tenant tenant = Tenant.of(Name.of(company.getCompanyName().text()), company.getCode());
         tenant.initializeDefaults();
         return tenant;
     }
@@ -157,6 +159,7 @@ public final class CompanyDomainService implements CompanyService {
 
     private void validateCompany(Company company) {
         validateCompanyName(company.getId(), company.getCompanyName());
+        validateCode(company.getId(), company.getCode());
         validateCompanyEmail(company.getId(), company.getContact().email());
         validateCompanyPhone(company.getId(), company.getContact().phone());
         validateCompanyFax(company.getId(), company.getContact().fax());
@@ -167,6 +170,19 @@ public final class CompanyDomainService implements CompanyService {
 
         if(company.getCertificateTemplateId() != null) {
             validateCertificateTemplate(company.getCertificateTemplateId());
+        }
+    }
+
+    private void validateCode(CompanyId companyId, Code code) {
+        if(code != null) {
+            if(companyId == null && companyRepository.existsByCode(code)) {
+                throw new CompanyCodeConflictException(new String[] {code.text().value()});
+            }
+
+            Optional<Company> oldCompany = companyRepository.findByCode(code);
+            if(companyId != null && oldCompany.isPresent() && !oldCompany.get().getId().equals(companyId)) {
+                throw new CompanyCodeConflictException(new String[] {code.text().value()});
+            }
         }
     }
 

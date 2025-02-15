@@ -1,6 +1,7 @@
 package cm.xenonbyte.gestitre.domain.tenant;
 
 import cm.xenonbyte.gestitre.domain.common.annotation.DomainEvent;
+import cm.xenonbyte.gestitre.domain.common.vo.Code;
 import cm.xenonbyte.gestitre.domain.common.vo.Name;
 import cm.xenonbyte.gestitre.domain.common.vo.TenantId;
 import cm.xenonbyte.gestitre.domain.tenant.ports.secondary.message.TenantMessagePublisher;
@@ -56,18 +57,40 @@ public final class TenantDomainService implements TenantService {
         return tenantRepository.findById(tenantId).orElse(null);
     }
 
+    @Override
+    public Tenant findByCode(@Nonnull Code code) {
+        return tenantRepository.findByCode(code)
+                .orElse(null);
+    }
+
     private void validateTenant(Tenant tenant) {
         if(tenant.getId() != null && !tenantRepository.existsById(tenant.getId())) {
             throw new TenantNotFoundException(new String[] {tenant.getId().getValue().toString()});
         }
 
-        if(tenant.getId() == null && tenantRepository.existsByName(tenant.getName())) {
-            throw new TenantNameConflictException(new String[] {tenant.getName().text().value()});
+        validateName(tenant.getId(), tenant.getName());
+        validateCode(tenant.getId(), tenant.getCode());
+    }
+
+    private void validateCode(TenantId tenantId, Code code) {
+        if(tenantId == null && tenantRepository.existsByCode(code)) {
+            throw new TenantCodeConflictException(new String[] {code.text().value()});
         }
 
-        Optional<Tenant> existingTenant = tenantRepository.findByName(tenant.getName());
-        if(tenant.getId() != null && existingTenant.isPresent() && !existingTenant.get().getId().equals(tenant.getId())) {
-            throw new TenantNameConflictException(new String[] {tenant.getName().text().value()});
+        Optional<Tenant> existingTenant = tenantRepository.findByCode(code);
+        if(tenantId != null && existingTenant.isPresent() && !existingTenant.get().getId().equals(tenantId)) {
+            throw new TenantCodeConflictException(new String[] {code.text().value()});
+        }
+    }
+
+    private void validateName(TenantId tenantId, Name name) {
+        if(tenantId == null && tenantRepository.existsByName(name)) {
+            throw new TenantNameConflictException(new String[] {name.text().value()});
+        }
+
+        Optional<Tenant> existingTenant = tenantRepository.findByName(name);
+        if(tenantId != null && existingTenant.isPresent() && !existingTenant.get().getId().equals(tenantId)) {
+            throw new TenantNameConflictException(new String[] {name.text().value()});
         }
     }
 

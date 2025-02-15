@@ -1,5 +1,6 @@
 package cm.xenonbyte.gestitre.domain.company.addapter.inmemory;
 
+import cm.xenonbyte.gestitre.domain.common.vo.Code;
 import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
 import cm.xenonbyte.gestitre.domain.common.vo.CompanyName;
 import cm.xenonbyte.gestitre.domain.common.vo.Email;
@@ -194,5 +195,17 @@ public final class CompanyInMemoryRepository implements CompanyRepository {
     @Override
     public Optional<Company> findByTenantId(@Nonnull TenantId tenantId) {
         return Optional.empty();
+    }
+
+    @Override
+    public Boolean existsByCode(@Nonnull Code code) {
+        return companies.values().stream().anyMatch(company ->
+                company.getCode().text().value().equalsIgnoreCase(code.text().value()));
+    }
+
+    @Override
+    public Optional<Company> findByCode(@Nonnull Code code) {
+        return companies.values().stream().filter(company ->
+                company.getCode().text().value().equalsIgnoreCase(code.text().value())).findFirst();
     }
 }

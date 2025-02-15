@@ -3,7 +3,7 @@ package cm.xenonbyte.gestitre.application.common.filter;
 import cm.xenonbyte.gestitre.application.common.dto.ErrorApiResponse;
 import cm.xenonbyte.gestitre.application.common.in18.LocalizationResolver;
 import cm.xenonbyte.gestitre.application.common.in18.LocalizationUtil;
-import cm.xenonbyte.gestitre.domain.common.vo.Name;
+import cm.xenonbyte.gestitre.domain.common.vo.Code;
 import cm.xenonbyte.gestitre.domain.common.vo.Text;
 import cm.xenonbyte.gestitre.domain.context.TenantContext;
 import cm.xenonbyte.gestitre.domain.context.TimezoneContext;
@@ -61,9 +61,9 @@ public final class JwtFilter implements ContainerRequestFilter {
         String bearerToken = context.getHeaderString(AUTHORIZATION);
 
         if (bearerToken == null || !bearerToken.startsWith("Bearer ")) {
-            String tenantName = context.getHeaderString(TENANT_CODE_HEADER);
-            if(tenantName != null) {
-                Tenant tenant = tenantService.findByName(Name.of(Text.of(tenantName)));
+            String tenantCode = context.getHeaderString(TENANT_CODE_HEADER);
+            if(tenantCode != null) {
+                Tenant tenant = tenantService.findByCode(Code.of(Text.of(tenantCode)));
                 if(tenant != null) {
                     setTimezoneContext(context);
                     TenantContext.set(tenant.getId().getValue());

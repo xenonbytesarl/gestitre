@@ -3,7 +3,7 @@ insert into t_tenant(c_id, c_created_at, c_name, c_active) values ('01937563-b2f
 
 -- Root Company
 insert into t_company (c_id, c_created_at, c_company_name, c_company_manager_name, c_licence, c_legal_form, c_address_city, c_address_zip_code, c_address_country, c_contact_email, c_contact_name, c_active, c_contact_phone, c_created_date) VALUES
-    ('01937563-f905-7965-a014-da683621056c', current_timestamp, 'ROOT', 'Root Manager', 'MONTH_36', 'SA', 'City', '308', 'Cameroon', 'root-company@gmail.com', 'Default', true, '645254238', current_timestamp);
+    ('01937563-f905-7965-a014-da683621056c', current_timestamp, 'Root Company', 'Root Manager', 'MONTH_36', 'SA', 'City', '308', 'Cameroon', 'root-company@gmail.com', 'Default', true, '645254236', current_timestamp);
 
 --Root User / password: gestitre123!
 insert into t_user (c_id, c_created_at,  c_name, c_email, c_password, c_account_enabled, c_credential_expired, c_account_locked, c_account_expired, c_use_mfa, c_failed_login_attempt, c_tenant_id, c_company_id, c_timezone) values

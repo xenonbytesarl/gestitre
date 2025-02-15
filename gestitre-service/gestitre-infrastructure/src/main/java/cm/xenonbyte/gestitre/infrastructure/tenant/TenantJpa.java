@@ -23,6 +23,8 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @Table(name = "t_tenant")
 public class TenantJpa extends Auditable {
+    @Column(name = "c_code", unique = true, nullable = false,  length = 16)
+    private String code;
     @Column(name = "c_name", nullable = false, unique = true, length = 64)
     private String name;
     @Column(name = "c_active", nullable = false)

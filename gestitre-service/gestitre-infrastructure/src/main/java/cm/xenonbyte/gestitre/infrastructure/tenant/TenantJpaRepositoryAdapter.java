@@ -1,5 +1,6 @@
 package cm.xenonbyte.gestitre.infrastructure.tenant;
 
+import cm.xenonbyte.gestitre.domain.common.vo.Code;
 import cm.xenonbyte.gestitre.domain.common.vo.Name;
 import cm.xenonbyte.gestitre.domain.common.vo.TenantId;
 import cm.xenonbyte.gestitre.domain.tenant.Tenant;
@@ -61,6 +62,17 @@ public final class TenantJpaRepositoryAdapter implements TenantRepository {
     @Override
     public Optional<Tenant> findById(@Nonnull TenantId tenantId) {
         return tenantJpaRepository.findByIdOptional(tenantId.getValue())
+                .map(tenantJpaMapper::toTenant);
+    }
+
+    @Override
+    public Boolean existsByCode(@Nonnull Code code) {
+        return tenantJpaRepository.existsByCode(code.text().value());
+    }
+
+    @Override
+    public Optional<Tenant> findByCode(@Nonnull Code code) {
+        return tenantJpaRepository.findByCode(code.text().value())
                 .map(tenantJpaMapper::toTenant);
     }
 }

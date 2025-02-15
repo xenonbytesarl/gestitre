@@ -14,6 +14,7 @@ import cm.xenonbyte.gestitre.domain.admin.vo.CredentialExpired;
 import cm.xenonbyte.gestitre.domain.admin.vo.FailedLoginAttempt;
 import cm.xenonbyte.gestitre.domain.admin.vo.PermissionId;
 import cm.xenonbyte.gestitre.domain.admin.vo.RoleId;
+import cm.xenonbyte.gestitre.domain.admin.vo.Timezone;
 import cm.xenonbyte.gestitre.domain.admin.vo.Token;
 import cm.xenonbyte.gestitre.domain.admin.vo.UseMfa;
 import cm.xenonbyte.gestitre.domain.common.vo.Active;
@@ -353,6 +354,7 @@ final class CertificateTemplateTest {
                 .name(Name.of(Text.of("ROOT")))
                 .email(Email.of(Text.of("ambiandji@gmail.com")))
                 .useMfa(UseMfa.with(true))
+                .timezone(Timezone.Africa_Douala)
                 .roles(Set.of(
                         Role.builder()
                                 .id(new RoleId(UUID.fromString("01935bdb-8ca1-768a-88d6-82335f785612")))

@@ -2,6 +2,7 @@ package cm.xenonbyte.gestitre.infrastructure;
 
 import cm.xenonbyte.gestitre.domain.common.vo.Active;
 import cm.xenonbyte.gestitre.domain.common.vo.City;
+import cm.xenonbyte.gestitre.domain.common.vo.Code;
 import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
 import cm.xenonbyte.gestitre.domain.common.vo.CompanyName;
 import cm.xenonbyte.gestitre.domain.common.vo.Country;
@@ -91,6 +92,7 @@ final class CompanyJpaRepositoryAdapterTest {
                 .stampFilename(Filename.of(Text.of(System.getProperty("user.home") + "/gestitre/stamp/stamp0.png")))
                 .active(Active.with(true))
                 .createdDate(ZonedDateTime.now())
+                .code(Code.of(Text.of("CM20250206")))
                 .build();
 
         //Act
@@ -229,6 +231,7 @@ final class CompanyJpaRepositoryAdapterTest {
                 .logoFilename(Filename.of(Text.of(System.getProperty("user.home") + "/gestitre/logo/logo2.png")))
                 .stampFilename(Filename.of(Text.of(System.getProperty("user.home") + "/gestitre/stamp/stamp2.png")))
                 .active(Active.with(true))
+                .code(Code.of(Text.of("CM20250202")))
                 .createdDate(ZonedDateTime.now())
                 .build();
 

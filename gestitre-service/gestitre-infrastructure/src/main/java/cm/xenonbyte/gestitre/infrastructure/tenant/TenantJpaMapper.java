@@ -21,12 +21,14 @@ public interface TenantJpaMapper {
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id.value")
     @Mapping(target = "name", source = "name.text.value")
+    @Mapping(target = "code", source = "code.text.value")
     @Mapping(target = "active", source = "active.value")
     TenantJpa toTenantJpa(Tenant tenant);
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "id", target = "id.value")
     @Mapping(source = "name", target = "name.text.value")
+    @Mapping(source = "code", target = "code.text.value")
     @Mapping(source = "active", target = "active.value")
     @Nonnull Tenant toTenant(@Nonnull TenantJpa tenantJpa);
 

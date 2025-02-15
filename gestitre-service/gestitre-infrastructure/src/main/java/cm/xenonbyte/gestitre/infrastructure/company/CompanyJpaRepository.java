@@ -81,4 +81,12 @@ public final class CompanyJpaRepository implements PanacheRepositoryBase<Company
     public Optional<CompanyJpa> findByTenantId(UUID tenantId) {
         return find("tenantId", tenantId).firstResultOptional();
     }
+
+    public Boolean existsByCode(String code) {
+        return find("code", code).count() > 0;
+    }
+
+    public Optional<CompanyJpa> findByCode(String code) {
+        return find("code", code).firstResultOptional();
+    }
 }

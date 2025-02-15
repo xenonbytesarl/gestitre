@@ -20,4 +20,12 @@ public final class TenantJpaRepository implements PanacheRepositoryBase<TenantJp
     public Boolean existsByName(String name) {
         return find("name", name).count() > 0;
     }
+
+    public Boolean existsByCode(String code) {
+        return find("code", code).count() > 0;
+    }
+
+    public Optional<TenantJpa> findByCode(String code) {
+        return find("code", code).firstResultOptional();
+    }
 }
