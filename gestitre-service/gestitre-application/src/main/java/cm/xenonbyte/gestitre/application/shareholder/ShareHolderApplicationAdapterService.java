@@ -2,7 +2,10 @@ package cm.xenonbyte.gestitre.application.shareholder;
 
 import cm.xenonbyte.gestitre.application.shareholder.dto.CreateShareHolderViewRequest;
 import cm.xenonbyte.gestitre.application.shareholder.dto.CreateShareHolderViewResponse;
+import cm.xenonbyte.gestitre.application.shareholder.dto.FindShareHolderByIdViewResponse;
 import cm.xenonbyte.gestitre.application.shareholder.dto.FindShareHoldersPageInfoViewResponse;
+import cm.xenonbyte.gestitre.application.shareholder.dto.UpdateShareShareHolderViewRequest;
+import cm.xenonbyte.gestitre.application.shareholder.dto.UpdateShareHolderViewResponse;
 import cm.xenonbyte.gestitre.domain.common.vo.Keyword;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfo;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoDirection;
@@ -16,7 +19,9 @@ import cm.xenonbyte.gestitre.domain.company.ports.primary.CompanyService;
 import cm.xenonbyte.gestitre.domain.context.TenantContext;
 import cm.xenonbyte.gestitre.domain.shareholder.ShareHolder;
 import cm.xenonbyte.gestitre.domain.shareholder.event.ShareHolderCreatedEvent;
+import cm.xenonbyte.gestitre.domain.shareholder.event.ShareHolderUpdatedEvent;
 import cm.xenonbyte.gestitre.domain.shareholder.ports.primary.ShareHolderService;
+import cm.xenonbyte.gestitre.domain.shareholder.vo.ShareHolderId;
 import cm.xenonbyte.gestitre.domain.tenant.Tenant;
 import cm.xenonbyte.gestitre.domain.tenant.ports.primary.message.listener.TenantService;
 import jakarta.annotation.Nonnull;
@@ -24,6 +29,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * @author bamk
@@ -57,6 +63,20 @@ public final class ShareHolderApplicationAdapterService implements ShareHolderAp
                 shareHolderViewMapper.toShareHolder(createShareHolderViewRequest)
         );
         return shareHolderViewMapper.toCreateShareHolderViewResponse(shareHolderCreatedEvent.getShareHolder());
+    }
+
+    @Nonnull
+    @Override
+    public UpdateShareHolderViewResponse updateShareHolder(UUID shareHolderId, @Nonnull UpdateShareShareHolderViewRequest updateShareHolderViewRequest) {
+        ShareHolderUpdatedEvent shareHolderUpdatedEvent = shareHolderService.updateShareHolder(new ShareHolderId(shareHolderId), shareHolderViewMapper.toShareHolder(updateShareHolderViewRequest));
+        return shareHolderViewMapper.toUpdateShareHolderViewResponse(shareHolderUpdatedEvent.getShareHolder());
+    }
+
+    @Nonnull
+    @Override
+    public FindShareHolderByIdViewResponse findShareHolderById(UUID shareHolderId) {
+        return shareHolderViewMapper.toFindShareHolderByIdViewResponse(
+                shareHolderService.findShareHolderById(new ShareHolderId(shareHolderId)));
     }
 
     @Nonnull

@@ -12,6 +12,7 @@ import org.mapstruct.BeanMapping;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 
 /**
@@ -50,8 +51,8 @@ public interface ShareHolderJpaMapper {
         if(representative == null) {
             return null;
         }
-        if(representative.email() != null) {
-            RepresentativeJpa.builder()
+        if(representative.email() != null && !representative.email().text().value().isEmpty()) {
+            return RepresentativeJpa.builder()
                     .name(representative.name().text().value())
                     .email(representative.email().text().value())
                     .phone(representative.phone().text().value())
@@ -69,8 +70,8 @@ public interface ShareHolderJpaMapper {
         if(successor == null) {
             return null;
         }
-        if(successor.email() != null) {
-            SuccessorJpa.builder()
+        if(successor.email() != null && !successor.email().text().value().isEmpty()) {
+            return SuccessorJpa.builder()
                     .name(successor.name().text().value())
                     .email(successor.email().text().value())
                     .phone(successor.phone().text().value())
@@ -139,4 +140,5 @@ public interface ShareHolderJpaMapper {
         return Successor.of(Name.of(Text.of(successorJpa.getName())), Phone.of(Text.of(successorJpa.getPhone())));
     }
 
+    void copyNewToOldShareHolderMapper(@Nonnull ShareHolderJpa newShareHolderJpa, @Nonnull @MappingTarget ShareHolderJpa oldShareHolderJpa);
 }

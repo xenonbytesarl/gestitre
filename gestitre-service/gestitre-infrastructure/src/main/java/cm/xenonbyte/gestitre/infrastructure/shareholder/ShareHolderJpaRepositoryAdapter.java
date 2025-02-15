@@ -12,6 +12,7 @@ import cm.xenonbyte.gestitre.domain.shareholder.ShareHolder;
 import cm.xenonbyte.gestitre.domain.shareholder.ports.secondary.ShareHolderRepository;
 import cm.xenonbyte.gestitre.domain.shareholder.vo.AccountNumber;
 import cm.xenonbyte.gestitre.domain.shareholder.vo.BankAccountNumber;
+import cm.xenonbyte.gestitre.domain.shareholder.vo.ShareHolderId;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
 import jakarta.annotation.Nonnull;
@@ -125,5 +126,21 @@ public final class ShareHolderJpaRepositoryAdapter implements ShareHolderReposit
                         .map(shareHolderJpaMapper::toShareHolder)
                         .toList()
         );
+    }
+
+    @Override
+    public Optional<ShareHolder> findById(@Nonnull ShareHolderId shareHolderId) {
+        return shareHolderJpaRepository.findByIdOptional(shareHolderId.getValue())
+                .map(shareHolderJpaMapper::toShareHolder);
+    }
+
+
+    @Override
+    @Transactional
+    public ShareHolder update(@Nonnull ShareHolderId shareHolderId, @Nonnull ShareHolder newShareHolder) {
+        ShareHolderJpa oldShareHolderJpa = shareHolderJpaRepository.findById(shareHolderId.getValue());
+        ShareHolderJpa newShareHolderJpa = shareHolderJpaMapper.toShareHolderJpa(newShareHolder);
+        shareHolderJpaMapper.copyNewToOldShareHolderMapper(newShareHolderJpa, oldShareHolderJpa);
+        return shareHolderJpaMapper.toShareHolder(oldShareHolderJpa);
     }
 }
