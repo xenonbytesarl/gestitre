@@ -1,6 +1,7 @@
 package cm.xenonbyte.gestitre.infrastructure.shareholder;
 
 import cm.xenonbyte.gestitre.infrastructure.common.TenantPanacheRepository;
+import cm.xenonbyte.gestitre.infrastructure.common.annotation.TenantInterceptorBinding;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.Optional;
@@ -11,6 +12,7 @@ import java.util.Optional;
  * @since 04/02/2025
  */
 @ApplicationScoped
+@TenantInterceptorBinding
  public final class ShareHolderJpaRepository implements TenantPanacheRepository<ShareHolderJpa> {
     public Boolean existsByAccountNumber(String accountNumber) {
         return find("accountNumber", accountNumber).count() > 0;

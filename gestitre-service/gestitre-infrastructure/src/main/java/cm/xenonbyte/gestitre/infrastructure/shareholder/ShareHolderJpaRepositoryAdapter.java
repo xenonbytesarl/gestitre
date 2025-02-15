@@ -19,12 +19,10 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
 import static cm.xenonbyte.gestitre.domain.common.vo.PageInfo.computeOderBy;
-import static cm.xenonbyte.gestitre.infrastructure.common.InsfrastructureConstant.KEYWORD_PARAM;
 
 /**
  * @author bamk
@@ -35,8 +33,7 @@ import static cm.xenonbyte.gestitre.infrastructure.common.InsfrastructureConstan
 @ApplicationScoped
 public final class ShareHolderJpaRepositoryAdapter implements ShareHolderRepository {
 
-    private static final String SHARE_HOLDER_SEARCH_BY_KEYWORD_QUERY = "select sh from ShareHolderJpa sh where lower(concat(sh.name, '', sh.accountNumber, '', sh.bankAccountNumber, '', cast(sh.initialBalance as text), '', cast(sh.createdDate as text), '', \n" +
-            "sh.taxResidence)) like lower(concat('%',:" + KEYWORD_PARAM + ",'%')) order by sh.";
+    private static final String SHARE_HOLDER_SEARCH_BY_KEYWORD_QUERY = "select sh from ShareHolderJpa sh where lower(concat(sh.name, '', sh.accountNumber, '', coalesce(sh.bankAccountNumber,''), '', cast(sh.initialBalance as text), '', cast(sh.createdDate as text), '', sh.taxResidence)) like lower(?1) order by sh.";
 
 
     private final ShareHolderJpaRepository shareHolderJpaRepository;
@@ -113,10 +110,7 @@ public final class ShareHolderJpaRepositoryAdapter implements ShareHolderReposit
             @Nonnull PageInfoDirection pageInfoDirection,
             @Nonnull Keyword keyword) {
         PanacheQuery<ShareHolderJpa> queryResult =
-                shareHolderJpaRepository.find(
-                        SHARE_HOLDER_SEARCH_BY_KEYWORD_QUERY + computeOderBy(pageInfoField, pageInfoDirection),
-                        Map.of(KEYWORD_PARAM, keyword.text().value())
-                );
+                shareHolderJpaRepository.find(SHARE_HOLDER_SEARCH_BY_KEYWORD_QUERY + computeOderBy(pageInfoField, pageInfoDirection), keyword.toLikeKeyword());
         PanacheQuery<ShareHolderJpa> shareHolderPageQueryResult =
                 queryResult.page(Page.of(pageInfoPage.value(), pageInfoSize.value()));
         return new PageInfo<>(
