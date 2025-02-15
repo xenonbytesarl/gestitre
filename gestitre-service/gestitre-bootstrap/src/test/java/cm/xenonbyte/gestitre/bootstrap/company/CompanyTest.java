@@ -512,37 +512,6 @@ class CompanyTest {
     }
 
     @Test
-    void should_find_companies() {
-        //Given
-        Integer page = 0;
-        Integer size = 10;
-        String field = "companyName";
-        String direction = "ASC";
-
-        //Act
-        given()
-            .headers(getHeaders(getToken().accessToken().value()))
-            .queryParam("page", page)
-            .queryParam("size", size)
-            .queryParam("field", field)
-            .queryParam("direction", direction)
-        .when()
-            .get(COMPANY_API_PATH)
-        .then()
-            .log().all()
-            .statusCode(200)
-            .body("code", equalTo(200))
-            .body("status", equalTo("OK"))
-            .body("success", equalTo(true))
-            .body("data", notNullValue())
-            .body("data.content", notNullValue())
-            .body("data.content.elements", notNullValue())
-            .body("message", equalTo(LocalizationUtil.getMessage(COMPANY_FINDS_SUCCESSFULLY, Locale.forLanguageTag(FR_LANGUAGE))));
-
-
-    }
-
-    @Test
     void should_search_companies_with_valid_keyword() {
         //Given
         Integer page = 0;
@@ -560,7 +529,7 @@ class CompanyTest {
             .queryParam("direction", direction)
             .queryParam("keyword", keyword)
         .when()
-            .get(COMPANY_API_PATH +  "/search")
+            .get(COMPANY_API_PATH)
         .then()
             .log().all()
             .statusCode(200)
