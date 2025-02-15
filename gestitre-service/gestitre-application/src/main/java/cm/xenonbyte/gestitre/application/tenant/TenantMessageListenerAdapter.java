@@ -1,6 +1,7 @@
 package cm.xenonbyte.gestitre.application.tenant;
 
 import cm.xenonbyte.gestitre.domain.common.vo.Name;
+import cm.xenonbyte.gestitre.domain.company.entity.Company;
 import cm.xenonbyte.gestitre.domain.company.event.CompanyCreatedEvent;
 import cm.xenonbyte.gestitre.domain.tenant.Tenant;
 import cm.xenonbyte.gestitre.domain.tenant.ports.primary.message.listener.TenantMessageListener;
@@ -35,8 +36,9 @@ public final class TenantMessageListenerAdapter implements TenantMessageListener
     @Blocking
     @ConsumeEvent(value = COMPANY_CREATED)
     public void handle(CompanyCreatedEvent event) {
-        log.info(">>>> Receiving event from CompanyMessagePublisher to create tenant with name {}", event.getCompany().getCompanyName().text().value());
-        tenantService.create(Tenant.builder().name(Name.of(event.getCompany().getCompanyName().text())).build());
+        Company company = event.getCompany();
+        log.info(">>>> Receiving event from CompanyMessagePublisher to create tenant with name {}", company.getCompanyName().text().value());
+        tenantService.create(Tenant.builder().code(company.getCode()).name(Name.of(company.getCompanyName().text())).build());
 
     }
 }

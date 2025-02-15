@@ -3,6 +3,7 @@ package cm.xenonbyte.gestitre.domain.company.entity;
 import cm.xenonbyte.gestitre.domain.common.entity.AggregateRoot;
 import cm.xenonbyte.gestitre.domain.common.validation.Assert;
 import cm.xenonbyte.gestitre.domain.common.vo.Active;
+import cm.xenonbyte.gestitre.domain.common.vo.Code;
 import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
 import cm.xenonbyte.gestitre.domain.common.vo.CompanyName;
 import cm.xenonbyte.gestitre.domain.common.vo.Filename;
@@ -43,6 +44,7 @@ public final class Company extends AggregateRoot<CompanyId> {
     private final LegalForm legalForm;
     private final Address address;
     private final Contact contact;
+    private final Code code;
     private ZonedDateTime createdDate;
     private Activity activity;
     private RegistrationNumber registrationNumber;
@@ -63,13 +65,14 @@ public final class Company extends AggregateRoot<CompanyId> {
     private Active active;
 
     public Company(CompanyName companyName, CompanyManagerName companyManagerName,
-                   Licence licence, LegalForm legalForm, Address address, Contact contact) {
+                   Licence licence, LegalForm legalForm, Address address, Contact contact, Code code) {
         this.companyName = companyName;
         this.companyManagerName = companyManagerName;
         this.licence = licence;
         this.legalForm = legalForm;
         this.address = address;
         this.contact = contact;
+        this.code = code;
     }
 
     private Company(Builder builder) {
@@ -80,6 +83,7 @@ public final class Company extends AggregateRoot<CompanyId> {
         legalForm = builder.legalForm;
         address = builder.address;
         contact = builder.contact;
+        code = builder.code;
         createdDate = builder.createdDate;
         activity = builder.activity;
         registrationNumber = builder.registrationNumber;
@@ -126,6 +130,10 @@ public final class Company extends AggregateRoot<CompanyId> {
 
     public Contact getContact() {
         return contact;
+    }
+
+    public Code getCode() {
+        return code;
     }
 
     public ZonedDateTime getCreatedDate() {
@@ -228,6 +236,9 @@ public final class Company extends AggregateRoot<CompanyId> {
                 .notNull(legalForm.name())
                 .isOneOf(Arrays.stream(LegalForm.values()).map(Enum::name).toList(), legalForm.name());
 
+        Assert.field("Code", code)
+                        .notNull(code);
+
         Assert.field("Address", address)
                 .notNull();
 
@@ -248,6 +259,7 @@ public final class Company extends AggregateRoot<CompanyId> {
         private LegalForm legalForm;
         private Address address;
         private Contact contact;
+        private Code code;
         private ZonedDateTime createdDate;
         private Activity activity;
         private RegistrationNumber registrationNumber;
@@ -302,6 +314,11 @@ public final class Company extends AggregateRoot<CompanyId> {
 
         public Builder contact(Contact val) {
             contact = val;
+            return this;
+        }
+
+        public Builder code(Code val) {
+            code = val;
             return this;
         }
 

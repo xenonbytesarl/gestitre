@@ -1,4 +1,4 @@
-package cm.xenonbyte.gestitre.domain.company.vo.contact;
+package cm.xenonbyte.gestitre.domain.common.vo;
 
 import cm.xenonbyte.gestitre.domain.common.validation.Assert;
 import cm.xenonbyte.gestitre.domain.common.vo.Text;
@@ -11,27 +11,27 @@ import java.util.Objects;
  * @version 1.0
  * @since 01/11/2024
  */
-public record Phone(Text text) {
-    public Phone(@Nonnull Text text) {
+public record ZipCode(Text text) {
+    public ZipCode(@Nonnull Text text) {
         this.text = Objects.requireNonNull(text);
     }
 
     @Nonnull
-    public static Phone of(Text phone) {
-        Assert.field("Phone", phone)
-                .notNull()
-                .notNull(phone.value())
-                .notEmpty(phone.value())
-                .notNumberValue(phone.value());
-        return new Phone(phone);
+    public static ZipCode of(Text zipCode) {
+        Assert.field("Zip code", zipCode)
+            .notNull()
+            .notNull(zipCode.value())
+            .notEmpty(zipCode.value())
+            .notNumberValue(zipCode.value());
+        return new ZipCode(zipCode);
     }
 
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
-        Phone phone = (Phone) object;
-        return Objects.equals(text, phone.text);
+        ZipCode zipCode = (ZipCode) object;
+        return Objects.equals(text, zipCode.text);
     }
 
     @Override

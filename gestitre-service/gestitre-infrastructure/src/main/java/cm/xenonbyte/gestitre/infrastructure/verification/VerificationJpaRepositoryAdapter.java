@@ -42,7 +42,9 @@ public final class VerificationJpaRepositoryAdapter implements VerificationRepos
     @Transactional
     public Verification create(@Nonnull Verification verification) {
         verificationJpaRepository.persist(verificationJpaMapper.toVerificationJpa(verification));
-        return verification;
+        return verificationJpaMapper.toVerification(
+                verificationJpaRepository.findById(verification.getId().getValue())
+        );
     }
 
     @Override

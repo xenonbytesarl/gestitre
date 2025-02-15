@@ -1,5 +1,6 @@
 package cm.xenonbyte.gestitre.domain.company.ports.secondary.repository;
 
+import cm.xenonbyte.gestitre.domain.common.vo.Code;
 import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
 import cm.xenonbyte.gestitre.domain.common.vo.CompanyName;
 import cm.xenonbyte.gestitre.domain.common.vo.Email;
@@ -9,13 +10,14 @@ import cm.xenonbyte.gestitre.domain.common.vo.PageInfoDirection;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoField;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoPage;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoSize;
+import cm.xenonbyte.gestitre.domain.common.vo.Phone;
+import cm.xenonbyte.gestitre.domain.common.vo.TenantId;
 import cm.xenonbyte.gestitre.domain.company.entity.Company;
 import cm.xenonbyte.gestitre.domain.company.vo.IsinCode;
 import cm.xenonbyte.gestitre.domain.company.vo.RegistrationNumber;
 import cm.xenonbyte.gestitre.domain.company.vo.TaxNumber;
 import cm.xenonbyte.gestitre.domain.company.vo.WebSiteUrl;
 import cm.xenonbyte.gestitre.domain.company.vo.contact.Fax;
-import cm.xenonbyte.gestitre.domain.company.vo.contact.Phone;
 import jakarta.annotation.Nonnull;
 
 import java.util.Optional;
@@ -70,4 +72,10 @@ public interface CompanyRepository {
     Boolean existsByFax(@Nonnull Fax fax);
 
     Optional<Company> findByFax(@Nonnull Fax fax);
+
+    Optional<Company> findByTenantId(@Nonnull TenantId tenantId);
+
+    Boolean existsByCode(@Nonnull Code code);
+
+    Optional<Company> findByCode(@Nonnull Code code);
 }

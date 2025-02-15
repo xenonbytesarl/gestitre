@@ -37,7 +37,9 @@ public final class MailServerJpaRepositoryAdapter implements MailServerRepositor
     @Transactional
     public MailServer create(@Nonnull MailServer mailServer) {
         mailServerJpaRepository.persist(mailServerJpaMapper.toMailServerJpa(mailServer));
-        return mailServer;
+        return mailServerJpaMapper.toMailServer(
+                mailServerJpaRepository.findById(mailServer.getId().getValue())
+        );
     }
 
     @Override

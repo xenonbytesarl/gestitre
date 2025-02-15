@@ -1,5 +1,6 @@
 package cm.xenonbyte.gestitre.infrastructure.company;
 
+import cm.xenonbyte.gestitre.domain.common.vo.Code;
 import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
 import cm.xenonbyte.gestitre.domain.common.vo.CompanyName;
 import cm.xenonbyte.gestitre.domain.common.vo.Email;
@@ -9,6 +10,8 @@ import cm.xenonbyte.gestitre.domain.common.vo.PageInfoDirection;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoField;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoPage;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoSize;
+import cm.xenonbyte.gestitre.domain.common.vo.Phone;
+import cm.xenonbyte.gestitre.domain.common.vo.TenantId;
 import cm.xenonbyte.gestitre.domain.company.entity.Company;
 import cm.xenonbyte.gestitre.domain.company.ports.secondary.repository.CompanyRepository;
 import cm.xenonbyte.gestitre.domain.company.vo.IsinCode;
@@ -16,7 +19,6 @@ import cm.xenonbyte.gestitre.domain.company.vo.RegistrationNumber;
 import cm.xenonbyte.gestitre.domain.company.vo.TaxNumber;
 import cm.xenonbyte.gestitre.domain.company.vo.WebSiteUrl;
 import cm.xenonbyte.gestitre.domain.company.vo.contact.Fax;
-import cm.xenonbyte.gestitre.domain.company.vo.contact.Phone;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
 import io.quarkus.panache.common.Sort;
@@ -60,7 +62,9 @@ public final class CompanyJpaRepositoryAdapter implements CompanyRepository {
     @Transactional
     public Company create(@Nonnull Company company) {
         companyJpaRepository.persist(companyJpaMapper.toCompanyJpa(company));
-        return company;
+        return companyJpaMapper.toCompany(
+                companyJpaRepository.findById(company.getId().getValue())
+        );
     }
 
     @Override
@@ -229,6 +233,23 @@ public final class CompanyJpaRepositoryAdapter implements CompanyRepository {
     @Override
     public Optional<Company> findByFax(@Nonnull Fax fax) {
         return companyJpaRepository.findByFax(fax.text().value())
+                .map(companyJpaMapper::toCompany);
+    }
+
+    @Override
+    public Optional<Company> findByTenantId(@Nonnull TenantId tenantId) {
+        return companyJpaRepository.findByTenantId(tenantId.getValue())
+                .map(companyJpaMapper::toCompany);
+    }
+
+    @Override
+    public Boolean existsByCode(@Nonnull Code code) {
+        return companyJpaRepository.existsByCode(code.text().value());
+    }
+
+    @Override
+    public Optional<Company> findByCode(@Nonnull Code code) {
+        return companyJpaRepository.findByCode(code.text().value())
                 .map(companyJpaMapper::toCompany);
     }
 }

@@ -28,9 +28,9 @@ import java.util.UUID;
 public class Auditable {
     @Id
     @Column(name = "c_id", nullable = false, unique = true)
-    private UUID id;
+    protected UUID id;
     @Column(name = "c_created_at", nullable = false, updatable = false)
-    private ZonedDateTime createdAt;
+    protected ZonedDateTime createdAt;
     @Column(name = "c_updated_at", insertable = false)
-    private ZonedDateTime updatedAt;
+    protected ZonedDateTime updatedAt;
 }

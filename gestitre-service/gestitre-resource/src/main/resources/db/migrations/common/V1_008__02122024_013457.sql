@@ -2,8 +2,8 @@
 create table if not exists t_mail_server
 (
     c_id           uuid                        not null ,
-    c_created_at   timestamp without time zone not null ,
-    c_updated_at   timestamp without time zone,
+    c_created_at   timestamp with time zone not null ,
+    c_updated_at   timestamp with time zone,
     c_name         varchar(64)                 not null ,
     c_from         varchar(512)                not null ,
     c_type         varchar                     not null ,
@@ -13,8 +13,8 @@ create table if not exists t_mail_server
     c_protocol     varchar(64)                 not null ,
     c_username     varchar(128) ,
     c_password     varchar(64) ,
-    c_creation_at  timestamp without time zone not null ,
-    c_confirmed_at timestamp without time zone,
+    c_creation_at  timestamp with time zone not null ,
+    c_confirmed_at timestamp with time zone,
     c_use_ssl      boolean,
     c_use_auth     boolean,
     c_active       boolean,

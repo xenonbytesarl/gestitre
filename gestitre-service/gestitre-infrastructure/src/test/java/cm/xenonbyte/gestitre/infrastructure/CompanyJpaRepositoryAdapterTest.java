@@ -1,8 +1,11 @@
 package cm.xenonbyte.gestitre.infrastructure;
 
 import cm.xenonbyte.gestitre.domain.common.vo.Active;
+import cm.xenonbyte.gestitre.domain.common.vo.City;
+import cm.xenonbyte.gestitre.domain.common.vo.Code;
 import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
 import cm.xenonbyte.gestitre.domain.common.vo.CompanyName;
+import cm.xenonbyte.gestitre.domain.common.vo.Country;
 import cm.xenonbyte.gestitre.domain.common.vo.Email;
 import cm.xenonbyte.gestitre.domain.common.vo.Filename;
 import cm.xenonbyte.gestitre.domain.common.vo.Keyword;
@@ -12,17 +15,15 @@ import cm.xenonbyte.gestitre.domain.common.vo.PageInfoDirection;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoField;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoPage;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoSize;
+import cm.xenonbyte.gestitre.domain.common.vo.Phone;
 import cm.xenonbyte.gestitre.domain.common.vo.Text;
+import cm.xenonbyte.gestitre.domain.common.vo.ZipCode;
 import cm.xenonbyte.gestitre.domain.company.entity.Company;
 import cm.xenonbyte.gestitre.domain.company.vo.CompanyManagerName;
 import cm.xenonbyte.gestitre.domain.company.vo.LegalForm;
 import cm.xenonbyte.gestitre.domain.company.vo.Licence;
 import cm.xenonbyte.gestitre.domain.company.vo.address.Address;
-import cm.xenonbyte.gestitre.domain.company.vo.address.City;
-import cm.xenonbyte.gestitre.domain.company.vo.address.Country;
-import cm.xenonbyte.gestitre.domain.company.vo.address.ZipCode;
 import cm.xenonbyte.gestitre.domain.company.vo.contact.Contact;
-import cm.xenonbyte.gestitre.domain.company.vo.contact.Phone;
 import cm.xenonbyte.gestitre.infrastructure.company.CompanyJpaMapper;
 import cm.xenonbyte.gestitre.infrastructure.company.CompanyJpaRepository;
 import cm.xenonbyte.gestitre.infrastructure.company.CompanyJpaRepositoryAdapter;
@@ -91,6 +92,7 @@ final class CompanyJpaRepositoryAdapterTest {
                 .stampFilename(Filename.of(Text.of(System.getProperty("user.home") + "/gestitre/stamp/stamp0.png")))
                 .active(Active.with(true))
                 .createdDate(ZonedDateTime.now())
+                .code(Code.of(Text.of("CM20250206")))
                 .build();
 
         //Act
@@ -229,6 +231,7 @@ final class CompanyJpaRepositoryAdapterTest {
                 .logoFilename(Filename.of(Text.of(System.getProperty("user.home") + "/gestitre/logo/logo2.png")))
                 .stampFilename(Filename.of(Text.of(System.getProperty("user.home") + "/gestitre/stamp/stamp2.png")))
                 .active(Active.with(true))
+                .code(Code.of(Text.of("CM20250202")))
                 .createdDate(ZonedDateTime.now())
                 .build();
 

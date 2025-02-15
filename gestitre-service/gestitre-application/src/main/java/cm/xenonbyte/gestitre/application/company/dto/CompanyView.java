@@ -36,6 +36,9 @@ public class CompanyView {
     @Size(max = 64, message = MAX_SIZE)
     protected String companyName;
     @NotBlank(message = NOT_BLANK)
+    @Size(max = 16, message = MAX_SIZE)
+    protected String code;
+    @NotBlank(message = NOT_BLANK)
     @Size(max = 64, message = MAX_SIZE)
     protected String companyManagerName;
     @NotBlank(message = NOT_BLANK)

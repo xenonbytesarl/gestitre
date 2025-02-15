@@ -2,6 +2,7 @@ package cm.xenonbyte.gestitre.domain.company;
 
 import cm.xenonbyte.gestitre.domain.common.annotation.DomainService;
 import cm.xenonbyte.gestitre.domain.common.validation.Assert;
+import cm.xenonbyte.gestitre.domain.common.vo.Code;
 import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
 import cm.xenonbyte.gestitre.domain.common.vo.CompanyName;
 import cm.xenonbyte.gestitre.domain.common.vo.Email;
@@ -12,6 +13,8 @@ import cm.xenonbyte.gestitre.domain.common.vo.PageInfoDirection;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoField;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoPage;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoSize;
+import cm.xenonbyte.gestitre.domain.common.vo.Phone;
+import cm.xenonbyte.gestitre.domain.common.vo.TenantId;
 import cm.xenonbyte.gestitre.domain.company.entity.Company;
 import cm.xenonbyte.gestitre.domain.company.event.CompanyCreatedEvent;
 import cm.xenonbyte.gestitre.domain.company.event.CompanyUpdatedEvent;
@@ -30,7 +33,6 @@ import cm.xenonbyte.gestitre.domain.company.vo.RegistrationNumber;
 import cm.xenonbyte.gestitre.domain.company.vo.TaxNumber;
 import cm.xenonbyte.gestitre.domain.company.vo.WebSiteUrl;
 import cm.xenonbyte.gestitre.domain.company.vo.contact.Fax;
-import cm.xenonbyte.gestitre.domain.company.vo.contact.Phone;
 import cm.xenonbyte.gestitre.domain.tenant.Tenant;
 import jakarta.annotation.Nonnull;
 
@@ -71,7 +73,7 @@ public final class CompanyDomainService implements CompanyService {
         company.validateMandatoryFields();
         validateCompany(company);
         company.initializeDefaultValues();
-        companyRepository.create(company);
+        company = companyRepository.create(company);
         LOGGER.info("Company is created with id " + company.getId().getValue());
         CompanyCreatedEvent companyCreatedEvent = new CompanyCreatedEvent(company, ZonedDateTime.now());
         companyMessagePublisher.publish(companyCreatedEvent, COMPANY_CREATED);
@@ -79,7 +81,8 @@ public final class CompanyDomainService implements CompanyService {
     }
 
     private Tenant tenantFrom(CompanyCreatedEvent companyCreatedEvent) {
-        Tenant tenant = Tenant.of(Name.of(companyCreatedEvent.getCompany().getCompanyName().text()));
+        Company company = companyCreatedEvent.getCompany();
+        Tenant tenant = Tenant.of(Name.of(company.getCompanyName().text()), company.getCode());
         tenant.initializeDefaults();
         return tenant;
     }
@@ -140,9 +143,23 @@ public final class CompanyDomainService implements CompanyService {
         return companyRepository.existsById(companyId);
     }
 
+    @Override
+    public Company findCompanyByTenantBy(@Nonnull TenantId tenantId) {
+        return companyRepository.findByTenantId(tenantId)
+                .orElseThrow(() -> new CompanyTenantIdNotFoundException(new String[]{tenantId.getValue().toString()}));
+    }
+
+    @Override
+    public Company findCompanyByName(@Nonnull Name name) {
+        return companyRepository.findByCompanyName(CompanyName.of(name.text())).orElseThrow(
+                () -> new CompanyNameNotFoundException(new String[] {name.text().value()})
+        );
+    }
+
 
     private void validateCompany(Company company) {
         validateCompanyName(company.getId(), company.getCompanyName());
+        validateCode(company.getId(), company.getCode());
         validateCompanyEmail(company.getId(), company.getContact().email());
         validateCompanyPhone(company.getId(), company.getContact().phone());
         validateCompanyFax(company.getId(), company.getContact().fax());
@@ -153,6 +170,19 @@ public final class CompanyDomainService implements CompanyService {
 
         if(company.getCertificateTemplateId() != null) {
             validateCertificateTemplate(company.getCertificateTemplateId());
+        }
+    }
+
+    private void validateCode(CompanyId companyId, Code code) {
+        if(code != null) {
+            if(companyId == null && companyRepository.existsByCode(code)) {
+                throw new CompanyCodeConflictException(new String[] {code.text().value()});
+            }
+
+            Optional<Company> oldCompany = companyRepository.findByCode(code);
+            if(companyId != null && oldCompany.isPresent() && !oldCompany.get().getId().equals(companyId)) {
+                throw new CompanyCodeConflictException(new String[] {code.text().value()});
+            }
         }
     }
 

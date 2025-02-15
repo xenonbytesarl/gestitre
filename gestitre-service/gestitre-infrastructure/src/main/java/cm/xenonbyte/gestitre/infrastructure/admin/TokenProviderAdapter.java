@@ -77,6 +77,7 @@ public final class TokenProviderAdapter implements TokenProvider {
                     .claim(Claims.email, user.getEmail().text().value())
                     .claim("tenantId", user.getTenantId().getValue().toString())
                     .claim("use_mfa", user.getUseMfa().value())
+                    .claim("timezone", user.getTimezone().getName())
                     .groups(authorities)
                     .sign()
 

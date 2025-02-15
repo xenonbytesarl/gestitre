@@ -19,15 +19,20 @@ import cm.xenonbyte.gestitre.domain.admin.vo.AccountLocked;
 import cm.xenonbyte.gestitre.domain.admin.vo.CredentialExpired;
 import cm.xenonbyte.gestitre.domain.admin.vo.PermissionId;
 import cm.xenonbyte.gestitre.domain.admin.vo.RoleId;
+import cm.xenonbyte.gestitre.domain.admin.vo.Timezone;
 import cm.xenonbyte.gestitre.domain.common.vo.Active;
+import cm.xenonbyte.gestitre.domain.common.vo.City;
 import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
 import cm.xenonbyte.gestitre.domain.common.vo.CompanyName;
+import cm.xenonbyte.gestitre.domain.common.vo.Country;
 import cm.xenonbyte.gestitre.domain.common.vo.Email;
 import cm.xenonbyte.gestitre.domain.common.vo.Name;
 import cm.xenonbyte.gestitre.domain.common.vo.Password;
+import cm.xenonbyte.gestitre.domain.common.vo.Phone;
 import cm.xenonbyte.gestitre.domain.common.vo.TenantId;
 import cm.xenonbyte.gestitre.domain.common.vo.Text;
 import cm.xenonbyte.gestitre.domain.common.vo.UserId;
+import cm.xenonbyte.gestitre.domain.common.vo.ZipCode;
 import cm.xenonbyte.gestitre.domain.company.CompanyDomainService;
 import cm.xenonbyte.gestitre.domain.company.CompanyMessageInMemoryPublisher;
 import cm.xenonbyte.gestitre.domain.company.addapter.inmemory.CertificateTemplateInMemoryRepository;
@@ -42,11 +47,7 @@ import cm.xenonbyte.gestitre.domain.company.vo.CompanyManagerName;
 import cm.xenonbyte.gestitre.domain.company.vo.LegalForm;
 import cm.xenonbyte.gestitre.domain.company.vo.Licence;
 import cm.xenonbyte.gestitre.domain.company.vo.address.Address;
-import cm.xenonbyte.gestitre.domain.company.vo.address.City;
-import cm.xenonbyte.gestitre.domain.company.vo.address.Country;
-import cm.xenonbyte.gestitre.domain.company.vo.address.ZipCode;
 import cm.xenonbyte.gestitre.domain.company.vo.contact.Contact;
-import cm.xenonbyte.gestitre.domain.company.vo.contact.Phone;
 import cm.xenonbyte.gestitre.domain.tenant.Tenant;
 import cm.xenonbyte.gestitre.domain.tenant.TenantDomainService;
 import cm.xenonbyte.gestitre.domain.tenant.ports.primary.message.listener.TenantService;
@@ -197,6 +198,7 @@ class UserDomainServiceTest {
                 .email(Email.of(Text.of("test@gmail.com")))
                 .password(Password.of(Text.of("test123")))
                 .confirmPassword(Password.of(Text.of("test123")))
+                .timezone(Timezone.Africa_Douala)
                 .roles(roles)
                 .companyId(companyId)
                 .build();
@@ -228,6 +230,7 @@ class UserDomainServiceTest {
                                 ))
                                 .build()
                 ))
+                .timezone(Timezone.Africa_Douala)
                 .companyId(companyId)
                 .build();
         //Act + Then
@@ -247,6 +250,7 @@ class UserDomainServiceTest {
                 .confirmPassword(Password.of(Text.of("test123")))
                 .roles(roles)
                 .companyId(new CompanyId(UUID.fromString("019353d5-b63c-7874-9d44-22622626500e")))
+                .timezone(Timezone.Africa_Douala)
                 .build();
         //Act + Then
         assertThatThrownBy(() -> userService.createUser(user))
@@ -263,6 +267,7 @@ class UserDomainServiceTest {
                 .email(Email.of(Text.of("emailsecond@gmail.com")))
                 .password(Password.of(Text.of("test123")))
                 .confirmPassword(Password.of(Text.of("test123")))
+                .timezone(Timezone.Africa_Douala)
                 .roles(roles)
                 .companyId(companyId)
                 .build();

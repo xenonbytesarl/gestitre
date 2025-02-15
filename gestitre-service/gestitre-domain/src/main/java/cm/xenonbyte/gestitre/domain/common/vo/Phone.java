@@ -1,7 +1,6 @@
-package cm.xenonbyte.gestitre.domain.company.vo.address;
+package cm.xenonbyte.gestitre.domain.common.vo;
 
 import cm.xenonbyte.gestitre.domain.common.validation.Assert;
-import cm.xenonbyte.gestitre.domain.common.vo.Text;
 import jakarta.annotation.Nonnull;
 
 import java.util.Objects;
@@ -11,26 +10,27 @@ import java.util.Objects;
  * @version 1.0
  * @since 01/11/2024
  */
-public record City(Text text) {
-    public City(@Nonnull Text text) {
+public record Phone(Text text) {
+    public Phone(@Nonnull Text text) {
         this.text = Objects.requireNonNull(text);
     }
 
     @Nonnull
-    public static City of(Text city) {
-        Assert.field("City", city)
+    public static Phone of(Text phone) {
+        Assert.field("Phone", phone)
                 .notNull()
-                .notNull(city.value())
-                .notEmpty(city.value());
-        return new City(city);
+                .notNull(phone.value())
+                .notEmpty(phone.value())
+                .notNumberValue(phone.value());
+        return new Phone(phone);
     }
 
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
-        City city = (City) object;
-        return Objects.equals(text, city.text);
+        Phone phone = (Phone) object;
+        return Objects.equals(text, phone.text);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package cm.xenonbyte.gestitre.infrastructure.common;
 
-import cm.xenonbyte.gestitre.domain.tenant.TenantContext;
+import cm.xenonbyte.gestitre.domain.context.TenantContext;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreRemove;

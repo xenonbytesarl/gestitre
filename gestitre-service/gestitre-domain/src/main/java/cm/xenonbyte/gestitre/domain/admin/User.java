@@ -5,6 +5,7 @@ import cm.xenonbyte.gestitre.domain.admin.vo.AccountExpired;
 import cm.xenonbyte.gestitre.domain.admin.vo.AccountLocked;
 import cm.xenonbyte.gestitre.domain.admin.vo.CredentialExpired;
 import cm.xenonbyte.gestitre.domain.admin.vo.FailedLoginAttempt;
+import cm.xenonbyte.gestitre.domain.admin.vo.Timezone;
 import cm.xenonbyte.gestitre.domain.admin.vo.UseMfa;
 import cm.xenonbyte.gestitre.domain.common.entity.AggregateRoot;
 import cm.xenonbyte.gestitre.domain.common.validation.Assert;
@@ -30,6 +31,7 @@ public final class User extends AggregateRoot<UserId> {
     private final Email email;
     private final Name name;
     private final Set<Role> roles;
+    private final Timezone timezone;
     private TenantId tenantId;
     private Password password;
     private Password confirmPassword;
@@ -45,10 +47,12 @@ public final class User extends AggregateRoot<UserId> {
             @Nonnull CompanyId companyId,
             @Nonnull Email email,
             @Nonnull Name name,
+            @Nonnull Timezone timezone,
             @Nonnull Set<Role> roles) {
         this.companyId = Objects.requireNonNull(companyId);
         this.email = Objects.requireNonNull(email);
         this.name = Objects.requireNonNull(name);
+        this.timezone = Objects.requireNonNull(timezone);
         this.roles = Objects.requireNonNull(roles);
     }
 
@@ -61,6 +65,7 @@ public final class User extends AggregateRoot<UserId> {
         tenantId = builder.tenantId;
         name = builder.name;
         roles = builder.roles;
+        timezone = builder.timezone;
         accountEnabled = builder.accountEnabled;
         credentialExpired = builder.credentialExpired;
         accountLocked = builder.accountLocked;
@@ -114,6 +119,10 @@ public final class User extends AggregateRoot<UserId> {
         return roles;
     }
 
+    public Timezone getTimezone() {
+        return timezone;
+    }
+
     public AccountEnabled getAccountEnabled() {
         return accountEnabled;
     }
@@ -150,6 +159,9 @@ public final class User extends AggregateRoot<UserId> {
                 .notNull();
 
         Assert.field("Name", name)
+                .notNull();
+
+        Assert.field("Timezone", timezone)
                 .notNull();
 
         Assert.field("Roles", roles)
@@ -199,6 +211,7 @@ public final class User extends AggregateRoot<UserId> {
         private Password confirmPassword;
         private Name name;
         private Set<Role> roles;
+        private Timezone timezone;
         private AccountEnabled accountEnabled;
         private CredentialExpired credentialExpired;
         private AccountLocked accountLocked;
@@ -246,6 +259,11 @@ public final class User extends AggregateRoot<UserId> {
 
         public Builder roles(Set<Role> val) {
             roles = val;
+            return this;
+        }
+
+        public Builder timezone(Timezone val) {
+            timezone = val;
             return this;
         }
 

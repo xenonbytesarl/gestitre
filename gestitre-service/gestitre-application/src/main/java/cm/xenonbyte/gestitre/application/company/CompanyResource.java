@@ -3,7 +3,6 @@ package cm.xenonbyte.gestitre.application.company;
 import cm.xenonbyte.gestitre.application.common.dto.SuccessApiResponse;
 import cm.xenonbyte.gestitre.application.company.dto.CreateCompanyViewRequest;
 import cm.xenonbyte.gestitre.application.company.dto.UpdateCompanyViewRequest;
-import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
@@ -52,12 +51,10 @@ public class CompanyResource {
     public static final String COMPANY_UPDATED_SUCCESSFULLY = "CompanyResource.4";
 
     private final CompanyApplicationAdapter companyApplicationAdapter;
-    private final SecurityIdentity securityIdentity;
 
     public CompanyResource(
-            @Nonnull CompanyApplicationAdapter companyApplicationAdapter, SecurityIdentity securityIdentity) {
+            @Nonnull CompanyApplicationAdapter companyApplicationAdapter) {
         this.companyApplicationAdapter = Objects.requireNonNull(companyApplicationAdapter);
-        this.securityIdentity = securityIdentity;
     }
 
     @POST
@@ -95,7 +92,6 @@ public class CompanyResource {
             @QueryParam("field") String field,
             @QueryParam("direction") String direction
     ) {
-        log.info("findCompanies {}", securityIdentity.getPrincipal().getName());
         return Response.status(OK)
                 .entity(
                         SuccessApiResponse.builder()

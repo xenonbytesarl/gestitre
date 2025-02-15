@@ -4,6 +4,8 @@ import cm.xenonbyte.gestitre.infrastructure.common.Tenantable;
 import cm.xenonbyte.gestitre.infrastructure.company.CompanyJpa;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
@@ -38,6 +40,9 @@ public class UserJpa extends Tenantable {
     private String email;
     @Column(name = "c_password", nullable = false, length = 1024)
     private String password;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "c_timezone", nullable = false, length = 64)
+    private TimezoneJpa timezoneJpa;
     @Column(name = "c_account_enabled", nullable = false)
     private Boolean accountEnabled;
     @Column(name = "c_credential_expired", nullable = false)

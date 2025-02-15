@@ -41,7 +41,9 @@ public final class UserJpaRepositoryAdapter implements UserRepository {
     @Transactional
     public User create(@Nonnull User user) {
         userJpaRepository.persist(userJpaMapper.toUserJpa(user));
-        return user;
+        return userJpaMapper.toUser(
+                userJpaRepository.findById(user.getId().getValue())
+        );
     }
 
     @Override

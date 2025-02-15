@@ -9,6 +9,7 @@ import cm.xenonbyte.gestitre.domain.common.verification.event.VerificationCreate
 import cm.xenonbyte.gestitre.domain.common.verification.event.VerificationVerifiedEvent;
 import cm.xenonbyte.gestitre.domain.company.event.CompanyCreatedEvent;
 import cm.xenonbyte.gestitre.domain.company.event.CompanyUpdatedEvent;
+import cm.xenonbyte.gestitre.domain.shareholder.event.ShareHolderCreatedEvent;
 import cm.xenonbyte.gestitre.domain.tenant.TenantCreatedEvent;
 import io.quarkus.vertx.ConsumeEvent;
 import io.smallrye.common.annotation.Blocking;
@@ -17,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.COMPANY_CREATED;
 import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.COMPANY_UPDATED;
+import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.SHAREHOLDER_CREATED;
 import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.TENANT_CREATED;
 import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.USER_ACTIVATED;
 import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.USER_CREATED;
@@ -95,5 +97,12 @@ public final class AuditMessageListenerAdapter implements AuditMessageListener {
     @ConsumeEvent(value = VERIFICATION_VERIFIED)
     public void handle(VerificationVerifiedEvent event) {
         log.info(">>>> Receiving event from VerificationMessagePublisher to create audit for verified verification with of type {}", event.getVerification().getType().name());
+    }
+
+    @Override
+    @Blocking
+    @ConsumeEvent(value = SHAREHOLDER_CREATED)
+    public void handle(ShareHolderCreatedEvent event) {
+        log.info(">>>> Receiving event from ShareHolderMessagePublisher to create audit a share holder with name {}", event.getShareHolder().getName().text().value());
     }
 }

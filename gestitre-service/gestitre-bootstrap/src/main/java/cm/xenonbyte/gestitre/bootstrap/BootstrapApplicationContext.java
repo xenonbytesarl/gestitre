@@ -32,6 +32,11 @@ import cm.xenonbyte.gestitre.domain.notification.MailServerDomainService;
 import cm.xenonbyte.gestitre.domain.notification.ports.primary.MailServerService;
 import cm.xenonbyte.gestitre.domain.notification.ports.secondary.MailServerRepository;
 import cm.xenonbyte.gestitre.domain.notification.ports.secondary.message.MailServerMessagePublisher;
+import cm.xenonbyte.gestitre.domain.shareholder.ShareHolderDomainService;
+import cm.xenonbyte.gestitre.domain.shareholder.event.ShareHolderCreatedEvent;
+import cm.xenonbyte.gestitre.domain.shareholder.ports.primary.ShareHolderService;
+import cm.xenonbyte.gestitre.domain.shareholder.ports.secondary.ShareHolderRepository;
+import cm.xenonbyte.gestitre.domain.shareholder.ports.secondary.message.ShareHolderMessagePublisher;
 import cm.xenonbyte.gestitre.domain.tenant.TenantCreatedEvent;
 import cm.xenonbyte.gestitre.domain.tenant.TenantDomainService;
 import cm.xenonbyte.gestitre.domain.tenant.ports.primary.message.listener.TenantService;
@@ -121,6 +126,7 @@ public final class BootstrapApplicationContext {
         eventBus.registerDefaultCodec(VerificationCreatedEvent.class, new GenericCodec<>(VerificationCreatedEvent.class));
         eventBus.registerDefaultCodec(VerificationCanceledEvent.class, new GenericCodec<>(VerificationCanceledEvent.class));
         eventBus.registerDefaultCodec(VerificationVerifiedEvent.class, new GenericCodec<>(VerificationVerifiedEvent.class));
+        eventBus.registerDefaultCodec(ShareHolderCreatedEvent.class, new GenericCodec<>(ShareHolderCreatedEvent.class));
         return eventBus;
     }
 
@@ -148,6 +154,14 @@ public final class BootstrapApplicationContext {
             VerificationService verificationService
     ) {
         return new MailServerDomainService(mailServerRepository, mailServerMessagePublisher, verificationService);
+    }
+
+    @ApplicationScoped
+    public ShareHolderService shareHolderService(
+            ShareHolderRepository shareHolderRepository,
+            ShareHolderMessagePublisher shareHolderMessagePublisher
+    ) {
+        return new ShareHolderDomainService(shareHolderRepository, shareHolderMessagePublisher);
     }
 
 }

@@ -16,6 +16,7 @@ import cm.xenonbyte.gestitre.domain.admin.vo.CredentialExpired;
 import cm.xenonbyte.gestitre.domain.admin.vo.FailedLoginAttempt;
 import cm.xenonbyte.gestitre.domain.admin.vo.PermissionId;
 import cm.xenonbyte.gestitre.domain.admin.vo.RoleId;
+import cm.xenonbyte.gestitre.domain.admin.vo.Timezone;
 import cm.xenonbyte.gestitre.domain.admin.vo.Token;
 import cm.xenonbyte.gestitre.domain.admin.vo.UseMfa;
 import cm.xenonbyte.gestitre.domain.common.vo.Active;
@@ -81,6 +82,7 @@ class CompanyTest {
                 Arguments.of(
                         CreateCompanyViewRequest.builder()
                                 .companyName("Company Name IT0")
+                                .code("CM20250214")
                                 .companyManagerName("Company Manager Name IT0")
                                 .licence("MONTH_12")
                                 .legalForm("SA")
@@ -113,6 +115,7 @@ class CompanyTest {
                 Arguments.of(
                         CreateCompanyViewRequest.builder()
                                 .companyName("Company Name IT1")
+                                .code("CM20250215")
                                 .companyManagerName("Company Manager Name IT1")
                                 .licence("MONTH_12")
                                 .legalForm("SA")
@@ -146,6 +149,7 @@ class CompanyTest {
                 Arguments.of(
                         CreateCompanyViewRequest.builder()
                                 .companyName("Company Name IT2")
+                                .code("CM20250216")
                                 .companyManagerName("Company Manager Name IT2")
                                 .licence("MONTH_12")
                                 .legalForm("SA")
@@ -220,6 +224,7 @@ class CompanyTest {
                 Arguments.of(
                     CreateCompanyViewRequest.builder()
                         .companyName("Company Name IT0F")
+                        .code("CM20250217")
                         .companyManagerName("Company Manager Name IT0F")
                         .licence("MONTH_12")
                         .legalForm("SA")
@@ -246,6 +251,7 @@ class CompanyTest {
                 Arguments.of(
                         CreateCompanyViewRequest.builder()
                                 .companyName("Company Name IT0F")
+                                .code("CM20250218")
                                 .companyManagerName("Company Manager Name IT0F")
                                 .licence("MONTH_12")
                                 .legalForm("SA")
@@ -272,6 +278,7 @@ class CompanyTest {
                 Arguments.of(
                         CreateCompanyViewRequest.builder()
                                 .companyName("Company Name IT0F")
+                                .code("CM20250219")
                                 .companyManagerName("Company Manager Name IT0F")
                                 .licence("MONTH_12")
                                 .legalForm("SA")
@@ -298,6 +305,7 @@ class CompanyTest {
                 Arguments.of(
                         CreateCompanyViewRequest.builder()
                                 .companyName("Company Name IT0F")
+                                .code("CM20250220")
                                 .companyManagerName("Company Manager Name IT0F")
                                 .licence("MONTH_12")
                                 .legalForm("SA")
@@ -324,6 +332,7 @@ class CompanyTest {
                 Arguments.of(
                         CreateCompanyViewRequest.builder()
                                 .companyName("Company Name IT0F")
+                                .code("CM20250221")
                                 .companyManagerName("Company Manager Name IT0F")
                                 .licence("MONTH_12")
                                 .legalForm("SA")
@@ -350,6 +359,7 @@ class CompanyTest {
                 Arguments.of(
                         CreateCompanyViewRequest.builder()
                                 .companyName("Company Name IT0F")
+                                .code("CM20250222")
                                 .companyManagerName("Company Manager Name IT0F")
                                 .licence("MONTH_12")
                                 .legalForm("SA")
@@ -377,6 +387,7 @@ class CompanyTest {
                 Arguments.of(
                         CreateCompanyViewRequest.builder()
                                 .companyName("Company Name y")
+                                .code("CM20250223")
                                 .companyManagerName("Company Manager Name IT0F")
                                 .licence("MONTH_12")
                                 .legalForm("SA")
@@ -404,6 +415,7 @@ class CompanyTest {
                 Arguments.of(
                         CreateCompanyViewRequest.builder()
                                 .companyName("Company Name 0F")
+                                .code("CM20250224")
                                 .companyManagerName("Company Manager Name IT0F")
                                 .licence("MONTH_12")
                                 .legalForm("SA")
@@ -431,6 +443,7 @@ class CompanyTest {
                 Arguments.of(
                         CreateCompanyViewRequest.builder()
                                 .companyName("Company Name 0F")
+                                .code("CM20250225")
                                 .companyManagerName("Company Manager Name IT0F")
                                 .licence("MONTH_12")
                                 .legalForm("SA")
@@ -589,6 +602,7 @@ class CompanyTest {
                                                 .build()
                                 )
                                .active(true)
+                               .code("CM20250213")
                                .createdDate(ZonedDateTime.now())
                                 .build(),
                         new MultiPartSpecBuilder("Logo content 2".getBytes())
@@ -641,6 +655,7 @@ class CompanyTest {
                     UpdateCompanyViewRequest.builder()
                         .id(UUID.fromString("0192f2b7-c1d4-795e-8e9f-b382b4c61d01"))
                         .companyName("Company Name IT0F")
+                        .code("CM20250207")
                         .companyManagerName("Company Manager Name IT0F")
                         .licence("MONTH_12")
                         .legalForm("SA")
@@ -670,6 +685,7 @@ class CompanyTest {
                     UpdateCompanyViewRequest.builder()
                         .id(UUID.fromString("0192f2b7-c1d4-795e-8e9f-b382b4c61d01"))
                         .companyName("Company Name IT0F")
+                        .code("CM20250208")
                         .companyManagerName("Company Manager Name IT0F")
                         .licence("MONTH_12")
                         .legalForm("SA")
@@ -699,6 +715,7 @@ class CompanyTest {
                             UpdateCompanyViewRequest.builder()
                                 .id(UUID.fromString("0192f2b7-c1d4-795e-8e9f-b382b4c61d01"))
                                 .companyName("Company Name IT0F")
+                                .code("CM20250209")
                                 .companyManagerName("Company Manager Name IT0F")
                                 .licence("MONTH_12")
                                 .legalForm("SA")
@@ -728,6 +745,7 @@ class CompanyTest {
                             UpdateCompanyViewRequest.builder()
                                 .id(UUID.fromString("0192f2b7-c1d4-795e-8e9f-b382b4c61d01"))
                                 .companyName("Company Name IT0F")
+                                .code("CM20250210")
                                 .companyManagerName("Company Manager Name IT0F")
                                 .licence("MONTH_12")
                                 .legalForm("SA")
@@ -757,6 +775,7 @@ class CompanyTest {
                             UpdateCompanyViewRequest.builder()
                                 .id(UUID.fromString("0192f2b7-c1d4-795e-8e9f-b382b4c61d01"))
                                 .companyName("Company Name IT0F")
+                                .code("CM20250211")
                                 .companyManagerName("Company Manager Name IT0F")
                                 .licence("MONTH_12")
                                 .legalForm("SA")
@@ -786,6 +805,7 @@ class CompanyTest {
                              UpdateCompanyViewRequest.builder()
                                 .id(UUID.fromString("0192f2b7-c1d4-795e-8e9f-b382b4c61d01"))
                                 .companyName("Company Name IT0F")
+                                 .code("CM20250212")
                                 .companyManagerName("Company Manager Name IT0F")
                                 .licence("MONTH_12")
                                 .legalForm("SA")
@@ -816,6 +836,7 @@ class CompanyTest {
                             UpdateCompanyViewRequest.builder()
                                 .id(UUID.fromString("0192f2b7-c1d4-795e-8e9f-b382b4c61d01"))
                                 .companyName("Company Name y")
+                                .code("CM20250213")
                                 .companyManagerName("Company Manager Name IT0F")
                                 .licence("MONTH_12")
                                 .legalForm("SA")
@@ -846,6 +867,7 @@ class CompanyTest {
                             UpdateCompanyViewRequest.builder()
                                 .id(UUID.fromString("0192f2b7-c1d4-795e-8e9f-b382b4c61d01"))
                                 .companyName("Company Name 0F")
+                                .code("CM20250214")
                                 .companyManagerName("Company Manager Name IT0F")
                                 .licence("MONTH_12")
                                 .legalForm("SA")
@@ -876,6 +898,7 @@ class CompanyTest {
                             UpdateCompanyViewRequest.builder()
                                 .id(UUID.fromString("0192f2b7-c1d4-795e-8e9f-b382b4c61d01"))
                                 .companyName("Company Name 0F")
+                                .code("CM20250215")
                                 .companyManagerName("Company Manager Name IT0F")
                                 .licence("MONTH_12")
                                 .legalForm("SA")
@@ -937,6 +960,7 @@ class CompanyTest {
                 .name(Name.of(Text.of("ROOT")))
                 .email(Email.of(Text.of("ambiandji@gmail.com")))
                 .useMfa(UseMfa.with(true))
+                .timezone(Timezone.Africa_Douala)
                 .roles(Set.of(
                         Role.builder()
                                 .id(new RoleId(UUID.fromString("01935bdb-8ca1-768a-88d6-82335f785612")))

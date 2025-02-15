@@ -76,7 +76,7 @@ public final class UserDomainService implements UserService {
         Tenant tenant = findTenant(user.getCompanyId());
         user.encryptPassword(passwordEncryptProvider.encrypt(user.getPassword()));
         user.initializeDefaults(tenant.getId());
-        userRepository.create(user);
+        user = userRepository.create(user);
         LOGGER.info("User created with id " + user.getId().getValue());
         UserCreatedEvent userCreatedEvent = new UserCreatedEvent(user, ZonedDateTime.now());
         userMessagePublisher.publish(userCreatedEvent, USER_CREATED);

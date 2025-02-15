@@ -1,6 +1,9 @@
 package cm.xenonbyte.gestitre.domain.company.vo.address;
 
 import cm.xenonbyte.gestitre.domain.common.validation.Assert;
+import cm.xenonbyte.gestitre.domain.common.vo.City;
+import cm.xenonbyte.gestitre.domain.common.vo.Country;
+import cm.xenonbyte.gestitre.domain.common.vo.ZipCode;
 
 import java.util.Objects;
 

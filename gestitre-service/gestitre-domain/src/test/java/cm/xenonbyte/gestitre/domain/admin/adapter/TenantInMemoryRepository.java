@@ -1,9 +1,10 @@
 package cm.xenonbyte.gestitre.domain.admin.adapter;
 
+import cm.xenonbyte.gestitre.domain.common.vo.Code;
 import cm.xenonbyte.gestitre.domain.common.vo.Name;
+import cm.xenonbyte.gestitre.domain.common.vo.TenantId;
 import cm.xenonbyte.gestitre.domain.tenant.Tenant;
 import cm.xenonbyte.gestitre.domain.tenant.ports.secondary.repository.TenantRepository;
-import cm.xenonbyte.gestitre.domain.common.vo.TenantId;
 import jakarta.annotation.Nonnull;
 
 import java.util.LinkedHashMap;
@@ -42,5 +43,22 @@ public final class TenantInMemoryRepository implements TenantRepository {
     @Override
     public Boolean existsByName(@Nonnull Name name) {
         return tenants.values().stream().anyMatch(tenant -> tenant.getName().text().value().equalsIgnoreCase(name.text().value()));
+    }
+
+    @Override
+    public Optional<Tenant> findById(@Nonnull TenantId tenantId) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Boolean existsByCode(@Nonnull Code code) {
+        return tenants.values().stream().anyMatch(tenant ->
+                tenant.getCode().text().value().equalsIgnoreCase(code.text().value()));
+    }
+
+    @Override
+    public Optional<Tenant> findByCode(@Nonnull Code code) {
+        return tenants.values().stream().filter(tenant ->
+                tenant.getCode().text().value().equalsIgnoreCase(code.text().value())).findFirst();
     }
 }

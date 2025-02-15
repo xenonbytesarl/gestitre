@@ -1,4 +1,4 @@
-package cm.xenonbyte.gestitre.domain.company.vo.address;
+package cm.xenonbyte.gestitre.domain.shareholder.vo;
 
 import cm.xenonbyte.gestitre.domain.common.validation.Assert;
 import cm.xenonbyte.gestitre.domain.common.vo.Text;
@@ -9,29 +9,28 @@ import java.util.Objects;
 /**
  * @author bamk
  * @version 1.0
- * @since 01/11/2024
+ * @since 04/02/2025
  */
-public record ZipCode(Text text) {
-    public ZipCode(@Nonnull Text text) {
+public record AccountNumber(Text text) {
+    public AccountNumber(@Nonnull Text text) {
         this.text = Objects.requireNonNull(text);
     }
 
     @Nonnull
-    public static ZipCode of(Text zipCode) {
-        Assert.field("Zip code", zipCode)
-            .notNull()
-            .notNull(zipCode.value())
-            .notEmpty(zipCode.value())
-            .notNumberValue(zipCode.value());
-        return new ZipCode(zipCode);
+    public static AccountNumber of(Text accountNumber) {
+        Assert.field("Account Number", accountNumber)
+                .notNull()
+                .notNull(accountNumber.value())
+                .notEmpty(accountNumber.value());
+        return new AccountNumber(accountNumber);
     }
 
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
-        ZipCode zipCode = (ZipCode) object;
-        return Objects.equals(text, zipCode.text);
+        AccountNumber accountNumber = (AccountNumber) object;
+        return Objects.equals(text, accountNumber.text);
     }
 
     @Override
