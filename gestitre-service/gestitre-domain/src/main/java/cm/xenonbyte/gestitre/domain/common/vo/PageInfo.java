@@ -1,6 +1,7 @@
 package cm.xenonbyte.gestitre.domain.common.vo;
 
 import cm.xenonbyte.gestitre.domain.common.exception.PageInitializationBadException;
+import cm.xenonbyte.gestitre.domain.common.validation.Assert;
 import jakarta.annotation.Nonnull;
 
 import java.util.ArrayList;
@@ -33,28 +34,43 @@ public final class PageInfo<T> {
         this.elements = elements;
     }
 
+    public static String computeOderBy(PageInfoField pageInfoField, PageInfoDirection pageInfoDirection) {
+        return String.format("%s %s", pageInfoField.text().value(), pageInfoDirection.getValue());
+    }
+
     public PageInfo<T> of(@Nonnull Integer page, @Nonnull Integer pageSize, @Nonnull List<T> items) {
 
-        if(items == null || items.isEmpty()) {
-            return new PageInfo<>(false, false, 0, 0l, 0, new ArrayList<>());
+        if(items.isEmpty()) {
+            return new PageInfo<>(false, false, 0, 0L, 0, new ArrayList<>());
         }
-        long totalElements = items.size();
-        int totalPages = (int) Math.ceil((double) totalElements / pageSize);
-        if(page < 0 || page - 1 > totalPages) {
-            throw new PageInitializationBadException(new String[]{String.valueOf(page), String.valueOf(totalElements)});
+        long total = items.size();
+        int pages = (int) Math.ceil((double) total / pageSize);
+        if(page < 0 || page - 1 > pages) {
+            throw new PageInitializationBadException(new String[]{String.valueOf(page), String.valueOf(total)});
         }
         int startIndex = page * pageSize;
-        int stopIndex = Math.min(startIndex + pageSize, (int)totalElements);
-        if( startIndex <= totalElements ) {
+        int stopIndex = Math.min(startIndex + pageSize, (int)total);
+        if( startIndex <= total ) {
             return new PageInfo<>(
                     page == 0,
-                    page == totalPages - 1,
+                    page == pages - 1,
                     pageSize,
-                    totalElements,
-                    totalPages,
+                    total,
+                    pages,
                     items.subList(startIndex, stopIndex));
         }
         throw new PageInitializationBadException();
+    }
+
+    public static void validatePageParameters(
+            PageInfoPage pageInfoPage,
+            PageInfoSize pageInfoSize,
+            PageInfoField pageInfoField,
+            PageInfoDirection pageInfoDirection) {
+        Assert.field("Page", pageInfoPage).notNull();
+        Assert.field("Size", pageInfoSize).notNull();
+        Assert.field("Field", pageInfoField).notNull();
+        Assert.field("Direction", pageInfoDirection).notNull();
     }
 
     public Boolean getFirst() {

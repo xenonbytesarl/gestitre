@@ -4,15 +4,20 @@ import cm.xenonbyte.gestitre.application.admin.dto.ActivateAccountRequest;
 import cm.xenonbyte.gestitre.application.admin.dto.ActivateUserResponse;
 import cm.xenonbyte.gestitre.application.admin.dto.CreateUserViewRequest;
 import cm.xenonbyte.gestitre.application.admin.dto.CreateUserViewResponse;
+import cm.xenonbyte.gestitre.application.admin.dto.FindUserByIdViewResponse;
 import cm.xenonbyte.gestitre.application.admin.dto.LoginRequest;
 import cm.xenonbyte.gestitre.application.admin.dto.LoginResponse;
 import cm.xenonbyte.gestitre.application.admin.dto.ResendVerificationCodeRequest;
 import cm.xenonbyte.gestitre.application.admin.dto.ResetPasswordRequest;
+import cm.xenonbyte.gestitre.application.admin.dto.SearchUserPageInfoViewResponse;
 import cm.xenonbyte.gestitre.application.admin.dto.SendResetPasswordCodeRequest;
+import cm.xenonbyte.gestitre.application.admin.dto.UpdateUserViewRequest;
+import cm.xenonbyte.gestitre.application.admin.dto.UpdateUserViewResponse;
 import cm.xenonbyte.gestitre.application.admin.dto.VerifyCodeRequest;
 import cm.xenonbyte.gestitre.application.admin.dto.VerifyCodeResponse;
 import cm.xenonbyte.gestitre.domain.admin.User;
 import cm.xenonbyte.gestitre.domain.admin.event.UserCreatedEvent;
+import cm.xenonbyte.gestitre.domain.admin.event.UserUpdatedEvent;
 import cm.xenonbyte.gestitre.domain.admin.ports.primary.UserService;
 import cm.xenonbyte.gestitre.domain.admin.vo.Token;
 import cm.xenonbyte.gestitre.domain.common.verification.Verification;
@@ -23,8 +28,14 @@ import cm.xenonbyte.gestitre.domain.common.verification.vo.Url;
 import cm.xenonbyte.gestitre.domain.common.verification.vo.VerificationType;
 import cm.xenonbyte.gestitre.domain.common.vo.Code;
 import cm.xenonbyte.gestitre.domain.common.vo.Email;
+import cm.xenonbyte.gestitre.domain.common.vo.Keyword;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoDirection;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoField;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoPage;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoSize;
 import cm.xenonbyte.gestitre.domain.common.vo.Password;
 import cm.xenonbyte.gestitre.domain.common.vo.Text;
+import cm.xenonbyte.gestitre.domain.common.vo.UserId;
 import jakarta.annotation.Nonnull;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
@@ -32,6 +43,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.util.Objects;
+import java.util.UUID;
 
 import static cm.xenonbyte.gestitre.domain.common.verification.vo.VerificationType.ACCOUNT;
 import static cm.xenonbyte.gestitre.domain.common.verification.vo.VerificationType.PASSWORD;
@@ -166,6 +178,34 @@ public final class UserApplicationAdapterService implements UserApplicationAdapt
                         .duration(Duration.of(urlDuration))
                         .email(user.getEmail())
                         .build()
+        );
+    }
+
+    @Nonnull
+    @Override
+    public UpdateUserViewResponse updateUser(UUID userId, @Nonnull UpdateUserViewRequest updateUserViewRequest) {
+        UserUpdatedEvent userUpdatedEvent = userService.updateUser(new UserId(userId), userApplicationViewMapper.toUser(updateUserViewRequest));
+        return userApplicationViewMapper.toUpdateUserViewResponse(userUpdatedEvent.getUser());
+    }
+
+
+    @Nonnull
+    @Override
+    public FindUserByIdViewResponse findUserById(UUID userId) {
+        return userApplicationViewMapper.toFindUserByIdViewResponse(userService.findUserById(new UserId(userId)));
+    }
+
+    @Nonnull
+    @Override
+    public SearchUserPageInfoViewResponse searchUsers(Integer page, Integer size, String field, String direction, String keyword) {
+        return userApplicationViewMapper.toSearchUsersPageInfoViewResponse(
+                userService.searchUsers(
+                        PageInfoPage.of(page),
+                        PageInfoSize.of(size),
+                        PageInfoField.of(Text.of(field)),
+                        PageInfoDirection.valueOf(direction),
+                        Keyword.of(Text.of(keyword))
+                )
         );
     }
 }

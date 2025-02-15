@@ -3,11 +3,17 @@ package cm.xenonbyte.gestitre.application.admin;
 import cm.xenonbyte.gestitre.application.admin.dto.ActivateUserResponse;
 import cm.xenonbyte.gestitre.application.admin.dto.CreateUserViewRequest;
 import cm.xenonbyte.gestitre.application.admin.dto.CreateUserViewResponse;
+import cm.xenonbyte.gestitre.application.admin.dto.FindUserByIdViewResponse;
 import cm.xenonbyte.gestitre.application.admin.dto.PermissionView;
 import cm.xenonbyte.gestitre.application.admin.dto.RoleView;
+import cm.xenonbyte.gestitre.application.admin.dto.SearchUserPageInfoViewResponse;
+import cm.xenonbyte.gestitre.application.admin.dto.SearchUsersViewResponse;
+import cm.xenonbyte.gestitre.application.admin.dto.UpdateUserViewRequest;
+import cm.xenonbyte.gestitre.application.admin.dto.UpdateUserViewResponse;
 import cm.xenonbyte.gestitre.domain.admin.Permission;
 import cm.xenonbyte.gestitre.domain.admin.Role;
 import cm.xenonbyte.gestitre.domain.admin.User;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfo;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.Valid;
 import org.mapstruct.BeanMapping;
@@ -16,6 +22,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -107,4 +114,83 @@ public interface UserApplicationViewMapper {
     @Mapping(target="failedLoginAttempt", source = "failedLoginAttempt.value")
     @Mapping(target = "roleViews", qualifiedByName = "toRoleViews", source = "roles")
     @Nonnull @Valid ActivateUserResponse toActivateUserResponse(@Nonnull User user);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", source = "id.value")
+    @Mapping(target = "companyId", source = "companyId.value")
+    @Mapping(target = "tenantId", source = "tenantId.value")
+    @Mapping(target = "email", source = "email.text.value")
+    @Mapping(target = "name", source = "name.text.value")
+    @Mapping(target = "timezoneView", expression = "java(cm.xenonbyte.gestitre.application.admin.dto.TimezoneView.valueOf(user.getTimezone().name()))")
+    @Mapping(target="useMfa", source = "useMfa.value")
+    @Mapping(target="accountExpired", source = "accountExpired.value")
+    @Mapping(target="accountLocked", source = "accountLocked.value")
+    @Mapping(target="credentialExpired", source = "credentialExpired.value")
+    @Mapping(target="accountEnabled", source = "accountEnabled.value")
+    @Mapping(target="failedLoginAttempt", source = "failedLoginAttempt.value")
+    @Mapping(target = "roleViews", qualifiedByName = "toRoleViews", source = "roles")
+    @Nonnull @Valid FindUserByIdViewResponse toFindUserByIdViewResponse(@Nonnull User user);
+
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(source = "id", target = "id.value")
+    @Mapping(source = "companyId", target = "companyId.value")
+    @Mapping(source = "email", target = "email.text.value")
+    @Mapping(source = "name", target = "name.text.value")
+    @Mapping(expression = "java(cm.xenonbyte.gestitre.domain.admin.vo.Timezone.valueOf(updateUserViewRequest.getTimezoneView().name()))", target = "timezone")
+    @Mapping(expression = "java(updateUserViewRequest.getUseMfa() == null? null: cm.xenonbyte.gestitre.domain.admin.vo.UseMfa.with(updateUserViewRequest.getUseMfa()))", target="useMfa")
+    @Mapping(source="useMfa", target = "useMfa.value")
+    @Mapping(source="accountExpired", target = "accountExpired.value")
+    @Mapping(source="accountLocked", target = "accountLocked.value")
+    @Mapping(source="credentialExpired", target = "credentialExpired.value")
+    @Mapping(source="accountEnabled", target = "accountEnabled.value")
+    @Mapping(source="failedLoginAttempt", target = "failedLoginAttempt.value")
+    @Mapping(source = "roleViews", qualifiedByName = "toRoles", target = "roles")
+    @Nonnull User toUser(@Nonnull @Valid UpdateUserViewRequest updateUserViewRequest);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", source = "id.value")
+    @Mapping(target = "companyId", source = "companyId.value")
+    @Mapping(target = "tenantId", source = "tenantId.value")
+    @Mapping(target = "email", source = "email.text.value")
+    @Mapping(target = "name", source = "name.text.value")
+    @Mapping(target = "timezoneView", expression = "java(cm.xenonbyte.gestitre.application.admin.dto.TimezoneView.valueOf(user.getTimezone().name()))")
+    @Mapping(target="useMfa", source = "useMfa.value")
+    @Mapping(target="accountExpired", source = "accountExpired.value")
+    @Mapping(target="accountLocked", source = "accountLocked.value")
+    @Mapping(target="credentialExpired", source = "credentialExpired.value")
+    @Mapping(target="accountEnabled", source = "accountEnabled.value")
+    @Mapping(target="failedLoginAttempt", source = "failedLoginAttempt.value")
+    @Mapping(target = "roleViews", qualifiedByName = "toRoleViews", source = "roles")
+    @Nonnull @Valid UpdateUserViewResponse toUpdateUserViewResponse(@Nonnull User user);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(source = "first", target = "first")
+    @Mapping(source = "last", target = "last")
+    @Mapping(source = "pageSize", target = "pageSize")
+    @Mapping(source = "totalPages", target = "totalPages")
+    @Mapping(source = "totalElements", target = "totalElements")
+    @Mapping(source = "elements", qualifiedByName = "toSearchUsersViewResponses", target = "elements")
+    @Nonnull @Valid SearchUserPageInfoViewResponse toSearchUsersPageInfoViewResponse(@Nonnull PageInfo<User> userPageInfo);
+
+    @Named("toSearchUsersViewResponses")
+    @Nonnull @Valid List<SearchUsersViewResponse> toSearchUsersViewResponses(@Nonnull List<User> users);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", source = "id.value")
+    @Mapping(target = "companyId", source = "companyId.value")
+    @Mapping(target = "tenantId", source = "tenantId.value")
+    @Mapping(target = "email", source = "email.text.value")
+    @Mapping(target = "name", source = "name.text.value")
+    @Mapping(target = "timezoneView", expression = "java(cm.xenonbyte.gestitre.application.admin.dto.TimezoneView.valueOf(user.getTimezone().name()))")
+    @Mapping(target="useMfa", source = "useMfa.value")
+    @Mapping(target="accountExpired", source = "accountExpired.value")
+    @Mapping(target="accountLocked", source = "accountLocked.value")
+    @Mapping(target="credentialExpired", source = "credentialExpired.value")
+    @Mapping(target="accountEnabled", source = "accountEnabled.value")
+    @Mapping(target="failedLoginAttempt", source = "failedLoginAttempt.value")
+    @Mapping(target = "roleViews", qualifiedByName = "toRoleViews", source = "roles")
+    @Nonnull @Valid SearchUsersViewResponse toSearchUsersViewResponse(@Nonnull User user);
+
+
 }

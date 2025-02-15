@@ -9,11 +9,19 @@ import cm.xenonbyte.gestitre.domain.admin.ports.secondary.RoleRepository;
 import cm.xenonbyte.gestitre.domain.admin.ports.secondary.TokenProvider;
 import cm.xenonbyte.gestitre.domain.admin.ports.secondary.UserRepository;
 import cm.xenonbyte.gestitre.domain.admin.ports.secondary.message.publisher.UserMessagePublisher;
+import cm.xenonbyte.gestitre.domain.admin.vo.Timezone;
 import cm.xenonbyte.gestitre.domain.admin.vo.Token;
 import cm.xenonbyte.gestitre.domain.common.annotation.DomainService;
+import cm.xenonbyte.gestitre.domain.common.validation.Assert;
 import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
 import cm.xenonbyte.gestitre.domain.common.vo.Email;
+import cm.xenonbyte.gestitre.domain.common.vo.Keyword;
 import cm.xenonbyte.gestitre.domain.common.vo.Name;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfo;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoDirection;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoField;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoPage;
+import cm.xenonbyte.gestitre.domain.common.vo.PageInfoSize;
 import cm.xenonbyte.gestitre.domain.common.vo.Password;
 import cm.xenonbyte.gestitre.domain.common.vo.UserId;
 import cm.xenonbyte.gestitre.domain.company.entity.Company;
@@ -32,6 +40,8 @@ import java.util.logging.Logger;
 import static cm.xenonbyte.gestitre.domain.admin.vo.UserEventType.USER_ACTIVATED;
 import static cm.xenonbyte.gestitre.domain.admin.vo.UserEventType.USER_CREATED;
 import static cm.xenonbyte.gestitre.domain.admin.vo.UserEventType.USER_PASSWORD_RESET;
+import static cm.xenonbyte.gestitre.domain.admin.vo.UserEventType.USER_UPDATED;
+import static cm.xenonbyte.gestitre.domain.common.vo.PageInfo.validatePageParameters;
 
 /**
  * @author bamk
@@ -71,6 +81,7 @@ public final class UserDomainService implements UserService {
     @Override
     public UserCreatedEvent createUser(@Nonnull User user) {
         user.validateMandatoryFields();
+        user.validatePasswords();
         user.validatePassword();
         validateUser(user);
         Tenant tenant = findTenant(user.getCompanyId());
@@ -78,9 +89,24 @@ public final class UserDomainService implements UserService {
         user.initializeDefaults(tenant.getId());
         user = userRepository.create(user);
         LOGGER.info("User created with id " + user.getId().getValue());
-        UserCreatedEvent userCreatedEvent = new UserCreatedEvent(user, ZonedDateTime.now());
+        UserCreatedEvent userCreatedEvent = new UserCreatedEvent(user, ZonedDateTime.now().withZoneSameInstant(Timezone.getCurrentZoneId()));
         userMessagePublisher.publish(userCreatedEvent, USER_CREATED);
         return userCreatedEvent;
+    }
+
+    @Nonnull
+    @Override
+    public UserUpdatedEvent updateUser(@Nonnull UserId userId, @Nonnull User newUser) {
+        newUser.validateMandatoryFields();
+        User oldUser = findUserById(userId);
+        validateUser(newUser);
+        newUser.assignEncryptedPassword(oldUser.getPassword());
+        newUser.assignTenant(oldUser.getTenantId());
+        newUser = userRepository.update(userId, newUser);
+        LOGGER.info("User updated with id " + newUser.getId().getValue());
+        UserUpdatedEvent userUpdatedEvent = new UserUpdatedEvent(newUser, ZonedDateTime.now().withZoneSameInstant(Timezone.getCurrentZoneId()).withZoneSameInstant(Timezone.getCurrentZoneId()));
+        userMessagePublisher.publish(userUpdatedEvent, USER_UPDATED);
+        return userUpdatedEvent;
     }
 
     @Nonnull
@@ -125,7 +151,7 @@ public final class UserDomainService implements UserService {
         user.activate();
         user = userRepository.update(user.getId(), user);
         LOGGER.info("User with id " + user.getId().getValue() + " activated.");
-        UserUpdatedEvent userUpdatedEvent = new UserUpdatedEvent(user, ZonedDateTime.now());
+        UserUpdatedEvent userUpdatedEvent = new UserUpdatedEvent(user, ZonedDateTime.now().withZoneSameInstant(Timezone.getCurrentZoneId()));
         userMessagePublisher.publish(userUpdatedEvent, USER_ACTIVATED);
         return user;
     }
@@ -135,9 +161,9 @@ public final class UserDomainService implements UserService {
     public void resetPassword(@Nonnull Password oldPassword, @Nonnull Password newPassword, @Nonnull User user) {
         if(Boolean.TRUE.equals(passwordEncryptProvider.checkCredentials(oldPassword, user.getPassword()))) {
             user.encryptPassword(passwordEncryptProvider.encrypt(newPassword));
-            userRepository.update(user.getId(), user);
+            user = userRepository.update(user.getId(), user);
             LOGGER.info("Password of user with id " + user.getId().getValue() + " was reset.");
-            UserPasswordResetedEvent userPasswordResetedEvent = new UserPasswordResetedEvent(user, ZonedDateTime.now());
+            UserPasswordResetedEvent userPasswordResetedEvent = new UserPasswordResetedEvent(user, ZonedDateTime.now().withZoneSameInstant(Timezone.getCurrentZoneId()));
             userMessagePublisher.publish(userPasswordResetedEvent, USER_PASSWORD_RESET);
         } else {
             throw new UserPasswordResetBadRequestException();
@@ -150,6 +176,21 @@ public final class UserDomainService implements UserService {
         return userRepository.findByEmail(email).orElseThrow(
                 () -> new UserEmailNotFoundException(new String[] {email.text().value()})
         );
+    }
+
+    @Override
+    public User findUserById(UserId userId) {
+        return userRepository.findById(userId).orElseThrow(
+                () -> new UserNotFoundException(new String[] {userId.getValue().toString()})
+        );
+    }
+
+    @Nonnull
+    @Override
+    public PageInfo<User> searchUsers(PageInfoPage pageInfoPage, PageInfoSize pageInfoSize, PageInfoField pageInfoField, PageInfoDirection pageInfoDirection, Keyword keyword) {
+        validatePageParameters(pageInfoPage, pageInfoSize, pageInfoField, pageInfoDirection);
+        Assert.field("Keyword", keyword).notNull();
+        return userRepository.search(pageInfoPage, pageInfoSize, pageInfoField, pageInfoDirection, keyword);
     }
 
 

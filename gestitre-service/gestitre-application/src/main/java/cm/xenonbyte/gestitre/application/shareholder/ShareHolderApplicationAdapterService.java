@@ -59,11 +59,12 @@ public final class ShareHolderApplicationAdapterService implements ShareHolderAp
         return shareHolderViewMapper.toCreateShareHolderViewResponse(shareHolderCreatedEvent.getShareHolder());
     }
 
+    @Nonnull
     @Override
     public FindShareHoldersPageInfoViewResponse findShareHolders(Integer page, Integer size, String field, String direction, String keyword) {
         Tenant tenant = TenantContext.current() == null? null : tenantService.findTenantById(new TenantId(TenantContext.current()));
         Company company = tenant == null? null: companyService.findCompanyByName(tenant.getName());
-        PageInfo<ShareHolder> shareHolderPageInfo = shareHolderService.findShareHolders(
+        PageInfo<ShareHolder> shareHolderPageInfo = shareHolderService.searchShareHolders(
                 PageInfoPage.of(page),
                 PageInfoSize.of(size),
                 PageInfoField.of(Text.of(field)),

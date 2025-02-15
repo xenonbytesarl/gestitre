@@ -6,5 +6,15 @@ package cm.xenonbyte.gestitre.domain.common.vo;
  * @since 30/08/2024
  */
 public enum PageInfoDirection {
-    ASC, DESC
+    ASC("asc"), DESC("desc");
+
+    private final String value;
+
+    PageInfoDirection(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
+    }
 }

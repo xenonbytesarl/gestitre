@@ -1,5 +1,9 @@
 package cm.xenonbyte.gestitre.domain.admin.vo;
 
+import cm.xenonbyte.gestitre.domain.context.TimezoneContext;
+
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Arrays;
 
 /**
@@ -30,5 +34,9 @@ public enum Timezone {
 
     public String getName() {
         return name;
+    }
+
+    public static ZoneId getCurrentZoneId() {
+        return TimezoneContext.current() == null ? ZoneOffset.UTC : ZoneId.of(TimezoneContext.current().getName());
     }
 }
