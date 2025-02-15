@@ -11,6 +11,7 @@ import cm.xenonbyte.gestitre.domain.common.vo.Phone;
 import cm.xenonbyte.gestitre.domain.shareholder.ShareHolder;
 import cm.xenonbyte.gestitre.domain.shareholder.vo.AccountNumber;
 import cm.xenonbyte.gestitre.domain.shareholder.vo.BankAccountNumber;
+import cm.xenonbyte.gestitre.domain.shareholder.vo.ShareHolderId;
 import jakarta.annotation.Nonnull;
 
 import java.util.Optional;
@@ -40,4 +41,8 @@ public interface ShareHolderRepository {
     @Nonnull ShareHolder create(@Nonnull ShareHolder shareHolder);
 
     @Nonnull PageInfo<ShareHolder> search(@Nonnull PageInfoPage pageInfoPage, @Nonnull PageInfoSize pageInfoSize, @Nonnull PageInfoField pageInfoField, @Nonnull PageInfoDirection pageInfoDirection, @Nonnull Keyword keyword);
+
+    Optional<ShareHolder> findById(@Nonnull ShareHolderId shareHolderId);
+
+    @Nonnull ShareHolder update(@Nonnull ShareHolderId shareHolderId, @Nonnull ShareHolder newShareHolder);
 }

@@ -8,6 +8,9 @@ import cm.xenonbyte.gestitre.domain.common.vo.PageInfoPage;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoSize;
 import cm.xenonbyte.gestitre.domain.shareholder.ShareHolder;
 import cm.xenonbyte.gestitre.domain.shareholder.event.ShareHolderCreatedEvent;
+import cm.xenonbyte.gestitre.domain.shareholder.event.ShareHolderUpdatedEvent;
+import cm.xenonbyte.gestitre.domain.shareholder.vo.ShareHolderId;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author bamk
@@ -16,7 +19,11 @@ import cm.xenonbyte.gestitre.domain.shareholder.event.ShareHolderCreatedEvent;
  */
 public interface ShareHolderService {
 
-    ShareHolderCreatedEvent createShareHolder(ShareHolder shareHolder);
+    @Nonnull ShareHolderCreatedEvent createShareHolder(@Nonnull ShareHolder shareHolder);
+
+    @Nonnull ShareHolderUpdatedEvent updateShareHolder(@Nonnull ShareHolderId shareHolderId, @Nonnull ShareHolder shareHolder);
+
+    @Nonnull ShareHolder findShareHolderById(@Nonnull ShareHolderId shareHolderId);
 
     PageInfo<ShareHolder> searchShareHolders(
             PageInfoPage pageInfoPage, PageInfoSize pageInfoSize, PageInfoField pageInfoField, PageInfoDirection pageInfoDirection, Keyword keyword);

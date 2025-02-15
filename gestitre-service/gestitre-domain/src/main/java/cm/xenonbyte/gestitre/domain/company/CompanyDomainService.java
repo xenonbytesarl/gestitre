@@ -1,5 +1,6 @@
 package cm.xenonbyte.gestitre.domain.company;
 
+import cm.xenonbyte.gestitre.domain.admin.vo.Timezone;
 import cm.xenonbyte.gestitre.domain.common.annotation.DomainService;
 import cm.xenonbyte.gestitre.domain.common.validation.Assert;
 import cm.xenonbyte.gestitre.domain.common.vo.Code;
@@ -33,7 +34,6 @@ import cm.xenonbyte.gestitre.domain.company.vo.RegistrationNumber;
 import cm.xenonbyte.gestitre.domain.company.vo.TaxNumber;
 import cm.xenonbyte.gestitre.domain.company.vo.WebSiteUrl;
 import cm.xenonbyte.gestitre.domain.company.vo.contact.Fax;
-import cm.xenonbyte.gestitre.domain.tenant.Tenant;
 import jakarta.annotation.Nonnull;
 
 import java.time.ZonedDateTime;
@@ -76,16 +76,9 @@ public final class CompanyDomainService implements CompanyService {
         company.initializeDefaultValues();
         company = companyRepository.create(company);
         LOGGER.info("Company is created with id " + company.getId().getValue());
-        CompanyCreatedEvent companyCreatedEvent = new CompanyCreatedEvent(company, ZonedDateTime.now());
+        CompanyCreatedEvent companyCreatedEvent = new CompanyCreatedEvent(company, ZonedDateTime.now().withZoneSameInstant(Timezone.getCurrentZoneId()));
         companyMessagePublisher.publish(companyCreatedEvent, COMPANY_CREATED);
         return companyCreatedEvent;
-    }
-
-    private Tenant tenantFrom(CompanyCreatedEvent companyCreatedEvent) {
-        Company company = companyCreatedEvent.getCompany();
-        Tenant tenant = Tenant.of(Name.of(company.getCompanyName().text()), company.getCode());
-        tenant.initializeDefaults();
-        return tenant;
     }
 
     @Nonnull
@@ -121,7 +114,7 @@ public final class CompanyDomainService implements CompanyService {
         validateCompany(newCompany);
         newCompany = companyRepository.update(companyId, newCompany);
         LOGGER.info("Company updated with id " + newCompany.getId().getValue());
-        CompanyUpdatedEvent companyUpdatedEvent = new CompanyUpdatedEvent(newCompany, ZonedDateTime.now());
+        CompanyUpdatedEvent companyUpdatedEvent = new CompanyUpdatedEvent(newCompany, ZonedDateTime.now().withZoneSameInstant(Timezone.getCurrentZoneId()));
         companyMessagePublisher.publish(companyUpdatedEvent, COMPANY_UPDATED);
         return companyUpdatedEvent;
     }

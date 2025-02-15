@@ -1,5 +1,6 @@
 package cm.xenonbyte.gestitre.domain.shareholder;
 
+import cm.xenonbyte.gestitre.domain.admin.vo.Timezone;
 import cm.xenonbyte.gestitre.domain.common.annotation.DomainService;
 import cm.xenonbyte.gestitre.domain.common.validation.Assert;
 import cm.xenonbyte.gestitre.domain.common.vo.Email;
@@ -11,6 +12,7 @@ import cm.xenonbyte.gestitre.domain.common.vo.PageInfoPage;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoSize;
 import cm.xenonbyte.gestitre.domain.common.vo.Phone;
 import cm.xenonbyte.gestitre.domain.shareholder.event.ShareHolderCreatedEvent;
+import cm.xenonbyte.gestitre.domain.shareholder.event.ShareHolderUpdatedEvent;
 import cm.xenonbyte.gestitre.domain.shareholder.ports.primary.ShareHolderService;
 import cm.xenonbyte.gestitre.domain.shareholder.ports.secondary.ShareHolderRepository;
 import cm.xenonbyte.gestitre.domain.shareholder.ports.secondary.message.ShareHolderMessagePublisher;
@@ -26,6 +28,7 @@ import java.util.logging.Logger;
 
 import static cm.xenonbyte.gestitre.domain.common.vo.PageInfo.validatePageParameters;
 import static cm.xenonbyte.gestitre.domain.shareholder.event.ShareHolderEventType.SHAREHOLDER_CREATED;
+import static cm.xenonbyte.gestitre.domain.shareholder.event.ShareHolderEventType.SHAREHOLDER_UPDATED;
 
 /**
  * @author bamk
@@ -47,7 +50,7 @@ public final class ShareHolderDomainService implements ShareHolderService {
         this.shareHolderMessagePublisher = Objects.requireNonNull(shareHolderMessagePublisher);
     }
 
-
+    @Nonnull
     @Override
     public ShareHolderCreatedEvent createShareHolder(ShareHolder shareHolder) {
         shareHolder.validateMandatoryFields();
@@ -58,6 +61,26 @@ public final class ShareHolderDomainService implements ShareHolderService {
         ShareHolderCreatedEvent shareHolderCreatedEvent = new ShareHolderCreatedEvent(shareHolder, ZonedDateTime.now());
         shareHolderMessagePublisher.publish(shareHolderCreatedEvent, SHAREHOLDER_CREATED);
         return shareHolderCreatedEvent;
+    }
+
+    @Nonnull
+    @Override
+    public ShareHolderUpdatedEvent updateShareHolder(@Nonnull ShareHolderId shareHolderId, @Nonnull ShareHolder newShareHolder) {
+        newShareHolder.validateMandatoryFields();
+        findShareHolderById(shareHolderId);
+        validateShareHolder(newShareHolder);
+        newShareHolder = shareHolderRepository.update(shareHolderId, newShareHolder);
+        LOGGER.info("Shareholder is updated with id " + newShareHolder.getId().getValue());
+        ShareHolderUpdatedEvent shareHolderUpdatedEvent = new ShareHolderUpdatedEvent(newShareHolder, ZonedDateTime.now().withZoneSameInstant(Timezone.getCurrentZoneId()));
+        shareHolderMessagePublisher.publish(shareHolderUpdatedEvent, SHAREHOLDER_UPDATED);
+        return shareHolderUpdatedEvent;
+    }
+
+    @Nonnull
+    @Override
+    public ShareHolder findShareHolderById(@Nonnull ShareHolderId shareHolderId) {
+        return shareHolderRepository.findById(shareHolderId)
+                .orElseThrow(() -> new ShareHolderNotFoundException(new String[] {shareHolderId.getValue().toString()}));
     }
 
     @Override
