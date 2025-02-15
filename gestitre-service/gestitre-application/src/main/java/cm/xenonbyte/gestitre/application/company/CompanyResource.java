@@ -85,30 +85,6 @@ public class CompanyResource {
     @GET
     @Produces(APPLICATION_JSON)
     @RolesAllowed({"read:company"})
-    public Response findCompanies(
-            @HeaderParam("Accept-Language") String acceptLanguage,
-            @QueryParam("page") Integer page,
-            @QueryParam("size") Integer size,
-            @QueryParam("field") String field,
-            @QueryParam("direction") String direction
-    ) {
-        return Response.status(OK)
-                .entity(
-                        SuccessApiResponse.builder()
-                            .success(true)
-                            .status(OK.name())
-                            .code(OK.getStatusCode())
-                            .timestamp(ZonedDateTime.now())
-                            .message(getMessage(COMPANY_FINDS_SUCCESSFULLY, forLanguageTag(acceptLanguage)))
-                            .data(of(CONTENT, companyApplicationAdapter.findCompanies(page, size, field, direction)))
-                )
-                .build();
-    }
-
-    @GET
-    @Path("/search")
-    @Produces(APPLICATION_JSON)
-    @RolesAllowed({"read:company"})
     public Response searchCompanies(
             @HeaderParam("Accept-Language") String acceptLanguage,
             @QueryParam("page") Integer page,

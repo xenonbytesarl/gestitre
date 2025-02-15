@@ -536,26 +536,6 @@ final class CompanyDomainTest {
     }
 
     @Nested
-    class FindAllCompaniesDomainTest {
-        @Test
-        void should_success_when_find_all_companies() {
-            //Given
-            PageInfoPage pageInfoPage = PageInfoPage.of(0);
-            PageInfoSize pageInfoSize = PageInfoSize.of(2);
-            PageInfoField pageInfoField = PageInfoField.of(Text.of("companyName"));
-            PageInfoDirection pageInfoDirection = PageInfoDirection.ASC;
-            //Act
-            PageInfo<Company> actual = companyService.findCompanies(pageInfoPage, pageInfoSize, pageInfoField, pageInfoDirection);
-            //Then
-            assertThat(actual).isNotNull();
-            assertThat(actual.getTotalElements()).isPositive();
-            assertThat(actual.getTotalPages()).isPositive();
-            assertThat(actual.getElements()).isNotEmpty();
-            assertThat(actual.getPageSize()).isPositive();
-        }
-    }
-
-    @Nested
     class SearchCompanyDomainTest {
         @Test
         void should_not_empty_when_search_companies_with_existing_keyword() {

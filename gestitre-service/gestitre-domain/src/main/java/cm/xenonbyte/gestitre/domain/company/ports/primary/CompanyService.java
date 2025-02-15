@@ -25,9 +25,7 @@ public interface CompanyService {
 
     @Nonnull Company findCompanyById(@Nonnull CompanyId companyId);
 
-    PageInfo<Company> findCompanies(@Nonnull PageInfoPage pageInfoPage, @Nonnull PageInfoSize pageInfoSize, @Nonnull PageInfoField pageInfoField, @Nonnull PageInfoDirection pageInfoDirection);
-
-    PageInfo<Company> searchCompanies(@Nonnull PageInfoPage pageInfoPage, @Nonnull PageInfoSize pageInfoSize, @Nonnull PageInfoField pageInfoField, @Nonnull PageInfoDirection pageInfoDirection, @Nonnull Keyword keyword);
+   PageInfo<Company> searchCompanies(@Nonnull PageInfoPage pageInfoPage, @Nonnull PageInfoSize pageInfoSize, @Nonnull PageInfoField pageInfoField, @Nonnull PageInfoDirection pageInfoDirection, @Nonnull Keyword keyword);
 
     @Nonnull CompanyUpdatedEvent updateCompany(@Nonnull CompanyId companyId, @Nonnull Company company);
 

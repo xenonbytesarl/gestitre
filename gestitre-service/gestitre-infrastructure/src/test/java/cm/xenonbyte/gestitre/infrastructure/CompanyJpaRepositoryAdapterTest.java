@@ -245,18 +245,6 @@ final class CompanyJpaRepositoryAdapterTest {
     }
 
     @Test
-    void should_find_all_certificate_template() {
-        //Given + Act
-        PageInfo<Company> actual = companyJpaRepositoryAdapter.findAll(
-                PageInfoPage.of(0), PageInfoSize.of(2), PageInfoField.of(Text.of("companyName")), PageInfoDirection.ASC);
-        //Then
-        assertThat(actual).isNotNull();
-        assertThat(actual.getTotalElements()).isPositive();
-        assertThat(actual.getTotalPages()).isPositive();
-        assertThat(actual.getElements()).isNotEmpty();
-    }
-
-    @Test
     void should_search_certificate_template_with_existing_keyword() {
         //Given + Act
         PageInfo<Company> actual =

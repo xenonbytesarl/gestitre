@@ -35,8 +35,6 @@ public interface CompanyRepository {
 
     Optional<Company> findById(@Nonnull CompanyId companyId);
 
-    PageInfo<Company> findAll(@Nonnull PageInfoPage pageInfoPage, @Nonnull PageInfoSize pageInfoSize, @Nonnull PageInfoField pageInfoField, @Nonnull PageInfoDirection pageInfoDirection);
-
     PageInfo<Company> search(@Nonnull PageInfoPage pageInfoPage, @Nonnull PageInfoSize pageInfoSize, @Nonnull PageInfoField pageInfoField, @Nonnull PageInfoDirection pageInfoDirection, @Nonnull Keyword keyword);
 
     Boolean existsByEmail(@Nonnull Email email);

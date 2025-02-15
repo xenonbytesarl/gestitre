@@ -99,19 +99,6 @@ public final class CompanyDomainService implements CompanyService {
     }
 
     @Override
-    public PageInfo<Company> findCompanies(
-            @Nonnull PageInfoPage pageInfoPage,
-            @Nonnull PageInfoSize pageInfoSize,
-            @Nonnull PageInfoField pageInfoField,
-            @Nonnull PageInfoDirection pageInfoDirection
-    ) {
-        validatePageParameters(pageInfoPage, pageInfoSize, pageInfoField, pageInfoDirection);
-        PageInfo<Company> companyPageInfo = companyRepository.findAll(pageInfoPage, pageInfoSize, pageInfoField, pageInfoDirection);
-        LOGGER.info("Found " + companyPageInfo.getTotalElements() + " companies");
-        return companyRepository.findAll(pageInfoPage, pageInfoSize, pageInfoField, pageInfoDirection);
-    }
-
-    @Override
     public PageInfo<Company> searchCompanies(
             @Nonnull PageInfoPage pageInfoPage,
             @Nonnull PageInfoSize pageInfoSize,
