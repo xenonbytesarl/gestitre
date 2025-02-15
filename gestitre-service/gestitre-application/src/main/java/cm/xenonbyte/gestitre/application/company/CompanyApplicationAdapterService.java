@@ -3,7 +3,6 @@ package cm.xenonbyte.gestitre.application.company;
 import cm.xenonbyte.gestitre.application.company.dto.CreateCompanyViewRequest;
 import cm.xenonbyte.gestitre.application.company.dto.CreateCompanyViewResponse;
 import cm.xenonbyte.gestitre.application.company.dto.FindCompanyByIdViewResponse;
-import cm.xenonbyte.gestitre.application.company.dto.FindCompanyPageInfoViewResponse;
 import cm.xenonbyte.gestitre.application.company.dto.SearchCompanyPageInfoViewResponse;
 import cm.xenonbyte.gestitre.application.company.dto.UpdateCompanyViewRequest;
 import cm.xenonbyte.gestitre.application.company.dto.UpdateCompanyViewResponse;
@@ -95,19 +94,6 @@ public final class CompanyApplicationAdapterService implements CompanyApplicatio
         companyCreateViewResponse.setStampEncoded(getEncodedFiles.stampEncoded());
 
         return companyCreateViewResponse;
-    }
-
-
-    @Override
-    public FindCompanyPageInfoViewResponse findCompanies(Integer page, Integer size, String field, String direction) {
-        PageInfo<Company> companyPageInfo = companyService.findCompanies(
-                PageInfoPage.of(page),
-                PageInfoSize.of(size),
-                PageInfoField.of(Text.of(field)),
-                PageInfoDirection.valueOf(direction)
-
-        );
-        return companyApplicationViewMapper.toFindCompanyPageInfoViewResponse(companyPageInfo);
     }
 
     @Override

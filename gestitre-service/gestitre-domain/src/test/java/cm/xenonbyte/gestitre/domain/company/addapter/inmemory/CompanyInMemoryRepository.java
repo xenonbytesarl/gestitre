@@ -55,19 +55,6 @@ public final class CompanyInMemoryRepository implements CompanyRepository {
     }
 
     @Override
-    public PageInfo<Company> findAll(@Nonnull PageInfoPage pageInfoPage, @Nonnull PageInfoSize pageInfoSize, @Nonnull PageInfoField pageInfoField, @Nonnull PageInfoDirection pageInfoDirection) {
-        PageInfo<Company> companyPageInfo = new PageInfo<>();
-        Comparator<Company> comparing = Comparator.comparing((Company company) -> company.getCompanyName().text().value());
-        return companyPageInfo.of(
-                pageInfoPage.value(),
-                pageInfoSize.value(),
-                companies.values().stream()
-                        .sorted(pageInfoDirection.equals(PageInfoDirection.ASC) ? comparing: comparing.reversed())
-                        .toList()
-        );
-    }
-
-    @Override
     public PageInfo<Company> search(@Nonnull PageInfoPage pageInfoPage, @Nonnull PageInfoSize pageInfoSize, @Nonnull PageInfoField pageInfoField, @Nonnull PageInfoDirection pageInfoDirection, @Nonnull Keyword keyword) {
         PageInfo<Company> companyPageInfo = new PageInfo<>();
         Comparator<Company> comparing = Comparator.comparing((Company company) -> company.getCompanyName().text().value());

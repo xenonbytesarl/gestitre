@@ -4,9 +4,7 @@ import cm.xenonbyte.gestitre.application.company.dto.AddressView;
 import cm.xenonbyte.gestitre.application.company.dto.ContactView;
 import cm.xenonbyte.gestitre.application.company.dto.CreateCompanyViewRequest;
 import cm.xenonbyte.gestitre.application.company.dto.CreateCompanyViewResponse;
-import cm.xenonbyte.gestitre.application.company.dto.FindCompaniesViewResponse;
 import cm.xenonbyte.gestitre.application.company.dto.FindCompanyByIdViewResponse;
-import cm.xenonbyte.gestitre.application.company.dto.FindCompanyPageInfoViewResponse;
 import cm.xenonbyte.gestitre.application.company.dto.SearchCompaniesViewResponse;
 import cm.xenonbyte.gestitre.application.company.dto.SearchCompanyPageInfoViewResponse;
 import cm.xenonbyte.gestitre.application.company.dto.UpdateCompanyViewRequest;
@@ -117,46 +115,6 @@ public interface CompanyApplicationViewMapper {
     @Mapping(source = "email.text.value", target="email")
     @Mapping(source = "name.text.value", target="name")
     @Nonnull @Valid ContactView toContactView(@Nonnull Contact contact);
-
-    @BeanMapping(ignoreByDefault = true)
-    @Mapping(source = "first", target = "first")
-    @Mapping(source = "last", target = "last")
-    @Mapping(source = "pageSize", target = "pageSize")
-    @Mapping(source = "totalPages", target = "totalPages")
-    @Mapping(source = "totalElements", target = "totalElements")
-    @Mapping(source = "elements", qualifiedByName = "toFindCompanyViewResponses", target = "elements")
-    @Nonnull @Valid FindCompanyPageInfoViewResponse toFindCompanyPageInfoViewResponse(@Nonnull PageInfo<Company> companyPageInfo);
-
-    @Named("toFindCompanyViewResponses")
-    @Nonnull @Valid List<FindCompaniesViewResponse> toFindCompaniesViewResponses(@Nonnull List<Company> companies);
-
-    @BeanMapping(ignoreByDefault = true)
-    @Mapping(target = "id", source = "id.value")
-    @Mapping(target = "companyName", source="companyName.text.value")
-    @Mapping(target = "code", source="code.text.value")
-    @Mapping(target = "companyManagerName", source="companyManagerName.text.value")
-    @Mapping(target = "licence", expression = "java(company.getLicence().name())")
-    @Mapping(target = "legalForm", expression = "java(company.getLegalForm().name())")
-    @Mapping(target = "address", qualifiedByName = "companyToAddressView", source = "address")
-    @Mapping(target = "contact", qualifiedByName = "companyToContactView", source = "contact")
-    @Mapping(target = "activity", expression = "java(company.getActivity() == null || company.getActivity().text().value().isEmpty()? null: company.getActivity().text().value())")
-    @Mapping(target = "registrationNumber", expression = "java(company.getRegistrationNumber() == null || company.getRegistrationNumber().text().value().isEmpty()? null: company.getRegistrationNumber().text().value())")
-    @Mapping(target = "certificateTemplateId", expression = "java(company.getCertificateTemplateId() == null ? null: company.getCertificateTemplateId().getValue())")
-    @Mapping(target = "webSiteUrl", expression = "java(company.getWebSiteUrl() == null || company.getWebSiteUrl().text().value().isEmpty()? null: company.getWebSiteUrl().text().value())")
-    @Mapping(target = "isinCode", expression = "java(company.getIsinCode() == null || company.getIsinCode().text().value().isEmpty()? null: company.getIsinCode().text().value())")
-    @Mapping(target = "taxNumber", expression = "java(company.getTaxNumber() == null || company.getTaxNumber().text().value().isEmpty()? null: company.getTaxNumber().text().value())")
-    @Mapping(target = "logoFilename", expression = "java(company.getLogoFilename() == null? null: company.getLogoFilename().text().value())")
-    @Mapping(target = "stampFilename", expression = "java(company.getStampFilename() == null? null: company.getStampFilename().text().value())")
-    @Mapping(target = "grossDividendStockUnit", expression = "java(company.getGrossDividendStockUnit() == null? null: company.getGrossDividendStockUnit().amount().value())")
-    @Mapping(target = "nominalValue", expression = "java(company.getNominalValue() == null? null: company.getNominalValue().amount().value())")
-    @Mapping(target = "netDividendStock", expression = "java(company.getNetDividendStock() == null? null: company.getNetDividendStock().amount().value())")
-    @Mapping(target = "ircmRetain", expression = "java(company.getIrcmRetain() == null? null: company.getIrcmRetain().amount().value())")
-    @Mapping(target = "capitalization", expression = "java(company.getCapitalization() == null? null: company.getCapitalization().getAmount().value())")
-    @Mapping(target = "stockQuantity", expression = "java(company.getStockQuantity() == null? null: company.getStockQuantity().value())")
-    @Mapping(target = "endLicenceDate", expression = "java(company.getCreatedDate() != null && company.getLicence()!= null? cm.xenonbyte.gestitre.domain.company.vo.EndLicence.of(company.getCreatedDate(), company.getLicence()).computeEndLicenceDate(): null)")
-    @Mapping(target = "createdDate", source = "createdDate")
-    @Mapping(target = "active", source = "active.value")
-    @Nonnull @Valid FindCompaniesViewResponse toFindCompaniesViewResponse(@Nonnull Company company);
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "first", target = "first")

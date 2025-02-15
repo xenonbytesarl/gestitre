@@ -3,7 +3,6 @@ package cm.xenonbyte.gestitre.application.company;
 import cm.xenonbyte.gestitre.application.company.dto.CreateCompanyViewRequest;
 import cm.xenonbyte.gestitre.application.company.dto.CreateCompanyViewResponse;
 import cm.xenonbyte.gestitre.application.company.dto.FindCompanyByIdViewResponse;
-import cm.xenonbyte.gestitre.application.company.dto.FindCompanyPageInfoViewResponse;
 import cm.xenonbyte.gestitre.application.company.dto.SearchCompanyPageInfoViewResponse;
 import cm.xenonbyte.gestitre.application.company.dto.UpdateCompanyViewRequest;
 import cm.xenonbyte.gestitre.application.company.dto.UpdateCompanyViewResponse;
@@ -22,8 +21,6 @@ import java.util.UUID;
  */
 public interface CompanyApplicationAdapter {
     @NonNull @Valid CreateCompanyViewResponse createCompany(CreateCompanyViewRequest createCompanyViewRequest, FileUpload logo, FileUpload stamp) throws IOException;
-
-    FindCompanyPageInfoViewResponse findCompanies(Integer page, Integer size, String field, String direction);
 
     SearchCompanyPageInfoViewResponse searchCompanies(Integer page, Integer size, String field, String direction, String keyword);
 

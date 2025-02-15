@@ -21,17 +21,13 @@ import cm.xenonbyte.gestitre.domain.company.vo.WebSiteUrl;
 import cm.xenonbyte.gestitre.domain.company.vo.contact.Fax;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
-import io.quarkus.panache.common.Sort;
 import jakarta.annotation.Nonnull;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-
-import static cm.xenonbyte.gestitre.infrastructure.common.InsfrastructureConstant.KEYWORD_PARAM;
 
 /**
  * @author bamk
@@ -45,7 +41,7 @@ public final class CompanyJpaRepositoryAdapter implements CompanyRepository {
     private static final String COMPANY_SEARCH_BY_KEYWORD_QUERY = "select c from CompanyJpa c left join c.certificateTemplateJpa ct where lower(concat(c.companyName, '', c.companyManagerName, '', c.licenceJpa, '', c.legalFormJpa, '', c.addressJpa.zipCode, '', \n" +
                             "c.addressJpa.country, '', c.contactJpa.email, '', c.contactJpa.name, '', c.addressJpa.city, '', coalesce(c.addressJpa.street, ''), '', coalesce(c.activity,''), '', \n" +
                             "coalesce(replace(c.contactJpa.phone, ' ', ''), ''), '', coalesce(replace(c.contactJpa.fax, ' ', ''), ''), '', coalesce(webSiteUrl, ''), '', coalesce(c.registrationNumber, ''), '', coalesce(c.isinCode, ''), '', \n" +
-                            "coalesce(c.taxNumber, ''), '', coalesce(cast(c.grossDividendStockUnit as text), ''), '', coalesce(cast(c.nominalValue as text), ''), '', coalesce(cast(c.stockQuantity as text), ''), '', coalesce(ct.name, ''))) like lower(concat('%',:" + KEYWORD_PARAM + ",'%')) order by c.";
+                            "coalesce(c.taxNumber, ''), '', coalesce(cast(c.grossDividendStockUnit as text), ''), '', coalesce(cast(c.nominalValue as text), ''), '', coalesce(cast(c.stockQuantity as text), ''), '', coalesce(ct.name, ''))) like lower(?1) order by c.";
 
     private final CompanyJpaRepository companyJpaRepository;
     private final CompanyJpaMapper companyJpaMapper;
@@ -79,49 +75,14 @@ public final class CompanyJpaRepositoryAdapter implements CompanyRepository {
     }
 
     @Override
-    public PageInfo<Company> findAll(
-            @Nonnull PageInfoPage pageInfoPage,
-            @Nonnull PageInfoSize pageInfoSize,
-            @Nonnull PageInfoField pageInfoField,
-            @Nonnull PageInfoDirection pageInfoDirection) {
-        PanacheQuery<CompanyJpa> companyQueryResult = companyJpaRepository.findAll(
-                Sort
-                        .by(pageInfoField.text().value())
-                        .direction(
-                                pageInfoDirection.equals(PageInfoDirection.ASC)
-                                        ? Sort.Direction.Ascending
-                                        : Sort.Direction.Descending
-                        )
-        );
-        PanacheQuery<CompanyJpa> companyPageQueryResult =
-                companyQueryResult.page(Page.of(pageInfoPage.value(), pageInfoSize.value()));
-        return new PageInfo<>(
-                !companyPageQueryResult.hasPreviousPage(),
-                !companyPageQueryResult.hasNextPage(),
-                pageInfoSize.value(),
-                companyQueryResult.count(),
-                companyQueryResult.pageCount(),
-                companyPageQueryResult
-                        .list()
-                        .stream()
-                        .map(companyJpaMapper::toCompany)
-                        .toList()
-        );
-    }
-
-    @Override
     public PageInfo<Company> search(
             @Nonnull PageInfoPage pageInfoPage,
             @Nonnull PageInfoSize pageInfoSize,
             @Nonnull PageInfoField pageInfoField,
             @Nonnull PageInfoDirection pageInfoDirection,
             @Nonnull Keyword keyword) {
-        String orderBy = pageInfoField.text().value() + " " + (pageInfoDirection.equals(PageInfoDirection.ASC) ? "asc" : "desc");
-        PanacheQuery<CompanyJpa> queryResult =
-                companyJpaRepository.find(
-                        COMPANY_SEARCH_BY_KEYWORD_QUERY + orderBy,
-                        Map.of(KEYWORD_PARAM, keyword.text().value())
-                );
+        PanacheQuery<CompanyJpa> queryResult = companyJpaRepository.find(
+                COMPANY_SEARCH_BY_KEYWORD_QUERY + PageInfo.computeOderBy(pageInfoField, pageInfoDirection), keyword.toLikeKeyword());
         PanacheQuery<CompanyJpa> companyPageQueryResult =
                 queryResult.page(Page.of(pageInfoPage.value(), pageInfoSize.value()));
         return new PageInfo<>(

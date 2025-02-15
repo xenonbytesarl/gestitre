@@ -10,13 +10,14 @@ import cm.xenonbyte.gestitre.domain.common.verification.vo.Url;
 import cm.xenonbyte.gestitre.domain.common.verification.vo.VerificationType;
 import cm.xenonbyte.gestitre.domain.common.vo.Code;
 import cm.xenonbyte.gestitre.domain.common.vo.Text;
-import cm.xenonbyte.gestitre.domain.notification.event.MailServerCreatedEvent;
 import cm.xenonbyte.gestitre.domain.context.TenantContext;
+import cm.xenonbyte.gestitre.domain.notification.event.MailServerCreatedEvent;
 import io.quarkus.vertx.ConsumeEvent;
 import io.smallrye.common.annotation.Blocking;
 import io.vertx.core.MultiMap;
 import jakarta.annotation.Nonnull;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
@@ -56,6 +57,7 @@ public final class VerificationMessageListenerAdapter implements VerificationMes
     }
 
     @Blocking
+    @Transactional
     @ConsumeEvent(value = USER_CREATED)
     public void handleUserCreatedEvent(MultiMap headers, UserCreatedEvent event) {
         log.info(">>>> Receiving event from UserMessagePublisher to create verification for new user with name {}", event.getUser().getName().text().value());
@@ -77,6 +79,7 @@ public final class VerificationMessageListenerAdapter implements VerificationMes
     }
 
     @Blocking
+    @Transactional
     @ConsumeEvent(value = MAIL_SERVER_CREATED)
     public void handleMailServerCreatedEvent(MultiMap headers, MailServerCreatedEvent event) {
         log.info(">>>> Receiving event from MailServerMessagePublisher to create verification for new mail server with name {}", event.getMailServer().getName().text().value());
