@@ -6,6 +6,7 @@ import cm.xenonbyte.gestitre.domain.notification.event.MailServerCreatedEvent;
 import cm.xenonbyte.gestitre.domain.notification.ports.primary.MailServerService;
 import jakarta.annotation.Nonnull;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Objects;
@@ -31,6 +32,7 @@ public final class MailServerApplicationAdapterService implements MailServerAppl
 
     @Nonnull
     @Override
+    @Transactional
     public CreateMailServerViewResponse createMailServer(@Nonnull CreateMailServerViewRequest createMailServerViewRequest) {
         MailServerCreatedEvent mailServerCreatedEvent = mailServerService.createMailServer(
                 mailServerViewMapper.toCreateMailServer(createMailServerViewRequest));

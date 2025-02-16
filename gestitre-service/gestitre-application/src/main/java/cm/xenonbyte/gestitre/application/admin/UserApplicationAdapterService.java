@@ -183,6 +183,7 @@ public final class UserApplicationAdapterService implements UserApplicationAdapt
 
     @Nonnull
     @Override
+    @Transactional
     public UpdateUserViewResponse updateUser(UUID userId, @Nonnull UpdateUserViewRequest updateUserViewRequest) {
         UserUpdatedEvent userUpdatedEvent = userService.updateUser(new UserId(userId), userApplicationViewMapper.toUser(updateUserViewRequest));
         return userApplicationViewMapper.toUpdateUserViewResponse(userUpdatedEvent.getUser());

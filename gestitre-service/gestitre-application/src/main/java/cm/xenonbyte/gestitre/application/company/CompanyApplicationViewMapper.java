@@ -181,7 +181,8 @@ public interface CompanyApplicationViewMapper {
     @Mapping(target = "ircmRetain", expression = "java(company.getIrcmRetain() == null? null: company.getIrcmRetain().amount().value())")
     @Mapping(target = "capitalization", expression = "java(company.getCapitalization() == null? null: company.getCapitalization().getAmount().value())")
     @Mapping(target = "stockQuantity", expression = "java(company.getStockQuantity() == null? null: company.getStockQuantity().value().longValue())")
-    @Mapping(target = "endLicenceDate", expression = "java(company.getCreatedDate() != null && company.getLicence()!= null? cm.xenonbyte.gestitre.domain.company.vo.EndLicence.of(company.getCreatedDate(), company.getLicence()).computeEndLicenceDate(): null)")
+    @Mapping(target = "endLicenceDate", expression = "java(company.getCreatedDate() != null && company.getLicence()!= null? cm.xenonbyte.gestitre.domain.company.vo" +
+            ".EndLicence.of(company.getCreatedDate(), company.getLicence()).computeEndLicenceDate(): null)")
     @Mapping(target = "createdDate", source = "createdDate")
     @Mapping(target = "active", source = "active.value")
     @Nonnull @Valid FindCompanyByIdViewResponse toFindByIdViewResponse(@Nonnull Company company);

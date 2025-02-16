@@ -7,6 +7,7 @@ import cm.xenonbyte.gestitre.domain.common.vo.City;
 import cm.xenonbyte.gestitre.domain.common.vo.Name;
 import cm.xenonbyte.gestitre.domain.common.vo.Quantity;
 import cm.xenonbyte.gestitre.domain.common.vo.Reference;
+import cm.xenonbyte.gestitre.domain.common.vo.TenantId;
 import cm.xenonbyte.gestitre.domain.common.vo.ZipCode;
 import cm.xenonbyte.gestitre.domain.shareholder.vo.AccountNumber;
 import cm.xenonbyte.gestitre.domain.shareholder.vo.Administrator;
@@ -20,7 +21,7 @@ import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-import static cm.xenonbyte.gestitre.domain.stock.vo.StockMoveLineState.*;
+import static cm.xenonbyte.gestitre.domain.stock.vo.StockMoveLineState.DRAFT;
 
 /**
  * @author bamk
@@ -40,6 +41,7 @@ public final class StockMoveLine extends BaseEntity<StockMoveLineId> {
     private Administrator administrator;
     private Reference reference;
     private StockMoveLineState state;
+    private TenantId tenantId;
 
     public StockMoveLine(
             final AccountNumber accountNumber,
@@ -69,6 +71,7 @@ public final class StockMoveLine extends BaseEntity<StockMoveLineId> {
         administrator = builder.administrator;
         reference = builder.reference;
         state = builder.state;
+        tenantId = builder.tenantId;
     }
 
     public static Builder builder() {
@@ -105,6 +108,57 @@ public final class StockMoveLine extends BaseEntity<StockMoveLineId> {
                 .notNull(shareHolderId);
     }
 
+    public AccountNumber getAccountNumber() {
+        return accountNumber;
+    }
+
+    public Name getName() {
+        return name;
+    }
+
+    public StockMoveLineType getType() {
+        return type;
+    }
+
+    public ShareHolderId getShareHolderId() {
+        return shareHolderId;
+    }
+
+    public Quantity getQuantity() {
+        return quantity;
+    }
+
+    public ZonedDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public StockMoveId getStockMoveId() {
+        return stockMoveId;
+    }
+
+    public City getCity() {
+        return city;
+    }
+
+    public ZipCode getZipCode() {
+        return zipCode;
+    }
+
+    public Administrator getAdministrator() {
+        return administrator;
+    }
+
+    public Reference getReference() {
+        return reference;
+    }
+
+    public StockMoveLineState getState() {
+        return state;
+    }
+
+    public TenantId getTenantId() {
+        return tenantId;
+    }
 
     public static final class Builder {
         private StockMoveLineId id;
@@ -120,6 +174,7 @@ public final class StockMoveLine extends BaseEntity<StockMoveLineId> {
         private Administrator administrator;
         private Reference reference;
         private StockMoveLineState state;
+        private TenantId tenantId;
 
         private Builder() {
         }
@@ -186,6 +241,11 @@ public final class StockMoveLine extends BaseEntity<StockMoveLineId> {
 
         public Builder state(StockMoveLineState val) {
             state = val;
+            return this;
+        }
+
+        public Builder tenantId(TenantId val) {
+            tenantId = val;
             return this;
         }
 
