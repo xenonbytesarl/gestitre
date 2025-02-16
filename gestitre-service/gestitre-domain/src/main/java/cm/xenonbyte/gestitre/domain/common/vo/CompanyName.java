@@ -29,8 +29,8 @@ public record CompanyName(Text text) {
     public boolean equals(Object object) {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
-        CompanyName that = (CompanyName) object;
-        return Objects.equals(text, that.text);
+        CompanyName companyName = (CompanyName) object;
+        return Objects.equals(text, companyName.text);
     }
 
     @Override

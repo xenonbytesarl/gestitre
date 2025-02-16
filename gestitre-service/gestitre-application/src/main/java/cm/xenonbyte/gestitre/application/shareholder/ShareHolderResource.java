@@ -43,6 +43,7 @@ public final class ShareHolderResource {
     private static final String SHARE_HOLDER_FINDS_SUCCESSFULLY = "ShareHolderResource.2";
     private static final String SHARE_HOLDER_UPDATED_SUCCESSFULLY = "ShareHolderResource.3";
     private static final String SHARE_HOLDER_FIND_SUCCESSFULLY = "ShareHolderResource.4";
+
     private final ShareHolderApplicationAdapter shareHolderApplicationAdapter;
 
 

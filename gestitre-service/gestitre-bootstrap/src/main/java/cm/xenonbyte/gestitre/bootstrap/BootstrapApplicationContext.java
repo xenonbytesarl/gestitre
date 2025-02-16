@@ -37,6 +37,10 @@ import cm.xenonbyte.gestitre.domain.shareholder.event.ShareHolderCreatedEvent;
 import cm.xenonbyte.gestitre.domain.shareholder.ports.primary.ShareHolderService;
 import cm.xenonbyte.gestitre.domain.shareholder.ports.secondary.ShareHolderRepository;
 import cm.xenonbyte.gestitre.domain.shareholder.ports.secondary.message.ShareHolderMessagePublisher;
+import cm.xenonbyte.gestitre.domain.stock.StockMoveDomainService;
+import cm.xenonbyte.gestitre.domain.stock.ports.primary.StockMoveService;
+import cm.xenonbyte.gestitre.domain.stock.ports.secondary.StockMoveRepository;
+import cm.xenonbyte.gestitre.domain.stock.ports.secondary.message.StockMessagePublisher;
 import cm.xenonbyte.gestitre.domain.tenant.TenantCreatedEvent;
 import cm.xenonbyte.gestitre.domain.tenant.TenantDomainService;
 import cm.xenonbyte.gestitre.domain.tenant.ports.primary.message.listener.TenantService;
@@ -162,6 +166,15 @@ public final class BootstrapApplicationContext {
             ShareHolderMessagePublisher shareHolderMessagePublisher
     ) {
         return new ShareHolderDomainService(shareHolderRepository, shareHolderMessagePublisher);
+    }
+
+    @ApplicationScoped
+    public StockMoveService stockMoveService(
+            StockMoveRepository stockMoveRepository,
+            StockMessagePublisher stockMessagePublisher,
+            CompanyRepository companyRepository
+    ) {
+        return new StockMoveDomainService(stockMoveRepository, stockMessagePublisher, companyRepository);
     }
 
 }

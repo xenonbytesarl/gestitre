@@ -6,6 +6,7 @@ import cm.xenonbyte.gestitre.application.company.dto.FindCompanyByIdViewResponse
 import cm.xenonbyte.gestitre.application.company.dto.SearchCompanyPageInfoViewResponse;
 import cm.xenonbyte.gestitre.application.company.dto.UpdateCompanyViewRequest;
 import cm.xenonbyte.gestitre.application.company.dto.UpdateCompanyViewResponse;
+import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
 import cm.xenonbyte.gestitre.domain.common.vo.Image;
 import cm.xenonbyte.gestitre.domain.common.vo.Keyword;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfo;
@@ -19,10 +20,10 @@ import cm.xenonbyte.gestitre.domain.company.entity.Company;
 import cm.xenonbyte.gestitre.domain.company.event.CompanyCreatedEvent;
 import cm.xenonbyte.gestitre.domain.company.event.CompanyUpdatedEvent;
 import cm.xenonbyte.gestitre.domain.company.ports.primary.CompanyService;
-import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
 import cm.xenonbyte.gestitre.domain.file.port.primary.StorageManager;
 import jakarta.annotation.Nonnull;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -50,11 +51,11 @@ public final class CompanyApplicationAdapterService implements CompanyApplicatio
     @ConfigProperty(name = "storage.root.path", defaultValue = "")
     String storageRootPath;
 
-    @ConfigProperty(name = "storage.root.path.logo", defaultValue = "")
-    String storageRootPathLogo;
+    @ConfigProperty(name = "storage.root.company.path.logo", defaultValue = "")
+    String storageRootCompanyPathLogo;
 
-    @ConfigProperty(name = "storage.root.path.stamp", defaultValue = "")
-    String storageRootPathStamp;
+    @ConfigProperty(name = "storage.root.company.path.stamp", defaultValue = "")
+    String storageRootCompanyPathStamp;
 
 
     public CompanyApplicationAdapterService(
@@ -68,15 +69,16 @@ public final class CompanyApplicationAdapterService implements CompanyApplicatio
 
 
     @Override
+    @Transactional
     public CreateCompanyViewResponse createCompany(CreateCompanyViewRequest createCompanyViewRequest, FileUpload logo, FileUpload stamp) throws IOException {
         Image imageLogo = logo == null || logo.fileName() == null
                 ? null
                 : Image.with(Text.of(Objects.requireNonNull(logo.fileName())), Files.newInputStream(logo.filePath()))
-                        .computeImageName(storageRootPath, storageRootPathLogo);
+                        .computeImageName(storageRootPath, storageRootCompanyPathLogo);
         Image imageStamp = stamp == null || stamp.fileName() == null
                 ? null
                 : Image.with(Text.of(Objects.requireNonNull(stamp.fileName())), Files.newInputStream(stamp.filePath()))
-                        .computeImageName(storageRootPath, storageRootPathStamp);
+                        .computeImageName(storageRootPath, storageRootCompanyPathStamp);
 
         CompanyCreatedEvent companyCreatedEvent = companyService.createCompany(companyApplicationViewMapper.toCompany(
                 createCompanyViewRequest, imageLogo, imageStamp));
@@ -123,13 +125,14 @@ public final class CompanyApplicationAdapterService implements CompanyApplicatio
 
 
     @Override
+    @Transactional
     public @NonNull UpdateCompanyViewResponse updateCompany(@Nonnull UUID companyId, @NonNull UpdateCompanyViewRequest updateCompanyViewRequest, FileUpload logo, FileUpload stamp) throws IOException {
         Image imageLogo = logo == null || logo.fileName() == null
                 ? null
                 : updateCompanyViewRequest.getLogoFilename() == null || updateCompanyViewRequest.getLogoFilename().isEmpty()
                     ?
                         Image.with(Text.of(Objects.requireNonNull(logo.fileName())), Files.newInputStream(logo.filePath()))
-                            .computeImageName(storageRootPath, storageRootPathLogo)
+                            .computeImageName(storageRootPath, storageRootCompanyPathLogo)
                     :  Image.with(Text.of(updateCompanyViewRequest.getLogoFilename()), Files.newInputStream(logo.filePath()));
 
         Image imageStamp = stamp == null || stamp.fileName() == null
@@ -137,7 +140,7 @@ public final class CompanyApplicationAdapterService implements CompanyApplicatio
                 : updateCompanyViewRequest.getStampFilename() == null || updateCompanyViewRequest.getStampFilename().isEmpty()
                     ?
                         Image.with(Text.of(Objects.requireNonNull(stamp.fileName())), Files.newInputStream(stamp.filePath()))
-                            .computeImageName(storageRootPath, storageRootPathStamp)
+                            .computeImageName(storageRootPath, storageRootCompanyPathStamp)
                     :   Image.with(Text.of(updateCompanyViewRequest.getStampFilename()), Files.newInputStream(stamp.filePath()));
 
         CompanyUpdatedEvent companyUpdatedEvent = companyService.updateCompany(new CompanyId(companyId), companyApplicationViewMapper.toCompany(

@@ -1,6 +1,5 @@
 package cm.xenonbyte.gestitre.infrastructure.stock;
 
-import cm.xenonbyte.gestitre.domain.shareholder.vo.ShareHolderId;
 import cm.xenonbyte.gestitre.infrastructure.common.Tenantable;
 import cm.xenonbyte.gestitre.infrastructure.shareholder.ShareHolderJpa;
 import jakarta.persistence.Column;
@@ -35,7 +34,7 @@ import java.time.ZonedDateTime;
 @Table(name = "t_stock_move_line")
 public final class StockMoveLineJpa extends Tenantable {
 
-    @Column(name = "c_reference", unique = true, nullable = false, length = 128)
+    @Column(name = "c_reference", unique = true, nullable = false, length = 32)
     private String reference;
 
     @Column(name = "c_account_number", nullable = false, length = 64)

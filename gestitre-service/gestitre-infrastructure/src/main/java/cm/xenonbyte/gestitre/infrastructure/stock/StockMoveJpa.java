@@ -1,7 +1,5 @@
 package cm.xenonbyte.gestitre.infrastructure.stock;
 
-import cm.xenonbyte.gestitre.domain.stock.entity.StockMove;
-import cm.xenonbyte.gestitre.domain.stock.entity.StockMoveLine;
 import cm.xenonbyte.gestitre.infrastructure.common.Tenantable;
 import cm.xenonbyte.gestitre.infrastructure.company.CompanyJpa;
 import jakarta.persistence.CascadeType;
@@ -39,7 +37,7 @@ import java.util.List;
 @Table(name = "t_stock_move")
 public final class StockMoveJpa extends Tenantable {
 
-    @Column(name = "c_reference", unique = true, nullable = false, length = 128)
+    @Column(name = "c_reference", unique = true, nullable = false, length = 32)
     private String reference;
 
     @Column(name = "c_company_name", nullable = false, length = 64)

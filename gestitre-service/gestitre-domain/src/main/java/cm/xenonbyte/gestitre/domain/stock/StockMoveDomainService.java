@@ -3,10 +3,8 @@ package cm.xenonbyte.gestitre.domain.stock;
 import cm.xenonbyte.gestitre.domain.admin.vo.Timezone;
 import cm.xenonbyte.gestitre.domain.common.annotation.DomainService;
 import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
-import cm.xenonbyte.gestitre.domain.company.CompanyDomainService;
-import cm.xenonbyte.gestitre.domain.company.entity.Company;
 import cm.xenonbyte.gestitre.domain.company.ports.CompanyNotFoundException;
-import cm.xenonbyte.gestitre.domain.company.vo.IsinCode;
+import cm.xenonbyte.gestitre.domain.company.ports.secondary.repository.CompanyRepository;
 import cm.xenonbyte.gestitre.domain.stock.entity.StockMove;
 import cm.xenonbyte.gestitre.domain.stock.event.StockMoveCreatedEvent;
 import cm.xenonbyte.gestitre.domain.stock.ports.primary.StockMoveService;
@@ -32,12 +30,15 @@ public final class StockMoveDomainService implements StockMoveService {
 
     private final StockMoveRepository stockMoveRepository;
     private final StockMessagePublisher stockMoveMessagePublisher;
-    private final CompanyDomainService companyService;
+    private final CompanyRepository companyRepository;
 
-    public StockMoveDomainService(StockMoveRepository stockMoveRepository, StockMessagePublisher stockMoveMessagePublisher, CompanyDomainService companyService) {
+    public StockMoveDomainService(
+            final StockMoveRepository stockMoveRepository,
+            final StockMessagePublisher stockMoveMessagePublisher,
+            final CompanyRepository companyRepository) {
         this.stockMoveRepository = Objects.requireNonNull(stockMoveRepository);
         this.stockMoveMessagePublisher = Objects.requireNonNull(stockMoveMessagePublisher);
-        this.companyService = Objects.requireNonNull(companyService);
+        this.companyRepository = Objects.requireNonNull(companyRepository);
     }
 
     @Nonnull
@@ -58,7 +59,9 @@ public final class StockMoveDomainService implements StockMoveService {
     }
 
     private void validateCompany(CompanyId companyId) {
-        companyService.findCompanyById(companyId);
+        if(companyRepository.existsById(companyId)) {
+            throw new CompanyNotFoundException(new String[] {companyId.getValue().toString()});
+        }
     }
 
 }
