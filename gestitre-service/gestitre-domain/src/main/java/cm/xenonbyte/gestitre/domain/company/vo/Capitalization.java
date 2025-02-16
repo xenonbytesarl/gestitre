@@ -32,7 +32,7 @@ public record Capitalization(NominalValue nominalValue, Quantity stockQuantity) 
     }
 
     public Money getAmount() {
-        return new Money(nominalValue.amount().value().multiply(BigDecimal.valueOf(stockQuantity.value())));
+        return new Money(nominalValue.amount().value().multiply(BigDecimal.valueOf(stockQuantity.value().longValue())));
     }
 
     @Override

@@ -24,7 +24,7 @@ create table if not exists t_company (
     c_stamp_filename varchar(512) ,
     c_gross_dividend_stock_unit numeric(38,2) ,
     c_nominal_value numeric(38,2) ,
-    c_stock_quantity bigint ,
+    c_stock_quantity  numeric(38,0) ,
     c_active boolean not null ,
     c_certificate_template_id uuid ,
     c_created_date timestamp with time zone not null ,

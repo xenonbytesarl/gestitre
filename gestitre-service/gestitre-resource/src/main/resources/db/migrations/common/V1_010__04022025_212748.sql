@@ -16,7 +16,7 @@ create table if not exists t_shareholder
     c_city                 varchar(64),
     c_zip_code             varchar(64),
     c_tax_residence        varchar(64)                 not null,
-    c_initial_balance      decimal                     not null,
+    c_initial_balance      numeric(38,2)               not null,
     c_created_date         timestamp with time zone not null,
     c_active               boolean                     not null,
     c_representative_name  varchar(128)                not null,

@@ -3,6 +3,7 @@ package cm.xenonbyte.gestitre.domain.common.vo;
 import cm.xenonbyte.gestitre.domain.common.validation.Assert;
 import jakarta.annotation.Nonnull;
 
+import java.math.BigInteger;
 import java.util.Objects;
 
 /**
@@ -10,17 +11,17 @@ import java.util.Objects;
  * @version 1.0
  * @since 01/11/2024
  */
-public record Quantity(Long value) {
-    public Quantity(@Nonnull Long value) {
+public record Quantity(BigInteger value) {
+    public Quantity(@Nonnull BigInteger value) {
         this.value = Objects.requireNonNull(value);
     }
 
     @Nonnull
-    public static Quantity of(Long value) {
+    public static Quantity of(BigInteger value) {
         Assert.field("Quantity", value)
                 .notNull()
                 .notNull(value)
-                .notPositive(value);
+                .notPositive(value.intValue());
         return new Quantity(value);
     }
 
