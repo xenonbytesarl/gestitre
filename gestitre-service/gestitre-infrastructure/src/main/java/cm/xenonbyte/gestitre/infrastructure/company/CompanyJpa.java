@@ -17,6 +17,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.ZonedDateTime;
 
 /**
@@ -87,7 +88,7 @@ public class CompanyJpa extends Auditable {
     private BigDecimal nominalValue;
 
     @Column(name = "c_stock_quantity")
-    private Long stockQuantity;
+    private BigInteger stockQuantity;
 
     @Column(name = "c_active", nullable = false)
     private Boolean active;

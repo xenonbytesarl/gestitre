@@ -37,4 +37,8 @@ public record Reference(Text text) {
     public int hashCode() {
         return Objects.hashCode(text);
     }
+
+    public Reference concat(String value) {
+        return Reference.of(Text.of(text().value() + value));
+    }
 }
