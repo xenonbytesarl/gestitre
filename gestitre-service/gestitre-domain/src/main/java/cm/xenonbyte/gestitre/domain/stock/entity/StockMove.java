@@ -116,11 +116,11 @@ public final class StockMove extends AggregateRoot<StockMoveId> {
 
         Assert.field("Stock lines", moveLines)
                 .notNull(moveLines)
-                .minLength(2, moveLines.size());
+                .minListLength(2, moveLines.size());
 
         moveLines.forEach(StockMoveLine::validateMandatoryFields);
 
-        if(quantityCredit != quantityDebit) {
+        if(!quantityCredit.equals(quantityDebit)) {
             throw new InvalidFieldBadException(STOCK_MOVE_QUANTITY_DIFFERENT);
         }
     }

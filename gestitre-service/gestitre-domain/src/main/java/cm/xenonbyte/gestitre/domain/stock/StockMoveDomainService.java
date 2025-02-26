@@ -59,7 +59,7 @@ public final class StockMoveDomainService implements StockMoveService {
     }
 
     private void validateCompany(CompanyId companyId) {
-        if(companyRepository.existsById(companyId)) {
+        if(Boolean.FALSE.equals(companyRepository.existsById(companyId))) {
             throw new CompanyNotFoundException(new String[] {companyId.getValue().toString()});
         }
     }

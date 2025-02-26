@@ -25,4 +25,5 @@ public final class CommonConstant {
     public static final String MAIL_SERVER_CREATED = "MAIL_SERVER_CREATED";
     public static final String SHAREHOLDER_CREATED = "SHAREHOLDER_CREATED";
     public static final String SHAREHOLDER_UPDATED = "SHAREHOLDER_UPDATED";
+    public static final String STOCK_MOVE_CREATED = "STOCK_MOVE_CREATED";
 }

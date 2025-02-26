@@ -13,7 +13,6 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigInteger;
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -55,13 +54,9 @@ public class StockMoveView {
     @NotNull(message = NOT_NULL)
     @PositiveOrZero(message = POSITIVE_OR_ZERO)
     private BigInteger quantityDebit;
-    @NotBlank(message = NOT_BLANK)
-    @Size(max = 512, message = MAX_SIZE)
     private String filename;
     @NotNull(message = NOT_NULL)
     private UUID companyId;
-    @NotNull(message = NOT_NULL)
-    private ZonedDateTime createdDate;
     private String observation;
     @NotEmpty(message = NOT_EMPTY)
     private List<@Valid StockMoveLineView> moveLines;

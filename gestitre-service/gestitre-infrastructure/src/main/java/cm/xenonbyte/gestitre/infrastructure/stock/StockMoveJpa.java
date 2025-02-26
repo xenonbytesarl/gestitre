@@ -2,7 +2,6 @@ package cm.xenonbyte.gestitre.infrastructure.stock;
 
 import cm.xenonbyte.gestitre.infrastructure.common.Tenantable;
 import cm.xenonbyte.gestitre.infrastructure.company.CompanyJpa;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -77,7 +76,7 @@ public final class StockMoveJpa extends Tenantable {
     @JoinColumn(name = "c_company_id", nullable = false)
     private CompanyJpa companyJpa;
 
-    @OneToMany(mappedBy = "stockMoveJpa", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "stockMoveJpa")
     private List<StockMoveLineJpa> moveLinesJpa;
 
     @PrePersist

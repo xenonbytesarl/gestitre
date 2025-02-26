@@ -17,12 +17,15 @@ import java.util.Objects;
 public final class StockMoveJpaRepositoryAdapter implements StockMoveRepository {
 
     private final StockMoveJpaRepository stockMoveJpaRepository;
+    private final StockMoveLineJpaRepository stockMoveLineJpaRepository;
     private final StockMoveJpaMapper stockMoveJpaMapper;
 
     public StockMoveJpaRepositoryAdapter(
             final StockMoveJpaRepository stockMoveJpaRepository,
+            final StockMoveLineJpaRepository stockMoveLineJpaRepository,
             final StockMoveJpaMapper stockMoveJpaMapper) {
         this.stockMoveJpaRepository = Objects.requireNonNull(stockMoveJpaRepository);
+        this.stockMoveLineJpaRepository = Objects.requireNonNull(stockMoveLineJpaRepository);
         this.stockMoveJpaMapper = Objects.requireNonNull(stockMoveJpaMapper);
     }
 
@@ -30,9 +33,9 @@ public final class StockMoveJpaRepositoryAdapter implements StockMoveRepository 
     @Override
     @Transactional
     public StockMove create(@Nonnull StockMove stockMove) {
-        stockMoveJpaRepository.persist(
-                stockMoveJpaMapper.toStockMoveJpa(stockMove)
-        );
+        StockMoveJpa stockMoveJpa = stockMoveJpaMapper.toStockMoveJpa(stockMove);
+        stockMoveJpaRepository.persistAndFlush(stockMoveJpa);
+        stockMoveLineJpaRepository.persist(stockMoveJpa.getMoveLinesJpa());
         return stockMoveJpaMapper.toStockMove(
                 stockMoveJpaRepository.findById(stockMove.getId().getValue())
         );
