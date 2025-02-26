@@ -83,6 +83,13 @@ public final class Assert {
             return this;
         }
 
+        public ObjectAssert minListLength(int threshold, int length) {
+            if(length < threshold ) {
+                throw InvalidFieldBadException.forMinListLengthValue(field, threshold);
+            }
+            return this;
+        }
+
         public ObjectAssert isEmail(String target) {
             if(!target.matches(EMAIL_REGEX)) {
                 throw InvalidFieldBadException.forEmailValue(field);

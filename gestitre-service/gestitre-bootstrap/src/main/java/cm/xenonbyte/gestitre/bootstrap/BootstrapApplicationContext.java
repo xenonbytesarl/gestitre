@@ -38,6 +38,7 @@ import cm.xenonbyte.gestitre.domain.shareholder.ports.primary.ShareHolderService
 import cm.xenonbyte.gestitre.domain.shareholder.ports.secondary.ShareHolderRepository;
 import cm.xenonbyte.gestitre.domain.shareholder.ports.secondary.message.ShareHolderMessagePublisher;
 import cm.xenonbyte.gestitre.domain.stock.StockMoveDomainService;
+import cm.xenonbyte.gestitre.domain.stock.event.StockMoveCreatedEvent;
 import cm.xenonbyte.gestitre.domain.stock.ports.primary.StockMoveService;
 import cm.xenonbyte.gestitre.domain.stock.ports.secondary.StockMoveRepository;
 import cm.xenonbyte.gestitre.domain.stock.ports.secondary.message.StockMessagePublisher;
@@ -131,6 +132,7 @@ public final class BootstrapApplicationContext {
         eventBus.registerDefaultCodec(VerificationCanceledEvent.class, new GenericCodec<>(VerificationCanceledEvent.class));
         eventBus.registerDefaultCodec(VerificationVerifiedEvent.class, new GenericCodec<>(VerificationVerifiedEvent.class));
         eventBus.registerDefaultCodec(ShareHolderCreatedEvent.class, new GenericCodec<>(ShareHolderCreatedEvent.class));
+        eventBus.registerDefaultCodec(StockMoveCreatedEvent.class, new GenericCodec<>(StockMoveCreatedEvent.class));
         return eventBus;
     }
 

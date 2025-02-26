@@ -46,7 +46,6 @@ public final class StockMoveLineView {
     @NotNull(message = NOT_NULL)
     @PositiveOrZero(message = POSITIVE_OR_ZERO)
     private BigInteger quantity;
-    @NotNull(message = NOT_NULL)
     private ZonedDateTime createdDate;
     private String city;
     private String zipCode;

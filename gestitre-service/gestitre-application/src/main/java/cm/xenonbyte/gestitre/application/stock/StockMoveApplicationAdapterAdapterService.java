@@ -48,13 +48,9 @@ public final class StockMoveApplicationAdapterAdapterService implements StockMov
     @Override
     @Transactional
     public CreateStockMoveViewResponse createStockMove(@Nonnull FileUpload file, @Nonnull CreateStockMoveViewRequest createStockMoveViewRequest) throws IOException {
-        Image imageFile = file == null || file.fileName() == null
-                ? null
-                : createStockMoveViewRequest.getFilename() == null || createStockMoveViewRequest.getFilename().isEmpty()
-                ?
-                Image.with(Text.of(Objects.requireNonNull(file.fileName())), Files.newInputStream(file.filePath()))
-                        .computeImageName(storageRootPath, storageRootStockMovePathFile)
-                :  Image.with(Text.of(createStockMoveViewRequest.getFilename()), Files.newInputStream(file.filePath()));
+        Image imageFile = Image.with(Text.of(Objects.requireNonNull(file.fileName())), Files.newInputStream(file.filePath()))
+                        .computeImageName(storageRootPath, storageRootStockMovePathFile);
+        createStockMoveViewRequest.setFilename(imageFile.name().value());
         StockMoveCreatedEvent stockMoveCreatedEvent = stockMoveService.createStockMove(
                 stockMoveViewMapper.toStockMove(createStockMoveViewRequest)
         );

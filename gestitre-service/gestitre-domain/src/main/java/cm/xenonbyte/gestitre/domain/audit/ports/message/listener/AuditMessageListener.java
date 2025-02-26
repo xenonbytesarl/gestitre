@@ -10,6 +10,7 @@ import cm.xenonbyte.gestitre.domain.company.event.CompanyCreatedEvent;
 import cm.xenonbyte.gestitre.domain.company.event.CompanyUpdatedEvent;
 import cm.xenonbyte.gestitre.domain.shareholder.event.ShareHolderCreatedEvent;
 import cm.xenonbyte.gestitre.domain.shareholder.event.ShareHolderUpdatedEvent;
+import cm.xenonbyte.gestitre.domain.stock.event.StockMoveCreatedEvent;
 import cm.xenonbyte.gestitre.domain.tenant.TenantCreatedEvent;
 
 /**
@@ -30,4 +31,5 @@ public interface AuditMessageListener {
     void handle(VerificationVerifiedEvent event);
     void handle(ShareHolderCreatedEvent event);
     void handle(ShareHolderUpdatedEvent event);
+    void handle(StockMoveCreatedEvent event);
 }

@@ -2,8 +2,8 @@ package cm.xenonbyte.gestitre.application.stock;
 
 import cm.xenonbyte.gestitre.application.common.dto.SuccessApiResponse;
 import cm.xenonbyte.gestitre.application.stock.dto.CreateStockMoveViewRequest;
-import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.POST;
@@ -20,6 +20,7 @@ import java.time.ZonedDateTime;
 import java.util.Objects;
 
 import static cm.xenonbyte.gestitre.application.common.ApplicationConstant.CONTENT;
+import static cm.xenonbyte.gestitre.application.common.ApplicationConstant.NOT_NULL;
 import static cm.xenonbyte.gestitre.application.common.ApplicationConstant.STOCK_MOVE_API_PATH;
 import static cm.xenonbyte.gestitre.application.common.in18.LocalizationUtil.getMessage;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -47,11 +48,11 @@ public final class StockMoveResource {
     @POST
     @Consumes(MULTIPART_FORM_DATA)
     @Produces(APPLICATION_JSON)
-    @RolesAllowed({"create:stock:move"})
+    //@RolesAllowed({"create:stock:move"})
     public Response createStockMove(
             @HeaderParam("Accept-Language") String acceptLanguage,
-            @RestForm("file") FileUpload file,
-            @RestForm @PartType(APPLICATION_JSON) @Valid CreateStockMoveViewRequest createStockMoveViewRequest
+            @RestForm("file") @NotNull(message = NOT_NULL) FileUpload file,
+            @RestForm("createStockMoveViewRequest") @PartType(APPLICATION_JSON) @Valid CreateStockMoveViewRequest createStockMoveViewRequest
     ) throws IOException {
         return Response.status(CREATED)
                 .entity(

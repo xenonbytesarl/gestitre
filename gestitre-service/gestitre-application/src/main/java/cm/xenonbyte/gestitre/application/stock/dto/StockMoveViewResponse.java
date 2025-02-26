@@ -1,15 +1,14 @@
 package cm.xenonbyte.gestitre.application.stock.dto;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
-import static cm.xenonbyte.gestitre.application.common.ApplicationConstant.NOT_BLANK;
 import static cm.xenonbyte.gestitre.application.common.ApplicationConstant.NOT_NULL;
 
 /**
@@ -26,8 +25,8 @@ public class StockMoveViewResponse extends StockMoveView {
     private UUID id;
     @NotNull(message = NOT_NULL)
     private UUID tenantId;
-    @NotBlank(message = NOT_BLANK)
     private String fileEncoded;
-    @NotBlank(message = NOT_BLANK)
     private String fileMimeType;
+    @NotNull(message = NOT_NULL)
+    private ZonedDateTime createdDate;
 }

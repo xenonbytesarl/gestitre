@@ -18,6 +18,7 @@ public final class InvalidFieldBadException extends BaseDomainBadException {
     public static final String NOT_MIN_LENGTH_VALUE = "InvalidFieldBadException.5";
     public static final String NOT_EMAIL_VALUE = "InvalidFieldBadException.6";
     public static final String NOT_NUMBER_VALUE = "InvalidFieldBadException.7";
+    private static final String NOT_MIN_LENGTH_LIST_VALUE = "InvalidFieldBadException.8";
 
     public InvalidFieldBadException(String message, Serializable... args) {
         super(message, args);
@@ -49,5 +50,9 @@ public final class InvalidFieldBadException extends BaseDomainBadException {
 
     public static InvalidFieldBadException forNumberValue(Serializable... args) {
         return new InvalidFieldBadException(NOT_NUMBER_VALUE, args);
+    }
+
+    public static InvalidFieldBadException forMinListLengthValue(Serializable... args) {
+        return new InvalidFieldBadException(NOT_MIN_LENGTH_LIST_VALUE, args);
     }
 }
