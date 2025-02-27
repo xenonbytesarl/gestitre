@@ -3,11 +3,13 @@ import navbarSlice from "@/layout/navbar/NavbarSlice.ts";
 import sidebarSlice from "@/layout/sidebar/SidebarSlice.tsx";
 import CompanySlice from "@/pages/company/CompanySlice.ts";
 import CertificateTemplateSlice from "@/pages/company/certificatetemplate/CertificateTemplateSlice.ts";
+import {adminSlice} from "@/pages/admin/AdminSlice.ts";
 
 export const store = configureStore({
     reducer: {
         navbar: navbarSlice,
         sidebar: sidebarSlice,
+        admin: adminSlice,
         company: CompanySlice,
         certificateTemplate: CertificateTemplateSlice
     }

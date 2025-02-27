@@ -7,6 +7,12 @@ export const API_JSON_HEADER = {
     'Accept-Language': i18n.language
 }
 
+export const API_JSON_WITH_TIME_ZONE_HEADER = {
+    'Content-Type': 'application/json',
+    'Accept-Language': i18n.language,
+    'X-Gestitre-Timezone': Intl.DateTimeFormat().resolvedOptions().timeZone
+}
+
 export const API_FORM_DATA_HEADER = {
     'Content-Type': 'multipart/form-data',
     'Accept-Language': i18n.language
