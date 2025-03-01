@@ -1,6 +1,5 @@
-
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {RootState} from "@/Store.ts";
+import {RootState} from "@/core/Store.ts";
 import {LanguageModel} from "@/layout/navbar/LanguageModel.ts";
 
 

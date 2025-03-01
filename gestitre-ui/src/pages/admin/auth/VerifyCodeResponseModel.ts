@@ -1,4 +1,4 @@
 export interface VerifyCodeResponseModel {
     accessToken: string;
-    refreshToken: null;
+    refreshToken: string;
 }

@@ -1,4 +1,4 @@
-import i18n from "@/i18n.tsx";
+import i18n from "@/core/i18n.tsx";
 
 export const API_BASE_URL = import.meta.env.VITE_API_BACKEND_URL;
 
@@ -26,3 +26,14 @@ export const DEFAULT_COMPANY_LOGO_IMAGE = '/images/company_logo.png';
 export const DEFAULT_COMPANY_STAMP_IMAGE = '/images/company_stamp.png';
 
 export const DEBOUNCE_TIMEOUT = 500;
+
+export const AUTHORIZATION = "Authorization";
+export const BEARER = "Bearer";
+
+export const ACCESS_TOKEN = "accessToken";
+export const REFRESH_TOKEN = "refreshToken";
+export const IS_AUTHENTICATED = "isAuthenticated";
+export const EMAIL = "email";
+export const TENANT_CODE = "tenantCode";
+export const LAST_VISITED_URL = "lastVisitedUrl";
+export const REDIRECT = "redirect";

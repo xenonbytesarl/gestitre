@@ -4,7 +4,7 @@ import {CompanyModel} from "@/pages/company/CompanyModel.ts";
 import {DEFAULT_SIZE_VALUE} from "@/shared/constant/page.constant.ts";
 import companyService from "@/pages/company/CompanyService.ts";
 import {ErrorResponseModel} from "@/shared/model/errorResponseModel.ts";
-import {RootState} from "@/Store.ts";
+import {RootState} from "@/core/Store.ts";
 import {handleApiError} from "@/shared/utils/apiError.ts";
 import {FindParamModel} from "@/shared/model/findParamModel.ts";
 import {SearchParamModel} from "@/shared/model/searchParamModel.ts";

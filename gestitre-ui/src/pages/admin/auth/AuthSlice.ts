@@ -4,12 +4,48 @@ import {handleApiError} from "@/shared/utils/apiError.ts";
 import {AxiosError} from "axios";
 import {ErrorResponseModel} from "@/shared/model/errorResponseModel.ts";
 import authService from "@/pages/admin/auth/AuthService.ts";
-import {RootState} from "@/Store.ts";
+import {RootState} from "@/core/Store.ts";
 import {VerifyCodeRequestModel} from "@/pages/admin/auth/VerifyCodeRequestModel.ts";
+import {LoginResponseModel} from "@/pages/admin/auth/LoginResponseModel.ts";
+import {
+    cleanAuthenticationInformation,
+    cleanLastVisitedUrl,
+    cleanMfaInformation,
+    persistAuthenticationInformation,
+    persistMfaInformation,
+    recoverAuthenticationInformation,
+    recoverMfaInformation
+} from "@/shared/utils/localStorageUtils.ts";
 
-const authInitialState = {
+interface VerifyCodeInfo {
+    email: string;
+    tenantCode: string;
+}
+
+interface AuthState {
+    loading: boolean;
+    loginResponse: LoginResponseModel;
+    verifyCodeInfo: VerifyCodeInfo;
+    isAuthenticated: boolean;
+    message: string;
+    error: any;
+}
+
+const defaultLoginResponse: LoginResponseModel = {
+    accessToken: '',
+    refreshToken: '',
+    isMfa: false
+};
+
+const defaultVerifyCodeInfo: VerifyCodeInfo = {
+    email: '',
+    tenantCode: ''
+}
+
+const authInitialState: AuthState = {
     loading: false,
-    loginResponse: {},
+    loginResponse: defaultLoginResponse,
+    verifyCodeInfo: defaultVerifyCodeInfo,
     isAuthenticated: false,
     message: '',
     error: null
@@ -19,7 +55,7 @@ export const login = createAsyncThunk('auth/login', async({loginRequest}: {login
     try {
         const response =  await authService.login(loginRequest);
         // @ts-ignore
-        return {content: response.data.data.content, message: response.data.message}
+        return {content: response.data.data.content, message: response.data.message, email: loginRequest.email, tenantCode: loginRequest.tenantCode}
     } catch (apiError) {
         return handleApiError(apiError as AxiosError<ErrorResponseModel>, {rejectWithValue});
     }
@@ -35,6 +71,46 @@ export const verifyCode = createAsyncThunk('auth/verifyCode', async({verifyCodeR
     }
 });
 
+export const refreshToken = createAsyncThunk('auth/refreshToken', async(_, {rejectWithValue} ) => {
+    try {
+        const response =  await authService.refreshToken();
+        // @ts-ignore
+        //persistAuthenticationInformation(response.data.data.content.accessToken, response.data.data.content.refreshToken);
+        // @ts-ignore
+        return {content: response.data.data.content, message: response.data.message}
+    } catch (apiError) {
+        return handleApiError(apiError as AxiosError<ErrorResponseModel>, {rejectWithValue});
+    }
+});
+
+export const persistAuthentication = createAsyncThunk("auth/persistAuthentication", async({accessToken, refreshToken}: {accessToken: string, refreshToken: string}) => {
+    persistAuthenticationInformation(accessToken, refreshToken);
+});
+
+export const persistMfa = createAsyncThunk("auth/persistMfa", async({email, tenantCode}: {email: string, tenantCode: string}) => {
+    persistMfaInformation(email, tenantCode);
+});
+
+export const logout = createAsyncThunk("auth/logout", async() => {
+    cleanAuthenticationInformation();
+    cleanLastVisitedUrl();
+});
+
+export const cleanMfa = createAsyncThunk("auth/cleanMfa", async() => {
+    cleanMfaInformation();
+});
+
+export const recoverAuthentication = createAsyncThunk("auth/recoverAuthentication", () => {
+    const response = recoverAuthenticationInformation();
+    const isAuthenticated = response.accessToken !== '' && response.refreshToken !== '';
+    return {content: response, isAuthenticated};
+});
+
+export const recoverMfa = createAsyncThunk("auth/recoverMfa", () => {
+    const response = recoverMfaInformation();
+    return {content: response};
+});
+
 const authSlice = createSlice({
     name: "auth",
     initialState: authInitialState,
@@ -42,10 +118,11 @@ const authSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(login.fulfilled, (state, action)=> {
-                const {content, message} = action.payload;
+                const {content, message, email, tenantCode} = action.payload;
                 state.loading = false;
                 state.message = message;
                 state.isAuthenticated = !content.isMfa;
+                state.verifyCodeInfo = {email: content.isMfa ? email : '', tenantCode: content.isMfa ? tenantCode: ''};
                 state.loginResponse = content;
             })
             .addCase(verifyCode.fulfilled, (state, action)=> {
@@ -53,13 +130,62 @@ const authSlice = createSlice({
                 state.loading = false;
                 state.message = message;
                 state.isAuthenticated = true;
+                state.verifyCodeInfo = defaultVerifyCodeInfo;
                 state.loginResponse = content;
+            })
+            .addCase(refreshToken.fulfilled, (state, action)=> {
+                const {content, message} = action.payload;
+                state.loading = false;
+                state.message = message;
+                state.isAuthenticated = true;
+                state.loginResponse = {...content};
+            })
+            .addCase(refreshToken.pending, (state)=> {
+                state.loading = true;
+                state.message = '';
+                state.isAuthenticated = true;
+                state.error = null;
+            })
+            .addCase(recoverAuthentication.fulfilled, (state, action)=> {
+                const {content, isAuthenticated} = action.payload;
+                state.loading = false;
+                state.isAuthenticated = isAuthenticated;
+                state.loginResponse = content;
+            })
+            .addCase(recoverMfa.fulfilled, (state, action)=> {
+                const {content} = action.payload;
+                state.loading = false;
+                state.isAuthenticated = false;
+                state.verifyCodeInfo = {...content};
+            })
+            .addCase(logout.fulfilled, (state) => {
+                state.isAuthenticated = false;
+                state.loginResponse = defaultLoginResponse;
+                state.verifyCodeInfo = defaultVerifyCodeInfo;
+                state.loading = false;
+                state.message = '';
+                state.error = null;
+            })
+            .addCase(recoverAuthentication.pending, (state)=> {
+                state.loading = true;
+            })
+            .addMatcher(isAnyOf(
+                persistAuthentication.fulfilled,
+                persistMfa.fulfilled,
+                cleanMfa.fulfilled
+            ), (state) => {
+                state.loading = false;
             })
             .addMatcher(isAnyOf(
                 login.rejected,
-                verifyCode.rejected
+                verifyCode.rejected,
+                refreshToken.rejected,
+                recoverAuthentication.rejected,
+                recoverMfa.rejected
             ),(state, action) => {
                 state.loading = false;
+                state.loginResponse = defaultLoginResponse;
+                state.verifyCodeInfo = defaultVerifyCodeInfo;
                 state.message = '';
                 state.isAuthenticated = false;
                 state.error = action.payload as any;
@@ -81,6 +207,7 @@ const authSlice = createSlice({
 export const getIsAuthenticated = (state: RootState) => state.admin.auth.isAuthenticated;
 export const getLoading = (state: RootState) => state.admin.auth.loading;
 export const getLoginResponse = (state: RootState) => state.admin.auth.loginResponse;
+export const getVerifyCodeInfo = (state: RootState) => state.admin.auth.verifyCodeInfo;
 export const getMessage = (state: RootState) => state.admin.auth.message;
 export const getError = (state: RootState) => state.admin.auth.error;
 

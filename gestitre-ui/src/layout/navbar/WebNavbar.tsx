@@ -1,10 +1,10 @@
 import {useTranslation} from "react-i18next";
 import {useDispatch, useSelector} from "react-redux";
-import {RootDispatch} from "@/Store.ts";
+import {RootDispatch} from "@/core/Store.ts";
 import {LanguageModel} from "@/layout/navbar/LanguageModel.ts";
 import {changeLanguage, selectLanguage} from "@/layout/navbar/NavbarSlice.ts";
 import {useEffect, useRef, useState} from "react";
-import i18n from "@/i18n.tsx";
+import i18n from "@/core/i18n.tsx";
 import {getImageUrl} from "@/shared/utils/imageUtils.ts";
 
 const WebNavbar = () => {

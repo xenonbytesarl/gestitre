@@ -2,12 +2,13 @@ import {
     getLoading,
     getPageSize,
     getTotalElements,
-    getTotalPages, searchCompanies,
+    getTotalPages,
+    searchCompanies,
     selectCompanies
 } from "@/pages/company/CompanySlice.ts";
 import {CompanyModel} from "@/pages/company/CompanyModel.ts";
 import {useDispatch, useSelector} from "react-redux";
-import {RootDispatch} from "@/Store.ts";
+import {RootDispatch} from "@/core/Store.ts";
 import {useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {DEFAULT_DIRECTION_VALUE, DEFAULT_PAGE_VALUE} from "@/shared/constant/page.constant.ts";

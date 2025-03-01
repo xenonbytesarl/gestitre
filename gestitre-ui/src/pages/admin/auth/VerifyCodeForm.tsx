@@ -1,21 +1,30 @@
 import {useTranslation} from "react-i18next";
 import {useToast} from "@/hooks/use-toast.ts";
 import {z} from "zod";
-import {useLocation, useNavigate} from "react-router-dom";
+import {useLocation, useNavigate, useSearchParams} from "react-router-dom";
 import {VerifyCodeRequestModel} from "@/pages/admin/auth/VerifyCodeRequestModel.ts";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useDispatch, useSelector} from "react-redux";
-import {RootDispatch} from "@/Store.ts";
-import {getLoading, verifyCode} from "@/pages/admin/auth/AuthSlice.ts";
+import {RootDispatch} from "@/core/Store.ts";
+import {
+    cleanMfa,
+    getLoading,
+    getVerifyCodeInfo,
+    persistAuthentication,
+    recoverMfa,
+    verifyCode
+} from "@/pages/admin/auth/AuthSlice.ts";
 import {unwrapResult} from "@reduxjs/toolkit";
-import {ToastType} from "@/shared/constant/globalConstant.ts";
+import {REDIRECT, ToastType} from "@/shared/constant/globalConstant.ts";
 import {cn} from "@/lib/utils.ts";
 import {Toaster} from "@/components/ui/toaster.tsx";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form.tsx";
 import {Input} from "@/components/ui/input.tsx";
 import {Button} from "@/components/ui/button.tsx";
+import {useEffect} from "react";
+import {recoverLastVisitedUrl} from "@/shared/utils/localStorageUtils.ts";
 
 
 const VerifyCodeForm = () => {
@@ -23,23 +32,25 @@ const VerifyCodeForm = () => {
     const {toast} = useToast();
 
     const {state} = useLocation();
-    console.log(state);
 
 
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const redirectUrl = searchParams.get(REDIRECT) || recoverLastVisitedUrl();
 
     const isLoading: boolean = useSelector(getLoading);
+    const verifyCodeInfo = useSelector(getVerifyCodeInfo);
     const dispatch = useDispatch<RootDispatch>();
 
     const VerifyCodeSchema = z.object({
         tenantCode: z.string(),
         email: z.string(),
-        code: z.string().min(1, {message: t('verify_code_form_verify_code_code_required_message')}).min(6, {message: t('verify_code_form_verify_code_code_min_message')}).max(6, {message: t('verify_code_form_verify_code_code_max_length_message')}),
+        code: z.string().min(1, {message: t('verify_code_form_verify_code_code_required_message')}).min(6, {message: t('verify_code_form_verify_code_code_min_message')}).max(6, {message: t('verify_code_form_verify_code_code_max_message')}),
     });
 
     const defaultVerifyCodeRequestModel: VerifyCodeRequestModel = {
-        tenantCode: state.tenantCode === undefined? "": state.tenantCode,
-        email: state.email === undefined? "": state.email,
+        tenantCode: state === null || state.tenantCode === undefined? verifyCodeInfo.tenantCode: state.tenantCode,
+        email: state === null || state.email === undefined? verifyCodeInfo.email: state.email,
         code: ""
     }
 
@@ -49,6 +60,20 @@ const VerifyCodeForm = () => {
         mode: "onChange"
     });
 
+    useEffect(() => {
+        dispatch(recoverMfa());
+    }, []);
+
+    useEffect(() => {
+        if(verifyCodeInfo.email !== '') {
+            form.setValue('email', verifyCodeInfo.email);
+        }
+
+        if(verifyCodeInfo.tenantCode !== '') {
+            form.setValue('tenantCode', verifyCodeInfo.tenantCode);
+        }
+    }, [verifyCodeInfo]);
+
     const showToast = (variant: ToastType, message: string) => {
         toast({
             className: cn('top-0 right-0 flex fixed md:max-w-[420px] md:top-4 md:right-4'),
@@ -57,14 +82,17 @@ const VerifyCodeForm = () => {
             description: t(message),
         });
     }
-
+console.log(verifyCodeInfo)
     const onSubmit = () => {
         const verifyCodeRequest: VerifyCodeRequestModel = form.getValues() as VerifyCodeRequestModel;
         dispatch(verifyCode({verifyCodeRequest}))
             .then(unwrapResult)
             .then((response) => {
+                console.log(response.message);
                 showToast("success", response.message);
-                navigate(`/dashboard`);
+                dispatch(persistAuthentication({ accessToken: response.content.accessToken, refreshToken: response.content.refreshToken}));
+                dispatch(cleanMfa());
+                navigate(redirectUrl);
             })
             .catch((error) => {
                 showToast("danger", error !== null && error.reason !== null? t(error.reason) : t(error));
@@ -76,8 +104,8 @@ const VerifyCodeForm = () => {
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
                     <Toaster/>
-                    <div className="flex flex-col justify-center items-center">
-                        <Card className="flex flex-col justify-center items-start lg:w-4/12 shadow-xl">
+                    <div className="flex flex-col justify-center items-center mt-24">
+                        <Card className="flex flex-col justify-center items-center lg:w-3/12 shadow-xl">
                             <CardHeader className="flex flex-col justify-center items-center w-full text-center">
                                 <CardTitle className="text-primary text-3xl w-full">{t('verify_code_form_verify_code_header_label')}</CardTitle>
                                 <CardDescription className="text-neutral-500 text-lg w-full m-5">{t('verify_code_form_verify_code_description_label')}</CardDescription>
@@ -122,7 +150,7 @@ const VerifyCodeForm = () => {
                                             />
                                         </div>
                                         <div className="flex flex-col justify-start items-start w-full gap-4">
-                                            <Button variant="link">{t('verify_code_form_button_generate_code')}</Button>
+                                            <Button type="button" variant="link">{t('verify_code_form_button_generate_code')}</Button>
                                             <Button variant="default" type="submit" disabled={!form.formState.isValid} className="w-full">
                                                 <span className={`material-symbols-outlined text-xl ${isLoading? 'animate-spin': ''}`}>{isLoading? 'progress_activity': 'check'}</span>
                                                 <span>{t('verify_code_form_button_label_validate')} {isLoading? ' ...': ''}</span>

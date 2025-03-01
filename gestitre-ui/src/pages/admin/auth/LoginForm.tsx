@@ -1,21 +1,22 @@
 import {useTranslation} from "react-i18next";
 import {useToast} from "@/hooks/use-toast.ts";
 import {z} from "zod";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useSearchParams} from "react-router-dom";
 import {LoginRequestModel} from "@/pages/admin/auth/LoginRequestModel.ts";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useDispatch, useSelector} from "react-redux";
-import {RootDispatch} from "@/Store.ts";
-import {getLoading, login} from "@/pages/admin/auth/AuthSlice.ts";
+import {RootDispatch} from "@/core/Store.ts";
+import {getLoading, login, persistAuthentication, persistMfa} from "@/pages/admin/auth/AuthSlice.ts";
 import {unwrapResult} from "@reduxjs/toolkit";
-import {ToastType} from "@/shared/constant/globalConstant.ts";
+import {REDIRECT, ToastType} from "@/shared/constant/globalConstant.ts";
 import {cn} from "@/lib/utils.ts";
 import {Toaster} from "@/components/ui/toaster.tsx";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form.tsx";
 import {Input} from "@/components/ui/input.tsx";
 import {Button} from "@/components/ui/button.tsx";
+import {recoverLastVisitedUrl} from "@/shared/utils/localStorageUtils.ts";
 
 
 const LoginForm = () => {
@@ -23,6 +24,8 @@ const LoginForm = () => {
     const {toast} = useToast();
 
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const redirectUrl = searchParams.get(REDIRECT) || recoverLastVisitedUrl();
 
     const isLoading: boolean = useSelector(getLoading);
     const dispatch = useDispatch<RootDispatch>();
@@ -34,9 +37,9 @@ const LoginForm = () => {
     });
 
     const defaultLoginRequestModel: LoginRequestModel = {
-        tenantCode: "",
-        email: "",
-        password: ""
+        tenantCode: "CM20250201",
+        email: "rmbiandji@roxaneevent.com",
+        password: "123456"
     }
 
     const form = useForm<z.infer<typeof LoginSchema>>({
@@ -61,9 +64,11 @@ const LoginForm = () => {
             .then((response) => {
                 showToast("success", response.message);
                 if(!response.content.isMfa) {
-                    navigate('/dashboard');
+                    dispatch(persistAuthentication({ accessToken: response.content.accessToken, refreshToken: response.content.refreshToken}));
+                    navigate(redirectUrl);
                 } else {
-                    navigate(`/admin/auth/verify-code`, { state: {'email': loginRequest.email, tenantCode: loginRequest.tenantCode}});
+                    dispatch(persistMfa({email: loginRequest.email, tenantCode: loginRequest.tenantCode}));
+                    navigate(`/admin/auth/verify-code?${REDIRECT}=${encodeURIComponent(redirectUrl)}`, { state: {'email': loginRequest.email, tenantCode: loginRequest.tenantCode}});
                 }
             })
             .catch((error) => {
@@ -76,8 +81,8 @@ const LoginForm = () => {
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
                     <Toaster/>
-                    <div className="flex flex-col justify-center items-center">
-                        <Card className="flex flex-col justify-center items-start lg:w-4/12 shadow-xl">
+                    <div className="flex flex-col justify-center items-center mt-24">
+                        <Card className="flex flex-col justify-center items-center lg:w-3/12 shadow-xl">
                             <CardHeader className="flex flex-row justify-between items-center w-full text-center">
                                 <CardTitle className="text-primary text-3xl w-full">{t('login_form_login_header_label')}</CardTitle>
                                 <CardDescription>
@@ -130,7 +135,7 @@ const LoginForm = () => {
                                             />
                                         </div>
                                         <div className="flex flex-col justify-start items-start w-full gap-4">
-                                            <Button variant="link">{t('login_form_button_password_forget')}</Button>
+                                            <Button type="button" variant="link">{t('login_form_button_password_forget')}</Button>
                                             <Button variant="default" type="submit" disabled={!form.formState.isValid} className="w-full">
                                                 <span className={`material-symbols-outlined text-xl ${isLoading? 'animate-spin': ''}`}>{isLoading? 'progress_activity': 'login'}</span>
                                                 <span>{t('login_form_button_label_login')} {isLoading? ' ...': ''}</span>

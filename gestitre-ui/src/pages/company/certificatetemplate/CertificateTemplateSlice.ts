@@ -6,7 +6,7 @@ import certificateTemplateService from "@/pages/company/certificatetemplate/Cert
 import {ErrorResponseModel} from "@/shared/model/errorResponseModel.ts";
 import {AxiosError} from "axios";
 import {handleApiError} from "@/shared/utils/apiError.ts";
-import {RootState} from "@/Store.ts";
+import {RootState} from "@/core/Store.ts";
 
 
 const certificateTemplateEntityAdapter = createEntityAdapter<CertificateTemplateModel>({

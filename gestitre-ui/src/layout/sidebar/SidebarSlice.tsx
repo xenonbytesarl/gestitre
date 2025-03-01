@@ -1,7 +1,7 @@
 import {SidebarMenuModel} from "@/layout/sidebar/SidebarMenuModel.ts";
 import {sidebarMenus} from "@/layout/sidebar/SidebarData.ts";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {RootState} from "@/Store.ts";
+import {RootState} from "@/core/Store.ts";
 
 interface SidebarState {
     sidebarMenus: SidebarMenuModel[];

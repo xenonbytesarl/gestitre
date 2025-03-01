@@ -1,11 +1,11 @@
-import { createRoot } from 'react-dom/client';
+import {createRoot} from 'react-dom/client';
 import {BrowserRouter as Router} from "react-router-dom";
 import {Provider} from "react-redux";
-import AppRoute from "@/AppRoute.tsx";
-import {store} from "@/Store.ts";
+import AppRoute from "@/core/AppRoute.tsx";
+import store from "@/core/Store.ts";
 import './index.css';
-import './i18n';
-
+import './core/i18n.tsx';
+import Interceptors from "@/core/Interceptors.ts";
 
 createRoot(document.getElementById('root')!).render(
     <Provider store={store}>
@@ -13,4 +13,8 @@ createRoot(document.getElementById('root')!).render(
             <AppRoute/>
         </Router>
     </Provider>
-)
+);
+
+Interceptors(store);
+
+

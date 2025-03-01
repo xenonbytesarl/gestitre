@@ -16,7 +16,7 @@ import {
     findCertificateTemplates,
     selectCertificateTemplates
 } from "@/pages/company/certificatetemplate/CertificateTemplateSlice.ts";
-import {RootDispatch} from "@/Store.ts";
+import {RootDispatch} from "@/core/Store.ts";
 import {ChangeEvent, useEffect, useState} from "react";
 import {FormModeType} from "@/shared/model/FormModeType.ts";
 import {z} from "zod";
