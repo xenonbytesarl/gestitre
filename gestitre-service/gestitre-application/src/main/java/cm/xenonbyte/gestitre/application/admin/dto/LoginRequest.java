@@ -23,6 +23,9 @@ import static cm.xenonbyte.gestitre.application.common.ApplicationConstant.NOT_E
 @AllArgsConstructor
 public final class LoginRequest {
     @NotEmpty(message = NOT_EMPTY)
+    @Size(min = 10, max = 10, message = NOT_EMPTY)
+    private String tenantCode;
+    @NotEmpty(message = NOT_EMPTY)
     @Size(min = 3, message = MIN_SIZE)
     private String email;
     @NotEmpty(message = NOT_EMPTY)

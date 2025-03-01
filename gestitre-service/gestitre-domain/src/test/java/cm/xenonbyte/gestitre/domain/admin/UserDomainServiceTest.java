@@ -22,6 +22,7 @@ import cm.xenonbyte.gestitre.domain.admin.vo.RoleId;
 import cm.xenonbyte.gestitre.domain.admin.vo.Timezone;
 import cm.xenonbyte.gestitre.domain.common.vo.Active;
 import cm.xenonbyte.gestitre.domain.common.vo.City;
+import cm.xenonbyte.gestitre.domain.common.vo.Code;
 import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
 import cm.xenonbyte.gestitre.domain.common.vo.CompanyName;
 import cm.xenonbyte.gestitre.domain.common.vo.Country;
@@ -78,10 +79,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  */
 class UserDomainServiceTest {
 
+    public static final String TENANT_CODE = "CM012456";
     private UserService userService;
     private UserRepository userRepository;
     private CompanyId companyId;
     private Set<Role> roles;
+    private Code tenantCode;
 
     @BeforeEach
     void setUp() {
@@ -141,10 +144,11 @@ class UserDomainServiceTest {
                         .active(Active.with(true))
                         .build()
         );
-
+        tenantCode = Code.of(Text.of(TENANT_CODE));
         tenantRepository.create(
                 Tenant.builder()
                         .id(tenantId)
+                        .code(tenantCode)
                         .name(Name.of(Text.of("Company name 0")))
                         .build()
         );
@@ -298,7 +302,7 @@ class UserDomainServiceTest {
         userRepository.create(user);
 
         //Act
-        User actual = userService.login(email, password);
+        User actual = userService.login(tenantCode, email, password);
 
         //Then
         assertThat(actual).isNotNull();
@@ -323,7 +327,7 @@ class UserDomainServiceTest {
                 .build();
         userRepository.create(user);
         //Act + Then
-        assertThatThrownBy(() -> userService.login(email, password))
+        assertThatThrownBy(() -> userService.login(tenantCode, email, password))
                 .isInstanceOf(UserLoginEmailUnAuthorizedException.class)
                 .hasMessage(USER_LOGIN_EMAIL_UN_AUTHORIZED);
     }
@@ -347,7 +351,7 @@ class UserDomainServiceTest {
                 .build();
         userRepository.create(user);
         //Act + Then
-        assertThatThrownBy(() -> userService.login(email, password))
+        assertThatThrownBy(() -> userService.login(tenantCode, email, password))
                 .isInstanceOf(UserLoginPasswordUnAuthorizedException.class)
                 .hasMessage(USER_LOGIN_PASSWORD_UN_AUTHORIZED);
     }
@@ -371,7 +375,7 @@ class UserDomainServiceTest {
                 .build();
         userRepository.create(user);
         //Act + Then
-        assertThatThrownBy(() -> userService.login(email, password))
+        assertThatThrownBy(() -> userService.login(tenantCode, email, password))
                 .isInstanceOf(UserLoginAccountDisableUnAuthorizedException.class)
                 .hasMessage(USER_LOGIN_ACCOUNT_DISABLE_UN_AUTHORIZED);
     }
@@ -395,7 +399,7 @@ class UserDomainServiceTest {
                 .build();
         userRepository.create(user);
         //Act + Then
-        assertThatThrownBy(() -> userService.login(email, password))
+        assertThatThrownBy(() -> userService.login(tenantCode, email, password))
                 .isInstanceOf(UserLoginAccountExpiredUnAuthorizedException.class)
                 .hasMessage(USER_LOGIN_ACCOUNT_EXPIRED_UN_AUTHORIZED);
     }
@@ -419,7 +423,7 @@ class UserDomainServiceTest {
                 .build();
         userRepository.create(user);
         //Act + Then
-        assertThatThrownBy(() -> userService.login(email, password))
+        assertThatThrownBy(() -> userService.login(tenantCode, email, password))
                 .isInstanceOf(UserLoginCredentialExpiredUnAuthorizedException.class)
                 .hasMessage(USER_LOGIN_CREDENTIAL_EXPIRED_UN_AUTHORIZED);
     }
@@ -443,7 +447,7 @@ class UserDomainServiceTest {
                 .build();
         userRepository.create(user);
         //Act + Then
-        assertThatThrownBy(() -> userService.login(email, password))
+        assertThatThrownBy(() -> userService.login(tenantCode, email, password))
                 .isInstanceOf(UserLoginAccountLockedUnAuthorizedException.class)
                 .hasMessage(USER_LOGIN_ACCOUNT_LOCKED_UN_AUTHORIZED);
     }

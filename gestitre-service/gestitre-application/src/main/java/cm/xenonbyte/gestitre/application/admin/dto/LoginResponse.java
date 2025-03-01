@@ -25,5 +25,4 @@ public final class LoginResponse {
     private String refreshToken;
     @NotNull(message = NOT_NULL)
     private Boolean isMfa;
-    private String code;
 }

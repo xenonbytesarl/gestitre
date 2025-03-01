@@ -43,6 +43,7 @@ public final class JwtFilter implements ContainerRequestFilter {
     private static final String TIMEZONE_HEADER = "X-Gestitre-Timezone";
     private static final String JWT_FILTER_AUTHORIZATION_MISSING = "JwtFilter.1";
     private static final String JWT_FILTER_INVALID_TOKEN = "JwtFilter.2";
+    private static final String JWT_FILTER_AUTHORIZATION_INVALID= "JwtFilter.3";
 
     private final TenantService tenantService;
     private final LocalizationResolver localeResolver;
@@ -69,7 +70,7 @@ public final class JwtFilter implements ContainerRequestFilter {
                     TenantContext.set(tenant.getId().getValue());
                     return;
                 }
-                abortWithUnAuthorized(context, JWT_FILTER_AUTHORIZATION_MISSING);
+                abortWithUnAuthorized(context, JWT_FILTER_AUTHORIZATION_INVALID);
                 return;
             }
             abortWithUnAuthorized(context, JWT_FILTER_AUTHORIZATION_MISSING);

@@ -22,6 +22,7 @@ import cm.xenonbyte.gestitre.domain.admin.event.UserUpdatedEvent;
 import cm.xenonbyte.gestitre.domain.admin.ports.primary.UserService;
 import cm.xenonbyte.gestitre.domain.admin.vo.Token;
 import cm.xenonbyte.gestitre.domain.common.verification.Verification;
+import cm.xenonbyte.gestitre.domain.common.verification.event.VerificationCreatedEvent;
 import cm.xenonbyte.gestitre.domain.common.verification.ports.primary.VerificationService;
 import cm.xenonbyte.gestitre.domain.common.verification.vo.Duration;
 import cm.xenonbyte.gestitre.domain.common.verification.vo.Url;
@@ -95,12 +96,13 @@ public final class UserApplicationAdapterService implements UserApplicationAdapt
     @Transactional
     public LoginResponse login(@Nonnull LoginRequest loginRequest) {
         User user = userService.login(
+                Code.of(Text.of(loginRequest.getTenantCode())),
                 Email.of(Text.of(loginRequest.getEmail())),
                 Password.of(Text.of(loginRequest.getPassword()))
         );
 
         if(Boolean.TRUE.equals(user.getUseMfa().value())) {
-            verificationService.createVerification(
+            VerificationCreatedEvent verification = verificationService.createVerification(
                     Verification.builder()
                             .userId(user.getId())
                             .type(VerificationType.MFA)
@@ -108,6 +110,8 @@ public final class UserApplicationAdapterService implements UserApplicationAdapt
                             .email(user.getEmail())
                             .build()
             );
+            //TODO remove this for security reason
+            log.info(">>>>> Verification code: {}", verification.getVerification().getCode().text().value());
             return LoginResponse.builder()
                     .isMfa(true)
                     .build();

@@ -4,6 +4,7 @@ import cm.xenonbyte.gestitre.domain.admin.User;
 import cm.xenonbyte.gestitre.domain.admin.event.UserCreatedEvent;
 import cm.xenonbyte.gestitre.domain.admin.event.UserUpdatedEvent;
 import cm.xenonbyte.gestitre.domain.admin.vo.Token;
+import cm.xenonbyte.gestitre.domain.common.vo.Code;
 import cm.xenonbyte.gestitre.domain.common.vo.Email;
 import cm.xenonbyte.gestitre.domain.common.vo.Keyword;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfo;
@@ -26,7 +27,7 @@ public interface UserService {
 
     @Nonnull UserUpdatedEvent updateUser(@Nonnull UserId userId, @Nonnull User newUser);
 
-    @Nonnull User login(@Nonnull Email email, @Nonnull Password password);
+    @Nonnull User login(@Nonnull Code tenantCode, @Nonnull Email email, @Nonnull Password password);
 
     @Nonnull Token generateToken(@Nonnull User user);
 

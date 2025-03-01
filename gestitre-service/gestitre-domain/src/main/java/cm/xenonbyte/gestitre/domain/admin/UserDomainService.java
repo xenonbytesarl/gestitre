@@ -13,6 +13,7 @@ import cm.xenonbyte.gestitre.domain.admin.vo.Timezone;
 import cm.xenonbyte.gestitre.domain.admin.vo.Token;
 import cm.xenonbyte.gestitre.domain.common.annotation.DomainService;
 import cm.xenonbyte.gestitre.domain.common.validation.Assert;
+import cm.xenonbyte.gestitre.domain.common.vo.Code;
 import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
 import cm.xenonbyte.gestitre.domain.common.vo.Email;
 import cm.xenonbyte.gestitre.domain.common.vo.Keyword;
@@ -112,10 +113,17 @@ public final class UserDomainService implements UserService {
 
     @Nonnull
     @Override
-    public User login(@Nonnull Email email, @Nonnull Password password) {
+    public User login(@Nonnull Code code, @Nonnull Email email, @Nonnull Password password) {
         Optional<User> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isPresent()) {
             User user = loginGuard(optionalUser.get());
+            Tenant tenant = tenantService.findByCode(code);
+            if(tenant == null) {
+                throw new UserLoginTenantCodeUnAuthorizedException();
+            }
+            if(!tenant.getId().equals(user.getTenantId())) {
+                throw new UserLoginEmailTenantCodeUnAuthorizedException();
+            }
             if (Boolean.FALSE.equals(passwordEncryptProvider.checkCredentials(password, optionalUser.get().getPassword()))) {
                 throw new UserLoginPasswordUnAuthorizedException();
             }
