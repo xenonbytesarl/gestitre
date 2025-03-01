@@ -23,6 +23,7 @@ import cm.xenonbyte.gestitre.domain.common.vo.PageInfoField;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoPage;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoSize;
 import cm.xenonbyte.gestitre.domain.common.vo.Password;
+import cm.xenonbyte.gestitre.domain.common.vo.Text;
 import cm.xenonbyte.gestitre.domain.common.vo.UserId;
 import cm.xenonbyte.gestitre.domain.company.entity.Company;
 import cm.xenonbyte.gestitre.domain.company.ports.CompanyNotFoundException;
@@ -191,6 +192,21 @@ public final class UserDomainService implements UserService {
         validatePageParameters(pageInfoPage, pageInfoSize, pageInfoField, pageInfoDirection);
         Assert.field("Keyword", keyword).notNull();
         return userRepository.search(pageInfoPage, pageInfoSize, pageInfoField, pageInfoDirection, keyword);
+    }
+
+    @Nonnull
+    @Override
+    public Text refreshAccessToken(Text refreshToken) {
+        if(tokenProvider.isValid(refreshToken)) {
+            Email email = tokenProvider.getEmail(refreshToken);
+            Optional<User> optionalUser = userRepository.findByEmail(email);
+            if(optionalUser.isPresent()) {
+                return tokenProvider.refreshAccessToken(optionalUser.get());
+            } else {
+                throw new UserRefreshTokenUnAuthorized();
+            }
+        }
+        throw new UserRefreshTokenUnAuthorized();
     }
 
 

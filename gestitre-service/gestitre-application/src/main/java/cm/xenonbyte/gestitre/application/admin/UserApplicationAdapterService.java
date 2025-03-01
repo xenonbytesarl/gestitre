@@ -7,6 +7,7 @@ import cm.xenonbyte.gestitre.application.admin.dto.CreateUserViewResponse;
 import cm.xenonbyte.gestitre.application.admin.dto.FindUserByIdViewResponse;
 import cm.xenonbyte.gestitre.application.admin.dto.LoginRequest;
 import cm.xenonbyte.gestitre.application.admin.dto.LoginResponse;
+import cm.xenonbyte.gestitre.application.admin.dto.RefreshTokenResponse;
 import cm.xenonbyte.gestitre.application.admin.dto.ResendVerificationCodeRequest;
 import cm.xenonbyte.gestitre.application.admin.dto.ResetPasswordRequest;
 import cm.xenonbyte.gestitre.application.admin.dto.SearchUserPageInfoViewResponse;
@@ -21,7 +22,6 @@ import cm.xenonbyte.gestitre.domain.admin.event.UserUpdatedEvent;
 import cm.xenonbyte.gestitre.domain.admin.ports.primary.UserService;
 import cm.xenonbyte.gestitre.domain.admin.vo.Token;
 import cm.xenonbyte.gestitre.domain.common.verification.Verification;
-import cm.xenonbyte.gestitre.domain.common.verification.event.VerificationCreatedEvent;
 import cm.xenonbyte.gestitre.domain.common.verification.ports.primary.VerificationService;
 import cm.xenonbyte.gestitre.domain.common.verification.vo.Duration;
 import cm.xenonbyte.gestitre.domain.common.verification.vo.Url;
@@ -100,7 +100,7 @@ public final class UserApplicationAdapterService implements UserApplicationAdapt
         );
 
         if(Boolean.TRUE.equals(user.getUseMfa().value())) {
-            VerificationCreatedEvent verificationCreatedEvent = verificationService.createVerification(
+            verificationService.createVerification(
                     Verification.builder()
                             .userId(user.getId())
                             .type(VerificationType.MFA)
@@ -110,7 +110,6 @@ public final class UserApplicationAdapterService implements UserApplicationAdapt
             );
             return LoginResponse.builder()
                     .isMfa(true)
-                    .code(verificationCreatedEvent.getVerification().getCode().text().value())
                     .build();
         }
         Token token = userService.generateToken(user);
@@ -139,11 +138,9 @@ public final class UserApplicationAdapterService implements UserApplicationAdapt
     @Override
     @Transactional
     public LoginResponse resendMfaVerification(@Nonnull ResendVerificationCodeRequest resendVerificationCodeRequest) {
-        VerificationCreatedEvent verificationCreatedEvent = verificationService.resendVerification(
-                Email.of(Text.of(resendVerificationCodeRequest.getEmail())), VerificationType.MFA, codeDuration);
+        verificationService.resendVerification(Email.of(Text.of(resendVerificationCodeRequest.getEmail())), VerificationType.MFA, codeDuration);
         return LoginResponse.builder()
                 .isMfa(true)
-                .code(verificationCreatedEvent.getVerification().getCode().text().value())
                 .build();
     }
 
@@ -208,5 +205,16 @@ public final class UserApplicationAdapterService implements UserApplicationAdapt
                         Keyword.of(Text.of(keyword))
                 )
         );
+    }
+
+    @Nonnull
+    @Override
+    public RefreshTokenResponse refreshAccessToken(String refreshToken) {
+        refreshToken = refreshToken.replace("Bearer ", "");
+        Text accessToken = userService.refreshAccessToken(Text.of(refreshToken));
+        return RefreshTokenResponse.builder()
+                .accessToken(accessToken.value())
+                .refreshToken(refreshToken)
+                .build();
     }
 }

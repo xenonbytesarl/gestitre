@@ -7,6 +7,7 @@ import cm.xenonbyte.gestitre.application.admin.dto.CreateUserViewResponse;
 import cm.xenonbyte.gestitre.application.admin.dto.FindUserByIdViewResponse;
 import cm.xenonbyte.gestitre.application.admin.dto.LoginRequest;
 import cm.xenonbyte.gestitre.application.admin.dto.LoginResponse;
+import cm.xenonbyte.gestitre.application.admin.dto.RefreshTokenResponse;
 import cm.xenonbyte.gestitre.application.admin.dto.ResendVerificationCodeRequest;
 import cm.xenonbyte.gestitre.application.admin.dto.ResetPasswordRequest;
 import cm.xenonbyte.gestitre.application.admin.dto.SearchUserPageInfoViewResponse;
@@ -46,4 +47,6 @@ public interface UserApplicationAdapter {
 
     @Nonnull @Valid
     SearchUserPageInfoViewResponse searchUsers(Integer page, Integer size, String field, String direction, String keyword);
+
+    @Nonnull RefreshTokenResponse refreshAccessToken(String refreshToken);
 }

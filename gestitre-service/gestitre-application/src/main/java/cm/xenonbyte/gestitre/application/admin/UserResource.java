@@ -23,6 +23,8 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 
 import java.time.ZonedDateTime;
@@ -55,6 +57,7 @@ public class  UserResource {
     private static final String USER_UPDATED_SUCCESSFULLY = "UserResource.7";
     private static final String USER_FIND_SUCCESSFULLY = "UserResource.8";
     private static final String USER_FINDS_SUCCESSFULLY = "UserResource.9";
+    public static final String AUTHORIZATION = "Authorization";
 
     private final UserApplicationAdapter userApplicationAdapter;
 
@@ -103,6 +106,29 @@ public class  UserResource {
                                 .timestamp(ZonedDateTime.now())
                                 .message(getMessage(loginResponse.getIsMfa() != null && loginResponse.getIsMfa()? USER_VERIFICATION_MFA_SEND: USER_LOGGED_IN_SUCCESSFULLY, forLanguageTag(acceptLanguage)))
                                 .data(of(CONTENT, loginResponse))
+                                .build()
+                )
+                .build();
+    }
+
+    @GET
+    @Path("/auth/refresh-token")
+    @Consumes(APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
+    @PermitAll
+    public Response refreshToken(
+            @HeaderParam("Accept-Language") String acceptLanguage,
+            @Context HttpHeaders headers
+            ) {
+        return Response.status(OK)
+                .entity(
+                        SuccessApiResponse.builder()
+                                .success(true)
+                                .status(OK.name())
+                                .code(OK.getStatusCode())
+                                .timestamp(ZonedDateTime.now())
+                                .message("")
+                                .data(of(CONTENT, userApplicationAdapter.refreshAccessToken(headers.getHeaderString(AUTHORIZATION))))
                                 .build()
                 )
                 .build();

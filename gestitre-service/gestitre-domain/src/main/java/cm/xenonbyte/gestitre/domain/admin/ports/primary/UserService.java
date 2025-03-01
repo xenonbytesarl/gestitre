@@ -12,6 +12,7 @@ import cm.xenonbyte.gestitre.domain.common.vo.PageInfoField;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoPage;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoSize;
 import cm.xenonbyte.gestitre.domain.common.vo.Password;
+import cm.xenonbyte.gestitre.domain.common.vo.Text;
 import cm.xenonbyte.gestitre.domain.common.vo.UserId;
 import jakarta.annotation.Nonnull;
 
@@ -38,4 +39,6 @@ public interface UserService {
     User findUserById(UserId userId);
 
     @Nonnull PageInfo<User> searchUsers(PageInfoPage pageInfoPage, PageInfoSize pageInfoSize, PageInfoField pageInfoField, PageInfoDirection pageInfoDirection, Keyword keyword);
+
+    @Nonnull Text refreshAccessToken(Text refreshToken);
 }
