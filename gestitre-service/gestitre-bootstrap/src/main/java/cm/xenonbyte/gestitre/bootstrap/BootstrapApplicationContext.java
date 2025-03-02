@@ -1,6 +1,7 @@
 package cm.xenonbyte.gestitre.bootstrap;
 
 
+import cm.xenonbyte.gestitre.domain.admin.RoleDomainService;
 import cm.xenonbyte.gestitre.domain.admin.UserDomainService;
 import cm.xenonbyte.gestitre.domain.admin.event.UserCreatedEvent;
 import cm.xenonbyte.gestitre.domain.admin.ports.primary.PasswordEncryptProvider;
@@ -177,6 +178,11 @@ public final class BootstrapApplicationContext {
             CompanyRepository companyRepository
     ) {
         return new StockMoveDomainService(stockMoveRepository, stockMessagePublisher, companyRepository);
+    }
+
+    @ApplicationScoped
+    public RoleDomainService roleDomainService(RoleRepository roleRepository) {
+        return new RoleDomainService(roleRepository);
     }
 
 }

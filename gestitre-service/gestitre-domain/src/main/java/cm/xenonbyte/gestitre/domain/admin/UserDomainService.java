@@ -17,7 +17,6 @@ import cm.xenonbyte.gestitre.domain.common.vo.Code;
 import cm.xenonbyte.gestitre.domain.common.vo.CompanyId;
 import cm.xenonbyte.gestitre.domain.common.vo.Email;
 import cm.xenonbyte.gestitre.domain.common.vo.Keyword;
-import cm.xenonbyte.gestitre.domain.common.vo.Name;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfo;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoDirection;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoField;
@@ -205,7 +204,7 @@ public final class UserDomainService implements UserService {
     @Nonnull
     @Override
     public Text refreshAccessToken(Text refreshToken) {
-        if(tokenProvider.isValid(refreshToken)) {
+        if(Boolean.TRUE.equals(tokenProvider.isValid(refreshToken))) {
             Email email = tokenProvider.getEmail(refreshToken);
             Optional<User> optionalUser = userRepository.findByEmail(email);
             if(optionalUser.isPresent()) {
@@ -243,7 +242,7 @@ public final class UserDomainService implements UserService {
 
         Company company = companyService.findCompanyById(companyId);
 
-        return tenantService.findByName(Name.of(company.getCompanyName().text()));
+        return tenantService.findByCode(company.getCode());
     }
 
     private void validateEmail(UserId userId, Email email) {

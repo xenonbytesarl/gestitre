@@ -1,7 +1,6 @@
-package cm.xenonbyte.gestitre.domain.admin.ports.secondary;
+package cm.xenonbyte.gestitre.domain.admin.ports.primary;
 
 import cm.xenonbyte.gestitre.domain.admin.Role;
-import cm.xenonbyte.gestitre.domain.admin.vo.RoleId;
 import cm.xenonbyte.gestitre.domain.common.vo.Keyword;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfo;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoDirection;
@@ -13,12 +12,8 @@ import jakarta.annotation.Nonnull;
 /**
  * @author bamk
  * @version 1.0
- * @since 09/11/2024
+ * @since 02/03/2025
  */
-public interface RoleRepository {
-    Boolean existsById(@Nonnull RoleId roleId);
-
-    @Nonnull Role create(@Nonnull Role role);
-
-    @Nonnull PageInfo<Role> search(@Nonnull PageInfoPage pageInfoPage, @Nonnull PageInfoSize pageInfoSize, @Nonnull PageInfoField pageInfoField, @Nonnull PageInfoDirection pageInfoDirection, @Nonnull Keyword keyword);
+public interface RoleService {
+    @Nonnull PageInfo<Role> searchRoles(PageInfoPage pageInfoPage, PageInfoSize pageInfoSize, PageInfoField pageInfoField, PageInfoDirection pageInfoDirection, Keyword keyword);
 }

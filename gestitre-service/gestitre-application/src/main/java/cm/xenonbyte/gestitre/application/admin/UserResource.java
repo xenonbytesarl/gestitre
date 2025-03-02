@@ -57,6 +57,7 @@ public class  UserResource {
     private static final String USER_UPDATED_SUCCESSFULLY = "UserResource.7";
     private static final String USER_FIND_SUCCESSFULLY = "UserResource.8";
     private static final String USER_FINDS_SUCCESSFULLY = "UserResource.9";
+    private static final String ROLE_FINDS_SUCCESSFULLY = "UserResource.10";
     public static final String AUTHORIZATION = "Authorization";
 
     private final UserApplicationAdapter userApplicationAdapter;
@@ -296,9 +297,10 @@ public class  UserResource {
     }
 
     @GET
+    @Path("/search")
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    @RolesAllowed({"read:user"})
+    @RolesAllowed({"search:user"})
     public Response searchUsers(
             @HeaderParam("Accept-Language") String acceptLanguage,
             @QueryParam("page") Integer page,
@@ -316,6 +318,32 @@ public class  UserResource {
                                 .timestamp(ZonedDateTime.now())
                                 .message(getMessage(USER_FINDS_SUCCESSFULLY, forLanguageTag(acceptLanguage)))
                                 .data(of(CONTENT, userApplicationAdapter.searchUsers(page, size, field, direction, keyword)))
+                )
+                .build();
+    }
+
+    @GET
+    @Path("/roles/search")
+    @Consumes(APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
+    @RolesAllowed({"search:role"})
+    public Response searchRoles(
+            @HeaderParam("Accept-Language") String acceptLanguage,
+            @QueryParam("page") Integer page,
+            @QueryParam("size") Integer size,
+            @QueryParam("field") String field,
+            @QueryParam("direction") String direction,
+            @QueryParam("keyword") String keyword
+    ) {
+        return Response.status(OK)
+                .entity(
+                        SuccessApiResponse.builder()
+                                .success(true)
+                                .status(OK.name())
+                                .code(OK.getStatusCode())
+                                .timestamp(ZonedDateTime.now())
+                                .message(getMessage(ROLE_FINDS_SUCCESSFULLY, forLanguageTag(acceptLanguage)))
+                                .data(of(CONTENT, userApplicationAdapter.searchRoles(page, size, field, direction, keyword)))
                 )
                 .build();
     }

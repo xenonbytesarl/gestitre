@@ -35,7 +35,7 @@ public class UserViewResponse {
     @Email(message = EMAIL)
     protected String email;
     @NotNull(message = NOT_NULL)
-    protected Set<RoleView> roleViews;
+    protected Set<RoleView> roles;
     @NotNull(message = NOT_NULL)
     protected UUID companyId;
     protected Boolean useMfa;

@@ -41,10 +41,10 @@ public class UserView {
     @Size(min = 6, message = MIN_SIZE)
     protected String confirmPassword;
     @NotNull(message = NOT_NULL)
-    protected Set<RoleView> roleViews;
+    protected Set<RoleView> roles;
     @NotNull(message = NOT_NULL)
     protected UUID companyId;
     @NotNull(message = NOT_NULL)
-    protected TimezoneView timezoneView;
+    protected TimezoneView timezone;
     protected Boolean useMfa;
 }

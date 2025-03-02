@@ -10,7 +10,8 @@ import cm.xenonbyte.gestitre.application.admin.dto.LoginResponse;
 import cm.xenonbyte.gestitre.application.admin.dto.RefreshTokenResponse;
 import cm.xenonbyte.gestitre.application.admin.dto.ResendVerificationCodeRequest;
 import cm.xenonbyte.gestitre.application.admin.dto.ResetPasswordRequest;
-import cm.xenonbyte.gestitre.application.admin.dto.SearchUserPageInfoViewResponse;
+import cm.xenonbyte.gestitre.application.admin.dto.SearchRolesPageInfoViewResponse;
+import cm.xenonbyte.gestitre.application.admin.dto.SearchUsersPageInfoViewResponse;
 import cm.xenonbyte.gestitre.application.admin.dto.SendResetPasswordCodeRequest;
 import cm.xenonbyte.gestitre.application.admin.dto.UpdateUserViewRequest;
 import cm.xenonbyte.gestitre.application.admin.dto.UpdateUserViewResponse;
@@ -19,6 +20,7 @@ import cm.xenonbyte.gestitre.application.admin.dto.VerifyCodeResponse;
 import cm.xenonbyte.gestitre.domain.admin.User;
 import cm.xenonbyte.gestitre.domain.admin.event.UserCreatedEvent;
 import cm.xenonbyte.gestitre.domain.admin.event.UserUpdatedEvent;
+import cm.xenonbyte.gestitre.domain.admin.ports.primary.RoleService;
 import cm.xenonbyte.gestitre.domain.admin.ports.primary.UserService;
 import cm.xenonbyte.gestitre.domain.admin.vo.Token;
 import cm.xenonbyte.gestitre.domain.common.verification.Verification;
@@ -43,11 +45,11 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-import java.util.Objects;
 import java.util.UUID;
 
 import static cm.xenonbyte.gestitre.domain.common.verification.vo.VerificationType.ACCOUNT;
 import static cm.xenonbyte.gestitre.domain.common.verification.vo.VerificationType.PASSWORD;
+import static java.util.Objects.requireNonNull;
 
 /**
  * @author bamk
@@ -60,7 +62,9 @@ public final class UserApplicationAdapterService implements UserApplicationAdapt
 
     private final UserService userService;
     private final VerificationService verificationService;
+    private final RoleService roleService;
     private final UserApplicationViewMapper userApplicationViewMapper;
+    private final RoleApplicationViewMapper roleApplicationViewMapper;
     private final Long codeDuration;
     private final Long urlDuration;
     private final String baseUrl;
@@ -68,14 +72,17 @@ public final class UserApplicationAdapterService implements UserApplicationAdapt
     public UserApplicationAdapterService(
             @Nonnull UserService userService,
             @Nonnull VerificationService verificationService,
-            @Nonnull UserApplicationViewMapper userApplicationViewMapper,
+            @Nonnull RoleService roleService,
+            @Nonnull UserApplicationViewMapper userApplicationViewMapper, RoleApplicationViewMapper roleApplicationViewMapper,
             @ConfigProperty(name = "verification.code.duration") Long codeDuration,
             @ConfigProperty(name = "verification.url.duration") Long urlDuration,
             @ConfigProperty(name = "verification.url.baseUrl") String baseUrl
     ) {
-        this.userService = Objects.requireNonNull(userService);
-        this.verificationService = Objects.requireNonNull(verificationService);
-        this.userApplicationViewMapper = Objects.requireNonNull(userApplicationViewMapper);
+        this.userService = requireNonNull(userService);
+        this.verificationService = requireNonNull(verificationService);
+        this.roleService = requireNonNull(roleService);
+        this.userApplicationViewMapper = requireNonNull(userApplicationViewMapper);
+        this.roleApplicationViewMapper = requireNonNull(roleApplicationViewMapper);
         this.codeDuration = codeDuration;
         this.urlDuration = urlDuration;
         this.baseUrl = baseUrl;
@@ -199,9 +206,23 @@ public final class UserApplicationAdapterService implements UserApplicationAdapt
 
     @Nonnull
     @Override
-    public SearchUserPageInfoViewResponse searchUsers(Integer page, Integer size, String field, String direction, String keyword) {
+    public SearchUsersPageInfoViewResponse searchUsers(Integer page, Integer size, String field, String direction, String keyword) {
         return userApplicationViewMapper.toSearchUsersPageInfoViewResponse(
                 userService.searchUsers(
+                        PageInfoPage.of(page),
+                        PageInfoSize.of(size),
+                        PageInfoField.of(Text.of(field)),
+                        PageInfoDirection.valueOf(direction),
+                        Keyword.of(Text.of(keyword))
+                )
+        );
+    }
+
+    @Nonnull
+    @Override
+    public SearchRolesPageInfoViewResponse searchRoles(Integer page, Integer size, String field, String direction, String keyword) {
+        return roleApplicationViewMapper.toSearchRolesPageInfoViewResponse(
+                roleService.searchRoles(
                         PageInfoPage.of(page),
                         PageInfoSize.of(size),
                         PageInfoField.of(Text.of(field)),

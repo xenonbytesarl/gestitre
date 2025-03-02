@@ -23,4 +23,10 @@ public interface RoleJpaMapper {
     @Mapping(source = "name.text.value", target = "name")
     @Mapping(source = "active.value", target = "active")
     @Nonnull RoleJpa toRoleJpa(@Nonnull Role role);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id.value", source = "id")
+    @Mapping(target = "name.text.value", source = "name")
+    @Mapping(target = "active.value", source = "active")
+    @Nonnull Role toRole(@Nonnull RoleJpa roleJpa);
 }
