@@ -50,6 +50,6 @@ public class UpdateUserView {
     @NotNull(message = NOT_NULL)
     protected Long failedLoginAttempt;
     @NotNull(message = NOT_NULL)
-    protected TimezoneView timezoneView;
+    protected TimezoneView timezone;
 
 }
