@@ -167,7 +167,13 @@
   "user_form_account_enabled_label": "Compte activé",
   "user_form_account_locked_label": "Compte bloqué",
   "user_form_account_expired_label": "Compte expiré",
-  "user_form_credential_expired_label": "Mot de passe expiré"
+  "user_form_credential_expired_label": "Mot de passe expiré",
+
+  "user_tree_title": "Utilisateurs",
+  "user_tree_name": "Nom & prénom",
+  "user_tree_email": "Email",
+  "user_tree_company_id": "Scoiété",
+  "user_tree_roles": "Roles"
 
 
 

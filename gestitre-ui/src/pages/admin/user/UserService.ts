@@ -37,10 +37,18 @@ const createUser = async (user: UserModel): Promise<SuccessResponseModel<UserMod
         });
 }
 
+const updateUser = async (user: UserModel): Promise<SuccessResponseModel<UserModel>> => {
+    return await api.put(`/users/${user.id}`, user,
+        {
+            headers: API_JSON_HEADER
+        });
+}
+
 const userService = {
     findUserById,
     searchUsers,
     searchRoles,
+    updateUser,
     createUser
 };
 

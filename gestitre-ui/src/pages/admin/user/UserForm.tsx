@@ -12,7 +12,8 @@ import {
     getLoading,
     getRoles,
     resetCurrentUser,
-    searchRoles
+    searchRoles,
+    updateUser
 } from "@/pages/admin/user/UserSlice.ts";
 import {CompanyModel} from "@/pages/company/CompanyModel.ts";
 import {searchCompanies, selectCompanies} from "@/pages/company/CompanySlice.ts";
@@ -39,12 +40,12 @@ import {Checkbox} from "@/components/ui/checkbox.tsx";
 import {RoleModel} from "@/pages/admin/user/RoleModel.ts";
 
 const timezoneTypes = [
-    {label: 'user_form_timezone_africa_brazaville', name: TimezoneEnum.Africa_Brazzaville},
-    {label: 'user_form_timezone_africa_douala', name: TimezoneEnum.Africa_Douala},
-    {label: 'user_form_timezone_africa_kinshasa', name: TimezoneEnum.Africa_Kinshasa},
-    {label: 'user_form_timezone_africa_libreville', name: TimezoneEnum.Africa_Libreville},
-    {label: 'user_form_timezone_europe_paris', name: TimezoneEnum.Europe_Paris},
-    {label: 'user_form_timezone_america_los_angeles', name: TimezoneEnum.America_Los_Angeles},
+    {label: 'user_form_timezone_africa_brazaville', name: 'Africa_Brazzaville'},
+    {label: 'user_form_timezone_africa_douala', name: 'Africa_Douala'},
+    {label: 'user_form_timezone_africa_kinshasa', name: 'Africa_Kinshasa'},
+    {label: 'user_form_timezone_africa_libreville', name: 'Africa_Libreville'},
+    {label: 'user_form_timezone_europe_paris', name: 'Europe_Paris'},
+    {label: 'user_form_timezone_america_los_angeles', name: 'America_Los_Angeles'},
 ];
 
 const UserForm = () => {
@@ -135,23 +136,39 @@ const UserForm = () => {
 
     useEffect(() => {
         if(user) {
-            form.reset(changeNullToEmptyString(user))
+            console.log(user)
+            form.reset(changeNullToEmptyString(user));
+            resetPopOverLabel(user);
         }
     }, [user]);
 
     const onSubmit = () => {
         const userFormValue: UserModel = form.getValues() as UserModel;
-        dispatch(createUser(userFormValue))
-            .then(unwrapResult)
-            .then((response) => {
-                setMode(FormModeType.READ);
-                showToast("success", response.message);
-                navigate(`/admin/users/form/details/${response.content.id}`);
-            })
-            .catch((error) => {
-                setMode(FormModeType.CREATE);
-                showToast("danger", error !== null && error.reason !== null? t(error.reason) : t(error));
-            });
+        if(userFormValue.id) {
+            dispatch(updateUser(userFormValue))
+                .then(unwrapResult)
+                .then((response) => {
+                    setMode(FormModeType.READ);
+                    showToast("success", response.message);
+                    navigate(`/admin/users/form/details/${response.content.id}`);
+                })
+                .catch((error) => {
+                    setMode(FormModeType.CREATE);
+                    showToast("danger", error !== null && error.reason !== null? t(error.reason) : t(error));
+                });
+        } else {
+            dispatch(createUser(userFormValue))
+                .then(unwrapResult)
+                .then((response) => {
+                    setMode(FormModeType.READ);
+                    showToast("success", response.message);
+                    navigate(`/admin/users/form/details/${response.content.id}`);
+                })
+                .catch((error) => {
+                    setMode(FormModeType.CREATE);
+                    showToast("danger", error !== null && error.reason !== null? t(error.reason) : t(error));
+                });
+        }
     };
 
     const showToast = (variant: ToastType, message: string) => {
@@ -190,7 +207,7 @@ const UserForm = () => {
         if(user) {
             setCompanyPopOverLabel(companies.find(company => company.id === user.companyId)?.companyName as string);
             setRolePopOverLabel(roles.find(role => user.roles.find(userRole => userRole.id === role.id))?.name as string);
-            setTimezonePopOverLabel(timezoneTypes.find(timezone => user.timezone === timezone.name)?.label as string);
+            setTimezonePopOverLabel(timezoneTypes.find(timezone => user.timezone.valueOf() === timezone.name)?.label as string);
         } else {
             setCompanyPopOverLabel('');
             setRolePopOverLabel('');
@@ -348,7 +365,7 @@ const UserForm = () => {
                                                                         //@ts-ignore
                                                                         ? t(timezoneTypes.find((timezone) => timezone.label === timezonePopOverLabel)?.label)
                                                                         //@ts-ignore
-                                                                        : user ? t(timezoneTypes.find((timezoneEdit) => timezoneEdit.name === user.timezone)?.label) : t('user_form_timezone_pop_over_place_holder')}</span>
+                                                                        : user ? t(timezoneTypes.find((timezoneEdit) => timezoneEdit.label === user.timezone)?.label) : t('user_form_timezone_pop_over_place_holder')}</span>
                                                                       <span
                                                                           className="opacity-50 material-symbols-outlined">unfold_more</span>
                                                                   </Button>

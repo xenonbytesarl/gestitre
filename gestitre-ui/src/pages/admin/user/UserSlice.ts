@@ -61,6 +61,16 @@ export const createUser = createAsyncThunk('user/createUser', async (user: UserM
     }
 });
 
+export const updateUser = createAsyncThunk('user/updateUser', async (user: UserModel, {rejectWithValue})=> {
+    try {
+        const response =  await userService.updateUser(user);
+        // @ts-ignore
+        return {content: response.data.data.content, message: response.data.message}
+    } catch (apiError) {
+        return handleApiError(apiError as AxiosError<ErrorResponseModel>, {rejectWithValue});
+    }
+});
+
 const userSlice = createSlice({
     name: "user",
     initialState: userInitialState,
@@ -78,6 +88,13 @@ const userSlice = createSlice({
                 state.message = message;
                 state.currentUser = content;
                 userEntityAdapter.addOne(state, content);
+            })
+            .addCase(updateUser.fulfilled, (state, action) => {
+                const {content, message} = action.payload;
+                state.loading = false;
+                state.message = message;
+                state.currentUser = content;
+                userEntityAdapter.updateOne(state, content);
             })
             .addCase(searchUsers.fulfilled, (state, action) => {
                 const {content} = action.payload;
@@ -137,7 +154,7 @@ export const getError = (state: RootState) => state.admin.user.error;
 export const getLoading = (state: RootState) => state.admin.user.loading;
 
 export const {
-    selectAll: selectCompanies,
+    selectAll: selectUsers,
     selectIds: selectUserIds,
     selectById: selectUserById,
     selectEntities: selectUserEntities,
