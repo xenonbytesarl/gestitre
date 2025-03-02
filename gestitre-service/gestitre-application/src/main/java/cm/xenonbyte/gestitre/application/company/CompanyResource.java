@@ -83,8 +83,9 @@ public class CompanyResource {
     }
 
     @GET
+    @Path("/search")
     @Produces(APPLICATION_JSON)
-    @RolesAllowed({"read:company"})
+    @RolesAllowed({"search:company"})
     public Response searchCompanies(
             @HeaderParam("Accept-Language") String acceptLanguage,
             @QueryParam("page") Integer page,

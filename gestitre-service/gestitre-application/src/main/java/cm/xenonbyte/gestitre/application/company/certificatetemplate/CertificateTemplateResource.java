@@ -122,7 +122,7 @@ public class CertificateTemplateResource {
     @GET
     @Path("/search")
     @Produces(APPLICATION_JSON)
-    @RolesAllowed({"read:certificate:template"})
+    @RolesAllowed({"search:certificate:template"})
     public Response searchCertificateTemplates(
             @HeaderParam("Accept-Language") String acceptLanguage,
             @QueryParam("page") Integer page,
