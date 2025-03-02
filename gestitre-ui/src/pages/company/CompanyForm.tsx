@@ -93,8 +93,9 @@ const CompanyForm = () => {
 
     const CompanySchema = z.object({
         id: z.string().min(0),
-        companyName: z.string().min(1, {message: t('company_form_company_name_required_message')}).and(z.string().max(64, {message: t('company_form_company_name_max_length_message')})),
-        companyManagerName: z.string().min(1, {message: t('company_form_company_manager_name_required_message')}).and(z.string().max(64, {message: t('company_form_company_manager_name_max_length_message')})),
+        code: z.string().min(1, {message: t('company_form_code_required_message')}).min(6, {message: t('company_form_code_min_length_message')}).max(16, {message: t('company_form_code_max_length_message')}),
+        companyName: z.string().min(1, {message: t('company_form_company_name_required_message')}).max(64, {message: t('company_form_company_name_max_length_message')}),
+        companyManagerName: z.string().min(1, {message: t('company_form_company_manager_name_required_message')}).max(64, {message: t('company_form_company_manager_name_max_length_message')}),
         licence: z.string().min(1, {message: t('company_form_licence_required_message')}),
         legalForm: z.string().min(1, {message: t('company_form_legal_form_required_message')}),
         address: z.object({
@@ -132,6 +133,7 @@ const CompanyForm = () => {
 
     const defaultCompanyValue: CompanyModel = {
         id: "",
+        code: "",
         companyName: "",
         companyManagerName: "",
         licence: "",
@@ -375,636 +377,653 @@ const CompanyForm = () => {
                                     </span>
                                 </span>
                             </CardDescription>
-                            <CardContent>
-                                <FormField
-                                    control={form.control}
-                                    name="id"
-                                    render={({field}) => (
-                                        <FormItem>
-                                            <FormControl>
-                                                <Input id="id" type="hidden" {...field} />
-                                            </FormControl>
-                                        </FormItem>
-                                    )}
-                                />
-                                <div className="flex flex-col justify-center items-center gap-5">
-                                    <div className="flex flex-col lg:flex-row w-full gap-4">
-                                        <div className="lg:w-6/12 mb-4">
-                                            <div className="flex flex-col space-y-1.5 mb-5">
-                                                <FormField
-                                                    control={form.control}
-                                                    name="companyName"
-                                                    render={({field}) => (
-                                                        <FormItem>
-                                                            <FormLabel>{t('company_form_company_name_label')}</FormLabel>
-                                                            <FormControl>
-                                                                <Input id="companyName" type="text" {...field}
-                                                                       disabled={mode === FormModeType.READ || isLoading}/>
-                                                            </FormControl>
-                                                            <FormMessage className="text-xs text-destructive"/>
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="lg:w-6/12 mb-4">
-                                            <div className="flex flex-col space-y-1.5 mb-5">
-                                                <FormField
-                                                    control={form.control}
-                                                    name="companyManagerName"
-                                                    render={({field}) => (
-                                                        <FormItem>
-                                                            <FormLabel>{t('company_form_company_manager_name_label')}</FormLabel>
-                                                            <FormControl>
-                                                                <Input id="companyManagerName" type="text" {...field}
-                                                                       disabled={mode === FormModeType.READ || isLoading}/>
-                                                            </FormControl>
-                                                            <FormMessage className="text-xs text-destructive"/>
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="flex flex-col justify-center items-center gap-5">
-                                    <div className="flex flex-col lg:flex-row w-full gap-4">
-                                        <div className="lg:w-4/12 mb-4">
-                                            <div className="flex flex-col space-y-1.5 mb-5">
-                                                <FormField
-                                                    control={form.control}
-                                                    name="licence"
-                                                    render={() => (
-                                                        <FormItem>
-                                                            <FormLabel>{t('company_form_licence_label')}</FormLabel>
-                                                            <FormControl>
-                                                                <Popover open={openLicencePopOver} onOpenChange={setOpenLicencePopOver}>
-                                                                    <PopoverTrigger asChild>
-                                                                        <Button
-                                                                            variant="outline"
-                                                                            role="combobox"
-                                                                            aria-expanded={openLicencePopOver}
-                                                                            className="w-full justify-between"
-                                                                            disabled={mode === FormModeType.READ || isLoading}
-                                                                        >
-                                                                        <span>{licencePopOverLabel
-                                                                            //@ts-ignore
-                                                                            ? t(licenceTypes.find((licence) => licence.label === licencePopOverLabel)?.label)
-                                                                            //@ts-ignore
-                                                                            : company ? t(licenceTypes.find((licenceEdit) => licenceEdit.name === company.licence)?.label) : t('company_form_licence_pop_over_place_holder')}</span>
-                                                                            <span
-                                                                                className="opacity-50 material-symbols-outlined">unfold_more</span>
-                                                                        </Button>
-                                                                    </PopoverTrigger>
-                                                                    <PopoverContent className="w-[--radix-popover-trigger-width]">
-                                                                        <Command>
-                                                                            <CommandInput id="type" placeholder={t('company_form_licence_pop_over_place_holder')} />
-                                                                            <CommandList>
-                                                                                <Command>{t('company_form_pop_licence_over_not_found')}</Command>
-                                                                                <CommandGroup>
-                                                                                    {licenceTypes.map((licence) => (
-                                                                                        <CommandItem
-                                                                                            key={licence.label}
-                                                                                            value={licence.label}
-                                                                                            onSelect={(currentValue) => {
-                                                                                                setLicencePopOverLabel(currentValue === licencePopOverLabel ? "" : currentValue);
-                                                                                                setOpenLicencePopOver(false);
-                                                                                                form.setValue(
-                                                                                                    "licence",
-                                                                                                    currentValue === licencePopOverLabel ? "" : licence.name,
-                                                                                                    {shouldTouch: true, shouldDirty: true, shouldValidate: true}
-                                                                                                );
-                                                                                            }}
-                                                                                        >
-                                                                                        <span
-                                                                                            className={`mr-2 h-4 w-4 material-symbols-outlined ${licencePopOverLabel === licence.label ? 'opacity-100' : 'opacity-0'}`}
-                                                                                        >check</span>
-                                                                                            {t(licence.label)}
-                                                                                        </CommandItem>
-                                                                                    ))}
-                                                                                </CommandGroup>
-                                                                            </CommandList>
-                                                                        </Command>
-                                                                    </PopoverContent>
-                                                                </Popover>
-                                                            </FormControl>
-                                                            <FormMessage className="text-xs text-destructive"/>
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="lg:w-4/12 mb-4">
-                                            <div className="flex flex-col space-y-1.5 mb-5">
-                                                <FormField
-                                                    control={form.control}
-                                                    name="legalForm"
-                                                    render={() => (
-                                                        <FormItem>
-                                                            <FormLabel>{t('company_form_legal_form_label')}</FormLabel>
-                                                            <FormControl>
-                                                                <Popover open={openLegalFormPopOver} onOpenChange={setOpenLegalFormPopOver}>
-                                                                    <PopoverTrigger asChild>
-                                                                        <Button
-                                                                            variant="outline"
-                                                                            role="combobox"
-                                                                            aria-expanded={openLegalFormPopOver}
-                                                                            className="w-full justify-between"
-                                                                            disabled={mode === FormModeType.READ || isLoading}
-                                                                        >
-                                                                        <span>{legalFormPopOverLabel
-                                                                            //@ts-ignore
-                                                                            ? t(legalFormTypes.find((legalForm) => legalForm.label === legalFormPopOverLabel)?.label)
-                                                                            //@ts-ignore
-                                                                            : company ? t(legalFormTypes.find((legalFormEdit) => legalFormEdit.name === company.legalForm)?.label) : t('company_form_legal_form_pop_over_place_holder')}</span>
-                                                                            <span
-                                                                                className="opacity-50 material-symbols-outlined">unfold_more</span>
-                                                                        </Button>
-                                                                    </PopoverTrigger>
-                                                                    <PopoverContent className="w-[--radix-popover-trigger-width]">
-                                                                        <Command>
-                                                                            <CommandInput id="type" placeholder={t('company_form_legal_form_pop_over_place_holder')} />
-                                                                            <CommandList>
-                                                                                <Command>{t('company_form_pop_legal_form_over_not_found')}</Command>
-                                                                                <CommandGroup>
-                                                                                    {legalFormTypes.map((legalForm) => (
-                                                                                        <CommandItem
-                                                                                            key={legalForm.label}
-                                                                                            value={legalForm.label}
-                                                                                            onSelect={(currentValue) => {
-                                                                                                setLegalFormPopOverLabel(currentValue === legalFormPopOverLabel ? "" : currentValue);
-                                                                                                setOpenLegalFormPopOver(false);
-                                                                                                form.setValue(
-                                                                                                    "legalForm",
-                                                                                                    currentValue === legalFormPopOverLabel ? "" : legalForm.name,
-                                                                                                    {shouldTouch: true, shouldDirty: true, shouldValidate: true}
-                                                                                                );
-                                                                                            }}
-                                                                                        >
-                                                                                        <span
-                                                                                            className={`mr-2 h-4 w-4 material-symbols-outlined ${legalFormPopOverLabel === legalForm.label ? 'opacity-100' : 'opacity-0'}`}
-                                                                                        >check</span>
-                                                                                            {t(legalForm.label)}
-                                                                                        </CommandItem>
-                                                                                    ))}
-                                                                                </CommandGroup>
-                                                                            </CommandList>
-                                                                        </Command>
-                                                                    </PopoverContent>
-                                                                </Popover>
-                                                            </FormControl>
-                                                            <FormMessage className="text-xs text-destructive"/>
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="lg:w-4/12 mb-4">
-                                            <div className="flex flex-col space-y-1.5 mb-5">
-                                                <FormField
-                                                    control={form.control}
-                                                    name="certificateTemplateId"
-                                                    render={() => (
-                                                        <FormItem>
-                                                            <FormLabel>{t('company_form_certificate_template_id_label')}</FormLabel>
-                                                            <FormControl>
-                                                                <Popover open={openCertificateTemplatePopOver} onOpenChange={setOpenCertificateTemplatePopOver}>
-                                                                    <PopoverTrigger asChild>
-                                                                        <Button
-                                                                            variant="outline"
-                                                                            role="combobox"
-                                                                            aria-expanded={openCertificateTemplatePopOver}
-                                                                            className="w-full justify-between"
-                                                                            disabled={mode === FormModeType.READ || isLoading}
-                                                                        >
-                                                                        <span>{certificateTemplatePopOverLabel
-                                                                            //@ts-ignore
-                                                                            ? t(certificateTemplates.find((certificateTemplate) => certificateTemplate.name === certificateTemplatePopOverLabel)?.name)
-                                                                            //@ts-ignore
-                                                                            : company ? t(certificateTemplates.find((certificateTemplateFormEdit) => certificateTemplateFormEdit.id === company.certificateTemplateId)?.label) : t('company_form_certificate_template_id_pop_over_place_holder')}</span>
-                                                                            <span
-                                                                                className="opacity-50 material-symbols-outlined">unfold_more</span>
-                                                                        </Button>
-                                                                    </PopoverTrigger>
-                                                                    <PopoverContent className="w-[--radix-popover-trigger-width]">
-                                                                        <Command>
-                                                                            <CommandInput id="type" placeholder={t('company_form_certificate_template_id_pop_over_place_holder')} />
-                                                                            <CommandList>
-                                                                                <Command>{t('company_form_pop_certificate_template_id_over_not_found')}</Command>
-                                                                                <CommandGroup>
-                                                                                    {certificateTemplates.map((certificateTemplate) => (
-                                                                                        <CommandItem
-                                                                                            key={certificateTemplate.id}
-                                                                                            value={certificateTemplate.name}
-                                                                                            onSelect={(currentValue) => {
-                                                                                                setCertificateTemplatePopOverLabel(currentValue === certificateTemplatePopOverLabel ? "" : currentValue);
-                                                                                                setOpenCertificateTemplatePopOver(false);
-                                                                                                form.setValue(
-                                                                                                    "certificateTemplateId",
-                                                                                                    currentValue === certificateTemplatePopOverLabel ? "" : certificateTemplate.id,
-                                                                                                    {shouldTouch: true, shouldDirty: true, shouldValidate: true}
-                                                                                                );
-                                                                                            }}
-                                                                                        >
-                                                                                        <span
-                                                                                            className={`mr-2 h-4 w-4 material-symbols-outlined ${certificateTemplatePopOverLabel === certificateTemplate.name ? 'opacity-100' : 'opacity-0'}`}
-                                                                                        >check</span>
-                                                                                            {t(certificateTemplate.name)}
-                                                                                        </CommandItem>
-                                                                                    ))}
-                                                                                </CommandGroup>
-                                                                            </CommandList>
-                                                                        </Command>
-                                                                    </PopoverContent>
-                                                                </Popover>
-                                                            </FormControl>
-                                                            <FormMessage className="text-xs text-destructive"/>
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <Tabs defaultValue="other" className="w-full">
-                                    <TabsList>
-                                        <TabsTrigger
-                                            value="other">{t('company_form_tab_other')}</TabsTrigger>
-                                        <TabsTrigger
-                                            value="address">{t('company_form_tab_address')}</TabsTrigger>
-                                        <TabsTrigger
-                                            value="contact">{t('company_form_tab_contact')}</TabsTrigger>
-                                        <TabsTrigger value="images">{t('company_form_tab_images')}</TabsTrigger>
-                                    </TabsList>
-                                    <TabsContent value="other">
-                                        <div className="flex flex-col lg:flex-row w-full gap-4">
-                                            <div className="lg:w-4/12 mb-4">
-                                                <div className="flex flex-col space-y-1.5 mb-5">
-                                                    <FormField
-                                                        control={form.control}
-                                                        name="isinCode"
-                                                        render={({field}) => (
-                                                            <FormItem>
-                                                                <FormLabel>{t('company_form_isin_code_label')}</FormLabel>
-                                                                <FormControl>
-                                                                    <Input id="isinCode" type="text" {...field}
-                                                                           disabled={mode === FormModeType.READ || isLoading}/>
-                                                                </FormControl>
-                                                                <FormMessage className="text-xs text-destructive"/>
-                                                            </FormItem>
-                                                        )}
-                                                    />
-                                                </div>
-                                                <div className="flex flex-col space-y-1.5 mb-5">
-                                                    <FormField
-                                                        control={form.control}
-                                                        name="taxNumber"
-                                                        render={({field}) => (
-                                                            <FormItem>
-                                                                <FormLabel>{t('company_form_tax_number_label')}</FormLabel>
-                                                                <FormControl>
-                                                                    <Input id="taxNumber" type="text" {...field}
-                                                                           disabled={mode === FormModeType.READ || isLoading}/>
-                                                                </FormControl>
-                                                                <FormMessage className="text-xs text-destructive"/>
-                                                            </FormItem>
-                                                        )}
-                                                    />
-                                                </div>
-                                                <div className="flex flex-col space-y-1.5 mb-5">
-                                                    <FormField
-                                                        control={form.control}
-                                                        name="registrationNumber"
-                                                        render={({field}) => (
-                                                            <FormItem>
-                                                                <FormLabel>{t('company_form_registration_number_label')}</FormLabel>
-                                                                <FormControl>
-                                                                    <Input id="registrationNumber"
-                                                                           type="text" {...field}
-                                                                           disabled={mode === FormModeType.READ || isLoading}/>
-                                                                </FormControl>
-                                                                <FormMessage className="text-xs text-destructive"/>
-                                                            </FormItem>
-                                                        )}
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className="lg:w-4/12 mb-4">
-                                                <div className="flex flex-col space-y-1.5 mb-5">
-                                                    <FormField
-                                                        control={form.control}
-                                                        name="activity"
-                                                        render={({field}) => (
-                                                            <FormItem>
-                                                                <FormLabel>{t('company_form_activity_label')}</FormLabel>
-                                                                <FormControl>
-                                                                    <Input id="activity" type="text" {...field}
-                                                                           disabled={mode === FormModeType.READ || isLoading}/>
-                                                                </FormControl>
-                                                                <FormMessage className="text-xs text-destructive"/>
-                                                            </FormItem>
-                                                        )}
-                                                    />
-                                                </div>
-                                                <div className="flex flex-col space-y-1.5 mb-5">
-                                                    <FormField
-                                                        control={form.control}
-                                                        name="webSiteUrl"
-                                                        render={({field}) => (
-                                                            <FormItem>
-                                                                <FormLabel>{t('company_form_website_url_label')}</FormLabel>
-                                                                <FormControl>
-                                                                    <Input id="webSiteUrl" type="text" {...field}
-                                                                           disabled={mode === FormModeType.READ || isLoading}/>
-                                                                </FormControl>
-                                                                <FormMessage className="text-xs text-destructive"/>
-                                                            </FormItem>
-                                                        )}
-                                                    />
-                                                </div>
-                                                <div className="flex flex-col space-y-1.5 mt-16">
-                                                    <FormField
-                                                        control={form.control}
-                                                        name="active"
-                                                        render={({field}) => (
-                                                            <FormItem
-                                                                className="flex flex-row items-center space-x-2 space-y-0">
-                                                                <FormControl>
-                                                                    <Checkbox id="active" checked={field.value}
-                                                                              disabled={mode === FormModeType.READ || isLoading}
-                                                                              onCheckedChange={field.onChange}/>
-                                                                </FormControl>
-                                                                <FormLabel
-                                                                    className="font-normal">{t('company_form_active_label')}</FormLabel>
-                                                            </FormItem>
-                                                        )}
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className="lg:w-4/12 mb-4">
-                                                <div className="flex flex-col space-y-1.5 mb-5">
-                                                    <FormField
-                                                        control={form.control}
-                                                        name="nominalValue"
-                                                        render={({field}) => (
-                                                            <FormItem>
-                                                                <FormLabel>{t('company_form_nominal_value_label')}</FormLabel>
-                                                                <FormControl>
-                                                                    <Input id="nominalValue" type="number" {...field}
-                                                                           disabled={mode === FormModeType.READ || isLoading}/>
-                                                                </FormControl>
-                                                                <FormMessage className="text-xs text-destructive"/>
-                                                            </FormItem>
-                                                        )}
-                                                    />
-                                                </div>
-                                                <div className="flex flex-col space-y-1.5 mb-5">
-                                                    <FormField
-                                                        control={form.control}
-                                                        name="grossDividendStockUnit"
-                                                        render={({field}) => (
-                                                            <FormItem>
-                                                                <FormLabel>{t('company_form_gross_dividend_stock_unit_label')}</FormLabel>
-                                                                <FormControl>
-                                                                    <Input id="grossDividendStockUnit"
-                                                                           type="number" {...field}
-                                                                           disabled={mode === FormModeType.READ || isLoading}/>
-                                                                </FormControl>
-                                                                <FormMessage className="text-xs text-destructive"/>
-                                                            </FormItem>
-                                                        )}
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </TabsContent>
-                                    <TabsContent value="address">
-                                        <div className="flex flex-col lg:flex-row w-full gap-4">
-                                            <div className="lg:w-6/12 mb-4">
-                                                <div className="flex flex-col space-y-1.5 mb-5">
-                                                    <FormField
-                                                        control={form.control}
-                                                        name="address.street"
-                                                        render={({field}) => (
-                                                            <FormItem>
-                                                                <FormLabel>{t('company_form_address_street_label')}</FormLabel>
-                                                                <FormControl>
-                                                                    <Input id="address.street" type="text" {...field}
-                                                                           disabled={mode === FormModeType.READ || isLoading}/>
-                                                                </FormControl>
-                                                                <FormMessage className="text-xs text-destructive"/>
-                                                            </FormItem>
-                                                        )}
-                                                    />
-                                                </div>
-                                                <div className="flex flex-col space-y-1.5 mb-5">
-                                                    <FormField
-                                                        control={form.control}
-                                                        name="address.zipCode"
-                                                        render={({field}) => (
-                                                            <FormItem>
-                                                                <FormLabel>{t('company_form_address_zip_code_label')}</FormLabel>
-                                                                <FormControl>
-                                                                    <Input id="address.zipCode" type="text" {...field}
-                                                                           disabled={mode === FormModeType.READ || isLoading}/>
-                                                                </FormControl>
-                                                                <FormMessage className="text-xs text-destructive"/>
-                                                            </FormItem>
-                                                        )}
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className="lg:w-6/12 mb-4">
-                                                <div className="flex flex-col space-y-1.5 mb-5">
-                                                    <FormField
-                                                        control={form.control}
-                                                        name="address.city"
-                                                        render={({field}) => (
-                                                            <FormItem>
-                                                                <FormLabel>{t('company_form_address_city_label')}</FormLabel>
-                                                                <FormControl>
-                                                                    <Input id="address.city" type="text" {...field}
-                                                                           disabled={mode === FormModeType.READ || isLoading}/>
-                                                                </FormControl>
-                                                                <FormMessage className="text-xs text-destructive"/>
-                                                            </FormItem>
-                                                        )}
-                                                    />
-                                                </div>
-                                                <div className="flex flex-col space-y-1.5 mb-5">
-                                                    <FormField
-                                                        control={form.control}
-                                                        name="address.country"
-                                                        render={() => (
-                                                            <FormItem>
-                                                                <FormLabel>{t('company_form_address_country_label')}</FormLabel>
-                                                                <FormControl>
-                                                                    <Popover open={openCountryPopOver} onOpenChange={setOpenCountryPopOver}>
-                                                                        <PopoverTrigger asChild>
-                                                                            <Button
-                                                                                variant="outline"
-                                                                                role="combobox"
-                                                                                aria-expanded={openCountryPopOver}
-                                                                                className="w-full justify-between"
-                                                                                disabled={mode === FormModeType.READ || isLoading}
-                                                                            >
-                                                                        <span>{countryPopOverLabel
-                                                                            //@ts-ignore
-                                                                            ? t(countries.find((country) => country.label === countryPopOverLabel)?.label)
-                                                                            //@ts-ignore
-                                                                            : company ? t(countries.find((countryEdit) => countryEdit.name === company.address.country)?.label) : t('company_form_address_country_pop_over_place_holder')}</span>
-                                                                                <span
-                                                                                    className="opacity-50 material-symbols-outlined">unfold_more</span>
-                                                                            </Button>
-                                                                        </PopoverTrigger>
-                                                                        <PopoverContent className="w-[--radix-popover-trigger-width]">
-                                                                            <Command>
-                                                                                <CommandInput id="type" placeholder={t('company_form_address_country_pop_over_place_holder')} />
-                                                                                <CommandList>
-                                                                                    <Command>{t('company_form_pop_address_country_over_not_found')}</Command>
-                                                                                    <CommandGroup>
-                                                                                        {countries.map((country) => (
-                                                                                            <CommandItem
-                                                                                                key={country.label}
-                                                                                                value={country.label}
-                                                                                                onSelect={(currentValue) => {
-                                                                                                    setCountryPopOverLabel(currentValue === countryPopOverLabel ? "" : currentValue);
-                                                                                                    setOpenCountryPopOver(false);
-                                                                                                    form.setValue(
-                                                                                                        "address.country",
-                                                                                                        currentValue === countryPopOverLabel ? "" : country.name,
-                                                                                                        {shouldTouch: true, shouldDirty: true, shouldValidate: true}
-                                                                                                    );
-                                                                                                }}
-                                                                                            >
-                                                                                        <span
-                                                                                            className={`mr-2 h-4 w-4 material-symbols-outlined ${countryPopOverLabel === country.label ? 'opacity-100' : 'opacity-0'}`}
-                                                                                        >check</span>
-                                                                                                {t(country.label)}
-                                                                                            </CommandItem>
-                                                                                        ))}
-                                                                                    </CommandGroup>
-                                                                                </CommandList>
-                                                                            </Command>
-                                                                        </PopoverContent>
-                                                                    </Popover>
-                                                                </FormControl>
-                                                                <FormMessage className="text-xs text-destructive"/>
-                                                            </FormItem>
-                                                        )}
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </TabsContent>
-                                    <TabsContent value="contact">
-                                        <div className="flex flex-col lg:flex-row w-full gap-4">
-                                            <div className="lg:w-6/12 mb-4">
-                                                <div className="flex flex-col space-y-1.5 mb-5">
-                                                    <FormField
-                                                        control={form.control}
-                                                        name="contact.name"
-                                                        render={({field}) => (
-                                                            <FormItem>
-                                                                <FormLabel>{t('company_form_contact_name_label')}</FormLabel>
-                                                                <FormControl>
-                                                                    <Input id="contact.name" type="text" {...field}
-                                                                           disabled={mode === FormModeType.READ || isLoading}/>
-                                                                </FormControl>
-                                                                <FormMessage className="text-xs text-destructive"/>
-                                                            </FormItem>
-                                                        )}
-                                                    />
-                                                </div>
-                                                <div className="flex flex-col space-y-1.5 mb-5">
-                                                    <FormField
-                                                        control={form.control}
-                                                        name="contact.email"
-                                                        render={({field}) => (
-                                                            <FormItem>
-                                                                <FormLabel>{t('company_form_contact_email_label')}</FormLabel>
-                                                                <FormControl>
-                                                                    <Input id="contact.email" type="text" {...field}
-                                                                           disabled={mode === FormModeType.READ || isLoading}/>
-                                                                </FormControl>
-                                                                <FormMessage className="text-xs text-destructive"/>
-                                                            </FormItem>
-                                                        )}
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className="lg:w-6/12 mb-4">
-                                                <div className="flex flex-col space-y-1.5 mb-5">
-                                                    <FormField
-                                                        control={form.control}
-                                                        name="contact.fax"
-                                                        render={({field}) => (
-                                                            <FormItem>
-                                                                <FormLabel>{t('company_form_contact_fax_label')}</FormLabel>
-                                                                <FormControl>
-                                                                    <Input id="contact.fax" type="text" {...field}
-                                                                           disabled={mode === FormModeType.READ || isLoading}/>
-                                                                </FormControl>
-                                                                <FormMessage className="text-xs text-destructive"/>
-                                                            </FormItem>
-                                                        )}
-                                                    />
-                                                </div>
-                                                <div className="flex flex-col space-y-1.5 mb-5">
-                                                    <FormField
-                                                        control={form.control}
-                                                        name="contact.phone"
-                                                        render={({field}) => (
-                                                            <FormItem>
-                                                                <FormLabel>{t('company_form_contact_phone_label')}</FormLabel>
-                                                                <FormControl>
-                                                                    <Input id="contact.phone" type="text" {...field}
-                                                                           disabled={mode === FormModeType.READ || isLoading}/>
-                                                                </FormControl>
-                                                                <FormMessage className="text-xs text-destructive"/>
-                                                            </FormItem>
-                                                        )}
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </TabsContent>
-                                    <TabsContent value="images">
-                                        <div className="flex flex-row justify-around items-start mt-8 gap-8">
-                                            <div
-                                                className="relative flex flex-col justify-center items-center w-72">
-                                                <img alt="..." className={`size-48 bg-neutral-100 object-cover
-                                    flex flex-col items-center justify-center rounded-lg shadow-neutral-400 shadow-lg
-                                    gap-4 transition-all duration-1000 hover:text-primary`}
-                                                    //@ts-ignore
-                                                     src={logoPreview ? logoPreview : company ? showString64Image(company.logoEncoded, company.logoMimeType) : getImageUrl(DEFAULT_COMPANY_LOGO_IMAGE)}/>
-                                                <input
-                                                    className={`absolute top-0 size-48 opacity-0 ${mode === FormModeType.READ || isLoading ? 'cursor-auto' : 'cursor-pointer'}`}
-                                                    accept="image/x-png, image/jpeg" type="file"
-                                                    disabled={mode === FormModeType.READ || isLoading}
-                                                    onChange={handleLogoChange}/>
-
-                                            </div>
-                                            <div
-                                                className="relative flex flex-col justify-center items-center w-72">
-                                                <img alt="..." className={`size-48 bg-neutral-100 object-cover
-                                    flex flex-col items-center justify-center rounded-lg shadow-neutral-400 shadow-lg
-                                    gap-4 transition-all duration-1000 hover:text-primary`}
-                                                    //@ts-ignore
-                                                     src={stampPreview ? stampPreview : company ? showString64Image(company.stampEncoded, company.stampMimeType) : getImageUrl(DEFAULT_COMPANY_STAMP_IMAGE)}/>
-                                                <input
-                                                    className={`absolute top-0 size-48 opacity-0 ${mode === FormModeType.READ || isLoading ? 'cursor-auto' : 'cursor-pointer'}`}
-                                                    accept="image/x-png, image/jpeg" type="file"
-                                                    disabled={mode === FormModeType.READ || isLoading}
-                                                    onChange={handleStampChange}/>
-
-                                            </div>
-                                        </div>
-                                    </TabsContent>
-                                </Tabs>
-
-                            </CardContent>
                         </CardHeader>
+                        <CardContent>
+                            <FormField
+                                control={form.control}
+                                name="id"
+                                render={({field}) => (
+                                    <FormItem>
+                                        <FormControl>
+                                            <Input id="id" type="hidden" {...field} />
+                                        </FormControl>
+                                    </FormItem>
+                                )}
+                            />
+                            <div className="flex flex-col justify-center items-center gap-5">
+                                <div className="flex flex-col lg:flex-row w-full gap-4">
+                                    <div className="lg:w-4/12 mb-4">
+                                        <div className="flex flex-col space-y-1.5 mb-5">
+                                            <FormField
+                                                control={form.control}
+                                                name="companyName"
+                                                render={({field}) => (
+                                                    <FormItem>
+                                                        <FormLabel>{t('company_form_company_name_label')}</FormLabel>
+                                                        <FormControl>
+                                                            <Input id="companyName" type="text" {...field}
+                                                                   disabled={mode === FormModeType.READ || isLoading}/>
+                                                        </FormControl>
+                                                        <FormMessage className="text-xs text-destructive"/>
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="lg:w-4/12 mb-4">
+                                        <div className="flex flex-col space-y-1.5 mb-5">
+                                            <FormField
+                                                control={form.control}
+                                                name="companyManagerName"
+                                                render={({field}) => (
+                                                    <FormItem>
+                                                        <FormLabel>{t('company_form_company_manager_name_label')}</FormLabel>
+                                                        <FormControl>
+                                                            <Input id="companyManagerName" type="text" {...field}
+                                                                   disabled={mode === FormModeType.READ || isLoading}/>
+                                                        </FormControl>
+                                                        <FormMessage className="text-xs text-destructive"/>
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="lg:w-4/12 mb-4">
+                                        <div className="flex flex-col space-y-1.5 mb-5">
+                                            <FormField
+                                                control={form.control}
+                                                name="code"
+                                                render={({field}) => (
+                                                    <FormItem>
+                                                        <FormLabel>{t('company_form_code_label')}</FormLabel>
+                                                        <FormControl>
+                                                            <Input id="code" type="text" {...field}
+                                                                   disabled={mode === FormModeType.READ || isLoading}/>
+                                                        </FormControl>
+                                                        <FormMessage className="text-xs text-destructive"/>
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="flex flex-col justify-center items-center gap-5">
+                                <div className="flex flex-col lg:flex-row w-full gap-4">
+                                    <div className="lg:w-4/12 mb-4">
+                                        <div className="flex flex-col space-y-1.5 mb-5">
+                                            <FormField
+                                                control={form.control}
+                                                name="licence"
+                                                render={() => (
+                                                    <FormItem>
+                                                        <FormLabel>{t('company_form_licence_label')}</FormLabel>
+                                                        <FormControl>
+                                                            <Popover open={openLicencePopOver} onOpenChange={setOpenLicencePopOver}>
+                                                                <PopoverTrigger asChild>
+                                                                    <Button
+                                                                        variant="outline"
+                                                                        role="combobox"
+                                                                        aria-expanded={openLicencePopOver}
+                                                                        className="w-full justify-between"
+                                                                        disabled={mode === FormModeType.READ || isLoading}
+                                                                    >
+                                                                    <span>{licencePopOverLabel
+                                                                        //@ts-ignore
+                                                                        ? t(licenceTypes.find((licence) => licence.label === licencePopOverLabel)?.label)
+                                                                        //@ts-ignore
+                                                                        : company ? t(licenceTypes.find((licenceEdit) => licenceEdit.name === company.licence)?.label) : t('company_form_licence_pop_over_place_holder')}</span>
+                                                                        <span
+                                                                            className="opacity-50 material-symbols-outlined">unfold_more</span>
+                                                                    </Button>
+                                                                </PopoverTrigger>
+                                                                <PopoverContent className="w-[--radix-popover-trigger-width]">
+                                                                    <Command>
+                                                                        <CommandInput id="type" placeholder={t('company_form_licence_pop_over_place_holder')} />
+                                                                        <CommandList>
+                                                                            <Command>{t('company_form_pop_licence_over_not_found')}</Command>
+                                                                            <CommandGroup>
+                                                                                {licenceTypes.map((licence) => (
+                                                                                    <CommandItem
+                                                                                        key={licence.label}
+                                                                                        value={licence.label}
+                                                                                        onSelect={(currentValue) => {
+                                                                                            setLicencePopOverLabel(currentValue === licencePopOverLabel ? "" : currentValue);
+                                                                                            setOpenLicencePopOver(false);
+                                                                                            form.setValue(
+                                                                                                "licence",
+                                                                                                currentValue === licencePopOverLabel ? "" : licence.name,
+                                                                                                {shouldTouch: true, shouldDirty: true, shouldValidate: true}
+                                                                                            );
+                                                                                        }}
+                                                                                    >
+                                                                                    <span
+                                                                                        className={`mr-2 h-4 w-4 material-symbols-outlined ${licencePopOverLabel === licence.label ? 'opacity-100' : 'opacity-0'}`}
+                                                                                    >check</span>
+                                                                                        {t(licence.label)}
+                                                                                    </CommandItem>
+                                                                                ))}
+                                                                            </CommandGroup>
+                                                                        </CommandList>
+                                                                    </Command>
+                                                                </PopoverContent>
+                                                            </Popover>
+                                                        </FormControl>
+                                                        <FormMessage className="text-xs text-destructive"/>
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="lg:w-4/12 mb-4">
+                                        <div className="flex flex-col space-y-1.5 mb-5">
+                                            <FormField
+                                                control={form.control}
+                                                name="legalForm"
+                                                render={() => (
+                                                    <FormItem>
+                                                        <FormLabel>{t('company_form_legal_form_label')}</FormLabel>
+                                                        <FormControl>
+                                                            <Popover open={openLegalFormPopOver} onOpenChange={setOpenLegalFormPopOver}>
+                                                                <PopoverTrigger asChild>
+                                                                    <Button
+                                                                        variant="outline"
+                                                                        role="combobox"
+                                                                        aria-expanded={openLegalFormPopOver}
+                                                                        className="w-full justify-between"
+                                                                        disabled={mode === FormModeType.READ || isLoading}
+                                                                    >
+                                                                    <span>{legalFormPopOverLabel
+                                                                        //@ts-ignore
+                                                                        ? t(legalFormTypes.find((legalForm) => legalForm.label === legalFormPopOverLabel)?.label)
+                                                                        //@ts-ignore
+                                                                        : company ? t(legalFormTypes.find((legalFormEdit) => legalFormEdit.name === company.legalForm)?.label) : t('company_form_legal_form_pop_over_place_holder')}</span>
+                                                                        <span
+                                                                            className="opacity-50 material-symbols-outlined">unfold_more</span>
+                                                                    </Button>
+                                                                </PopoverTrigger>
+                                                                <PopoverContent className="w-[--radix-popover-trigger-width]">
+                                                                    <Command>
+                                                                        <CommandInput id="type" placeholder={t('company_form_legal_form_pop_over_place_holder')} />
+                                                                        <CommandList>
+                                                                            <Command>{t('company_form_pop_legal_form_over_not_found')}</Command>
+                                                                            <CommandGroup>
+                                                                                {legalFormTypes.map((legalForm) => (
+                                                                                    <CommandItem
+                                                                                        key={legalForm.label}
+                                                                                        value={legalForm.label}
+                                                                                        onSelect={(currentValue) => {
+                                                                                            setLegalFormPopOverLabel(currentValue === legalFormPopOverLabel ? "" : currentValue);
+                                                                                            setOpenLegalFormPopOver(false);
+                                                                                            form.setValue(
+                                                                                                "legalForm",
+                                                                                                currentValue === legalFormPopOverLabel ? "" : legalForm.name,
+                                                                                                {shouldTouch: true, shouldDirty: true, shouldValidate: true}
+                                                                                            );
+                                                                                        }}
+                                                                                    >
+                                                                                    <span
+                                                                                        className={`mr-2 h-4 w-4 material-symbols-outlined ${legalFormPopOverLabel === legalForm.label ? 'opacity-100' : 'opacity-0'}`}
+                                                                                    >check</span>
+                                                                                        {t(legalForm.label)}
+                                                                                    </CommandItem>
+                                                                                ))}
+                                                                            </CommandGroup>
+                                                                        </CommandList>
+                                                                    </Command>
+                                                                </PopoverContent>
+                                                            </Popover>
+                                                        </FormControl>
+                                                        <FormMessage className="text-xs text-destructive"/>
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="lg:w-4/12 mb-4">
+                                        <div className="flex flex-col space-y-1.5 mb-5">
+                                            <FormField
+                                                control={form.control}
+                                                name="certificateTemplateId"
+                                                render={() => (
+                                                    <FormItem>
+                                                        <FormLabel>{t('company_form_certificate_template_id_label')}</FormLabel>
+                                                        <FormControl>
+                                                            <Popover open={openCertificateTemplatePopOver} onOpenChange={setOpenCertificateTemplatePopOver}>
+                                                                <PopoverTrigger asChild>
+                                                                    <Button
+                                                                        variant="outline"
+                                                                        role="combobox"
+                                                                        aria-expanded={openCertificateTemplatePopOver}
+                                                                        className="w-full justify-between"
+                                                                        disabled={mode === FormModeType.READ || isLoading}
+                                                                    >
+                                                                    <span>{certificateTemplatePopOverLabel
+                                                                        //@ts-ignore
+                                                                        ? t(certificateTemplates.find((certificateTemplate) => certificateTemplate.name === certificateTemplatePopOverLabel)?.name)
+                                                                        //@ts-ignore
+                                                                        : company ? t(certificateTemplates.find((certificateTemplateFormEdit) => certificateTemplateFormEdit.id === company.certificateTemplateId)?.label) : t('company_form_certificate_template_id_pop_over_place_holder')}</span>
+                                                                        <span
+                                                                            className="opacity-50 material-symbols-outlined">unfold_more</span>
+                                                                    </Button>
+                                                                </PopoverTrigger>
+                                                                <PopoverContent className="w-[--radix-popover-trigger-width]">
+                                                                    <Command>
+                                                                        <CommandInput id="type" placeholder={t('company_form_certificate_template_id_pop_over_place_holder')} />
+                                                                        <CommandList>
+                                                                            <Command>{t('company_form_pop_certificate_template_id_over_not_found')}</Command>
+                                                                            <CommandGroup>
+                                                                                {certificateTemplates.map((certificateTemplate) => (
+                                                                                    <CommandItem
+                                                                                        key={certificateTemplate.id}
+                                                                                        value={certificateTemplate.name}
+                                                                                        onSelect={(currentValue) => {
+                                                                                            setCertificateTemplatePopOverLabel(currentValue === certificateTemplatePopOverLabel ? "" : currentValue);
+                                                                                            setOpenCertificateTemplatePopOver(false);
+                                                                                            form.setValue(
+                                                                                                "certificateTemplateId",
+                                                                                                currentValue === certificateTemplatePopOverLabel ? "" : certificateTemplate.id,
+                                                                                                {shouldTouch: true, shouldDirty: true, shouldValidate: true}
+                                                                                            );
+                                                                                        }}
+                                                                                    >
+                                                                                    <span
+                                                                                        className={`mr-2 h-4 w-4 material-symbols-outlined ${certificateTemplatePopOverLabel === certificateTemplate.name ? 'opacity-100' : 'opacity-0'}`}
+                                                                                    >check</span>
+                                                                                        {t(certificateTemplate.name)}
+                                                                                    </CommandItem>
+                                                                                ))}
+                                                                            </CommandGroup>
+                                                                        </CommandList>
+                                                                    </Command>
+                                                                </PopoverContent>
+                                                            </Popover>
+                                                        </FormControl>
+                                                        <FormMessage className="text-xs text-destructive"/>
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <Tabs defaultValue="other" className="w-full">
+                                <TabsList>
+                                    <TabsTrigger
+                                        value="other">{t('company_form_tab_other')}</TabsTrigger>
+                                    <TabsTrigger
+                                        value="address">{t('company_form_tab_address')}</TabsTrigger>
+                                    <TabsTrigger
+                                        value="contact">{t('company_form_tab_contact')}</TabsTrigger>
+                                    <TabsTrigger value="images">{t('company_form_tab_images')}</TabsTrigger>
+                                </TabsList>
+                                <TabsContent value="other">
+                                    <div className="flex flex-col lg:flex-row w-full gap-4">
+                                        <div className="lg:w-4/12 mb-4">
+                                            <div className="flex flex-col space-y-1.5 mb-5">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="isinCode"
+                                                    render={({field}) => (
+                                                        <FormItem>
+                                                            <FormLabel>{t('company_form_isin_code_label')}</FormLabel>
+                                                            <FormControl>
+                                                                <Input id="isinCode" type="text" {...field}
+                                                                       disabled={mode === FormModeType.READ || isLoading}/>
+                                                            </FormControl>
+                                                            <FormMessage className="text-xs text-destructive"/>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+                                            <div className="flex flex-col space-y-1.5 mb-5">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="taxNumber"
+                                                    render={({field}) => (
+                                                        <FormItem>
+                                                            <FormLabel>{t('company_form_tax_number_label')}</FormLabel>
+                                                            <FormControl>
+                                                                <Input id="taxNumber" type="text" {...field}
+                                                                       disabled={mode === FormModeType.READ || isLoading}/>
+                                                            </FormControl>
+                                                            <FormMessage className="text-xs text-destructive"/>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+                                            <div className="flex flex-col space-y-1.5 mb-5">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="registrationNumber"
+                                                    render={({field}) => (
+                                                        <FormItem>
+                                                            <FormLabel>{t('company_form_registration_number_label')}</FormLabel>
+                                                            <FormControl>
+                                                                <Input id="registrationNumber"
+                                                                       type="text" {...field}
+                                                                       disabled={mode === FormModeType.READ || isLoading}/>
+                                                            </FormControl>
+                                                            <FormMessage className="text-xs text-destructive"/>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="lg:w-4/12 mb-4">
+                                            <div className="flex flex-col space-y-1.5 mb-5">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="activity"
+                                                    render={({field}) => (
+                                                        <FormItem>
+                                                            <FormLabel>{t('company_form_activity_label')}</FormLabel>
+                                                            <FormControl>
+                                                                <Input id="activity" type="text" {...field}
+                                                                       disabled={mode === FormModeType.READ || isLoading}/>
+                                                            </FormControl>
+                                                            <FormMessage className="text-xs text-destructive"/>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+                                            <div className="flex flex-col space-y-1.5 mb-5">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="webSiteUrl"
+                                                    render={({field}) => (
+                                                        <FormItem>
+                                                            <FormLabel>{t('company_form_website_url_label')}</FormLabel>
+                                                            <FormControl>
+                                                                <Input id="webSiteUrl" type="text" {...field}
+                                                                       disabled={mode === FormModeType.READ || isLoading}/>
+                                                            </FormControl>
+                                                            <FormMessage className="text-xs text-destructive"/>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+                                            <div className="flex flex-col space-y-1.5 mt-16">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="active"
+                                                    render={({field}) => (
+                                                        <FormItem
+                                                            className="flex flex-row items-center space-x-2 space-y-0">
+                                                            <FormControl>
+                                                                <Checkbox id="active" checked={field.value}
+                                                                          disabled={mode === FormModeType.READ || isLoading}
+                                                                          onCheckedChange={field.onChange}/>
+                                                            </FormControl>
+                                                            <FormLabel
+                                                                className="font-normal">{t('company_form_active_label')}</FormLabel>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="lg:w-4/12 mb-4">
+                                            <div className="flex flex-col space-y-1.5 mb-5">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="nominalValue"
+                                                    render={({field}) => (
+                                                        <FormItem>
+                                                            <FormLabel>{t('company_form_nominal_value_label')}</FormLabel>
+                                                            <FormControl>
+                                                                <Input id="nominalValue" type="number" {...field}
+                                                                       disabled={mode === FormModeType.READ || isLoading}/>
+                                                            </FormControl>
+                                                            <FormMessage className="text-xs text-destructive"/>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+                                            <div className="flex flex-col space-y-1.5 mb-5">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="grossDividendStockUnit"
+                                                    render={({field}) => (
+                                                        <FormItem>
+                                                            <FormLabel>{t('company_form_gross_dividend_stock_unit_label')}</FormLabel>
+                                                            <FormControl>
+                                                                <Input id="grossDividendStockUnit"
+                                                                       type="number" {...field}
+                                                                       disabled={mode === FormModeType.READ || isLoading}/>
+                                                            </FormControl>
+                                                            <FormMessage className="text-xs text-destructive"/>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </TabsContent>
+                                <TabsContent value="address">
+                                    <div className="flex flex-col lg:flex-row w-full gap-4">
+                                        <div className="lg:w-6/12 mb-4">
+                                            <div className="flex flex-col space-y-1.5 mb-5">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="address.street"
+                                                    render={({field}) => (
+                                                        <FormItem>
+                                                            <FormLabel>{t('company_form_address_street_label')}</FormLabel>
+                                                            <FormControl>
+                                                                <Input id="address.street" type="text" {...field}
+                                                                       disabled={mode === FormModeType.READ || isLoading}/>
+                                                            </FormControl>
+                                                            <FormMessage className="text-xs text-destructive"/>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+                                            <div className="flex flex-col space-y-1.5 mb-5">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="address.zipCode"
+                                                    render={({field}) => (
+                                                        <FormItem>
+                                                            <FormLabel>{t('company_form_address_zip_code_label')}</FormLabel>
+                                                            <FormControl>
+                                                                <Input id="address.zipCode" type="text" {...field}
+                                                                       disabled={mode === FormModeType.READ || isLoading}/>
+                                                            </FormControl>
+                                                            <FormMessage className="text-xs text-destructive"/>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="lg:w-6/12 mb-4">
+                                            <div className="flex flex-col space-y-1.5 mb-5">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="address.city"
+                                                    render={({field}) => (
+                                                        <FormItem>
+                                                            <FormLabel>{t('company_form_address_city_label')}</FormLabel>
+                                                            <FormControl>
+                                                                <Input id="address.city" type="text" {...field}
+                                                                       disabled={mode === FormModeType.READ || isLoading}/>
+                                                            </FormControl>
+                                                            <FormMessage className="text-xs text-destructive"/>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+                                            <div className="flex flex-col space-y-1.5 mb-5">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="address.country"
+                                                    render={() => (
+                                                        <FormItem>
+                                                            <FormLabel>{t('company_form_address_country_label')}</FormLabel>
+                                                            <FormControl>
+                                                                <Popover open={openCountryPopOver} onOpenChange={setOpenCountryPopOver}>
+                                                                    <PopoverTrigger asChild>
+                                                                        <Button
+                                                                            variant="outline"
+                                                                            role="combobox"
+                                                                            aria-expanded={openCountryPopOver}
+                                                                            className="w-full justify-between"
+                                                                            disabled={mode === FormModeType.READ || isLoading}
+                                                                        >
+                                                                    <span>{countryPopOverLabel
+                                                                        //@ts-ignore
+                                                                        ? t(countries.find((country) => country.label === countryPopOverLabel)?.label)
+                                                                        //@ts-ignore
+                                                                        : company ? t(countries.find((countryEdit) => countryEdit.name === company.address.country)?.label) : t('company_form_address_country_pop_over_place_holder')}</span>
+                                                                            <span
+                                                                                className="opacity-50 material-symbols-outlined">unfold_more</span>
+                                                                        </Button>
+                                                                    </PopoverTrigger>
+                                                                    <PopoverContent className="w-[--radix-popover-trigger-width]">
+                                                                        <Command>
+                                                                            <CommandInput id="type" placeholder={t('company_form_address_country_pop_over_place_holder')} />
+                                                                            <CommandList>
+                                                                                <Command>{t('company_form_pop_address_country_over_not_found')}</Command>
+                                                                                <CommandGroup>
+                                                                                    {countries.map((country) => (
+                                                                                        <CommandItem
+                                                                                            key={country.label}
+                                                                                            value={country.label}
+                                                                                            onSelect={(currentValue) => {
+                                                                                                setCountryPopOverLabel(currentValue === countryPopOverLabel ? "" : currentValue);
+                                                                                                setOpenCountryPopOver(false);
+                                                                                                form.setValue(
+                                                                                                    "address.country",
+                                                                                                    currentValue === countryPopOverLabel ? "" : country.name,
+                                                                                                    {shouldTouch: true, shouldDirty: true, shouldValidate: true}
+                                                                                                );
+                                                                                            }}
+                                                                                        >
+                                                                                    <span
+                                                                                        className={`mr-2 h-4 w-4 material-symbols-outlined ${countryPopOverLabel === country.label ? 'opacity-100' : 'opacity-0'}`}
+                                                                                    >check</span>
+                                                                                            {t(country.label)}
+                                                                                        </CommandItem>
+                                                                                    ))}
+                                                                                </CommandGroup>
+                                                                            </CommandList>
+                                                                        </Command>
+                                                                    </PopoverContent>
+                                                                </Popover>
+                                                            </FormControl>
+                                                            <FormMessage className="text-xs text-destructive"/>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </TabsContent>
+                                <TabsContent value="contact">
+                                    <div className="flex flex-col lg:flex-row w-full gap-4">
+                                        <div className="lg:w-6/12 mb-4">
+                                            <div className="flex flex-col space-y-1.5 mb-5">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="contact.name"
+                                                    render={({field}) => (
+                                                        <FormItem>
+                                                            <FormLabel>{t('company_form_contact_name_label')}</FormLabel>
+                                                            <FormControl>
+                                                                <Input id="contact.name" type="text" {...field}
+                                                                       disabled={mode === FormModeType.READ || isLoading}/>
+                                                            </FormControl>
+                                                            <FormMessage className="text-xs text-destructive"/>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+                                            <div className="flex flex-col space-y-1.5 mb-5">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="contact.email"
+                                                    render={({field}) => (
+                                                        <FormItem>
+                                                            <FormLabel>{t('company_form_contact_email_label')}</FormLabel>
+                                                            <FormControl>
+                                                                <Input id="contact.email" type="text" {...field}
+                                                                       disabled={mode === FormModeType.READ || isLoading}/>
+                                                            </FormControl>
+                                                            <FormMessage className="text-xs text-destructive"/>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="lg:w-6/12 mb-4">
+                                            <div className="flex flex-col space-y-1.5 mb-5">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="contact.fax"
+                                                    render={({field}) => (
+                                                        <FormItem>
+                                                            <FormLabel>{t('company_form_contact_fax_label')}</FormLabel>
+                                                            <FormControl>
+                                                                <Input id="contact.fax" type="text" {...field}
+                                                                       disabled={mode === FormModeType.READ || isLoading}/>
+                                                            </FormControl>
+                                                            <FormMessage className="text-xs text-destructive"/>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+                                            <div className="flex flex-col space-y-1.5 mb-5">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="contact.phone"
+                                                    render={({field}) => (
+                                                        <FormItem>
+                                                            <FormLabel>{t('company_form_contact_phone_label')}</FormLabel>
+                                                            <FormControl>
+                                                                <Input id="contact.phone" type="text" {...field}
+                                                                       disabled={mode === FormModeType.READ || isLoading}/>
+                                                            </FormControl>
+                                                            <FormMessage className="text-xs text-destructive"/>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </TabsContent>
+                                <TabsContent value="images">
+                                    <div className="flex flex-row justify-around items-start mt-8 gap-8">
+                                        <div
+                                            className="relative flex flex-col justify-center items-center w-72">
+                                            <img alt="..." className={`size-48 bg-neutral-100 object-cover
+                                flex flex-col items-center justify-center rounded-lg shadow-neutral-400 shadow-lg
+                                gap-4 transition-all duration-1000 hover:text-primary`}
+                                                //@ts-ignore
+                                                 src={logoPreview ? logoPreview : company ? showString64Image(company.logoEncoded, company.logoMimeType) : getImageUrl(DEFAULT_COMPANY_LOGO_IMAGE)}/>
+                                            <input
+                                                className={`absolute top-0 size-48 opacity-0 ${mode === FormModeType.READ || isLoading ? 'cursor-auto' : 'cursor-pointer'}`}
+                                                accept="image/x-png, image/jpeg" type="file"
+                                                disabled={mode === FormModeType.READ || isLoading}
+                                                onChange={handleLogoChange}/>
+
+                                        </div>
+                                        <div
+                                            className="relative flex flex-col justify-center items-center w-72">
+                                            <img alt="..." className={`size-48 bg-neutral-100 object-cover
+                                flex flex-col items-center justify-center rounded-lg shadow-neutral-400 shadow-lg
+                                gap-4 transition-all duration-1000 hover:text-primary`}
+                                                //@ts-ignore
+                                                 src={stampPreview ? stampPreview : company ? showString64Image(company.stampEncoded, company.stampMimeType) : getImageUrl(DEFAULT_COMPANY_STAMP_IMAGE)}/>
+                                            <input
+                                                className={`absolute top-0 size-48 opacity-0 ${mode === FormModeType.READ || isLoading ? 'cursor-auto' : 'cursor-pointer'}`}
+                                                accept="image/x-png, image/jpeg" type="file"
+                                                disabled={mode === FormModeType.READ || isLoading}
+                                                onChange={handleStampChange}/>
+
+                                        </div>
+                                    </div>
+                                </TabsContent>
+                            </Tabs>
+                        </CardContent>
                     </Card>
                 </form>
             </Form>

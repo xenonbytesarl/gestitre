@@ -1,4 +1,4 @@
-import {Role} from "@/pages/admin/user/Role.ts";
+import {RoleModel} from "@/pages/admin/user/RoleModel.ts";
 import {TimezoneEnum} from "@/pages/admin/user/TimezoneEnum.ts";
 
 export interface UserModel {
@@ -7,7 +7,7 @@ export interface UserModel {
     email: string;
     password: string;
     confirmPassword: string;
-    roles: Array<Role>;
+    roles: Array<RoleModel>;
     companyId: string;
     tenantId?: string;
     timezone: TimezoneEnum;

@@ -15,6 +15,7 @@ const userInitialState = userEntityAdapter.getInitialState({
     currentUser: null as any,
     pageSize: DEFAULT_SIZE_VALUE,
     totalElements: 0,
+    roles: [],
     totalPages: 0,
     message: '',
     error: null
@@ -33,6 +34,16 @@ export const findUserById = createAsyncThunk('user/findUserById', async (userId:
 export const searchUsers = createAsyncThunk('user/searchUsers', async (searchParam: SearchParamModel, {rejectWithValue})=> {
     try {
         const response =  await userService.searchUsers(searchParam);
+        // @ts-ignore
+        return {content: response.data.data.content, message: response.data.message}
+    } catch (apiError) {
+        return handleApiError(apiError as AxiosError<ErrorResponseModel>, {rejectWithValue});
+    }
+});
+
+export const searchRoles = createAsyncThunk('user/searchRoles', async (searchParam: SearchParamModel, {rejectWithValue})=> {
+    try {
+        const response =  await userService.searchRoles(searchParam);
         // @ts-ignore
         return {content: response.data.data.content, message: response.data.message}
     } catch (apiError) {
@@ -76,6 +87,11 @@ const userSlice = createSlice({
                 state.totalPages = content.totalPages as number;
                 userEntityAdapter.setAll(state, content.elements);
             })
+            .addCase(searchRoles.fulfilled, (state, action) => {
+                const {content} = action.payload;
+                state.loading = false;
+                state.roles = content.elements;
+            })
             .addCase(findUserById.fulfilled, (state, action) => {
                 const {content} = action.payload;
                 state.loading = false;
@@ -84,7 +100,10 @@ const userSlice = createSlice({
             })
             .addMatcher(
                 isAnyOf(
-                    searchUsers.pending
+                    createUser.pending,
+                    findUserById.pending,
+                    searchUsers.pending,
+                    searchRoles.pending
                 ), (state) => {
                     state.loading = true;
                     state.message = '';
@@ -94,7 +113,10 @@ const userSlice = createSlice({
             )
             .addMatcher(
                 isAnyOf(
-                    searchUsers.rejected
+                    createUser.rejected,
+                    findUserById.rejected,
+                    searchUsers.rejected,
+                    searchRoles.rejected
                 ), (state, action) => {
                     state.loading = false;
                     state.message = '';
@@ -110,6 +132,7 @@ export const getTotalElements = (state: RootState) => state.admin.user.totalElem
 export const getTotalPages = (state: RootState) => state.admin.user.totalPages;
 export const getMessage = (state: RootState) => state.admin.user.message;
 export const getCurrentUser = (state: RootState) => state.admin.user.currentUser;
+export const getRoles = (state: RootState) => state.admin.user.roles;
 export const getError = (state: RootState) => state.admin.user.error;
 export const getLoading = (state: RootState) => state.admin.user.loading;
 

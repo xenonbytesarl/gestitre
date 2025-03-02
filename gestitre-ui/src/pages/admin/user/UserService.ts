@@ -4,6 +4,7 @@ import {PageModel} from "@/shared/model/pageModel.ts";
 import api from "@/core/Api.ts";
 import {API_JSON_HEADER} from "@/shared/constant/globalConstant.ts";
 import {UserModel} from "@/pages/admin/user/UserModel.ts";
+import {RoleModel} from "@/pages/admin/user/RoleModel.ts";
 
 
 const findUserById = async (userId: string): Promise<SuccessResponseModel<UserModel>> => {
@@ -21,6 +22,14 @@ const searchUsers = async (searchParam: SearchParamModel): Promise<SuccessRespon
         });
 }
 
+const searchRoles = async (searchParam: SearchParamModel): Promise<SuccessResponseModel<PageModel<RoleModel>>> => {
+    return await api.get('/users/roles/search',
+        {
+            params: {...searchParam},
+            headers: API_JSON_HEADER
+        });
+}
+
 const createUser = async (user: UserModel): Promise<SuccessResponseModel<UserModel>> => {
     return await api.post('/users', user,
         {
@@ -31,6 +40,7 @@ const createUser = async (user: UserModel): Promise<SuccessResponseModel<UserMod
 const userService = {
     findUserById,
     searchUsers,
+    searchRoles,
     createUser
 };
 

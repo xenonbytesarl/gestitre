@@ -44,11 +44,15 @@
   "verify_code_form_button_label_validate": "Valider",
 
 
-  "company_form_edit_title": "",
-  "company_form_new_title": "",
+  "company_form_edit_title": "Nouvelle société",
+  "company_form_new_title": "Modifier une société",
   "company_form_company_name_label": "Dénomination Sociale",
   "company_form_company_name_required_message": "Valeur obligatoire",
   "company_form_company_name_max_length_message": "La valeur doit être au maximum 64 charactères",
+  "company_form_code_label": "Code",
+  "company_form_code_required_message": "Valeur obligatoire",
+  "company_form_code_max_length_message": "La valeur doit être au maximum 16 charactères",
+  "company_form_code_min_length_message": "La valeur doit être au maximum 8 charactères",
   "company_form_company_manager_name_label": "Nom du directeur",
   "company_form_company_manager_name_required_message": "Valeur obligatoire",
   "company_form_company_manager_name_max_length_message": "La valeur doit être au maximum 64 charactères",
@@ -118,7 +122,59 @@
   "company_tree_isin_code": "Code ISIN",
   "company_tree_address": "Adresse",
   "company_tree_created_date": "Crée le",
-  "company_tree_licence": "Fin de licence"
+  "company_tree_licence": "Fin de licence",
+
+  "user_form_new_title": "Nouvel utilisateur",
+  "user_form_edit_title": "Modifier un utilisateur",
+  "user_form_name_label": "Nom & prénom",
+  "user_form_name_required_message": "Valeur obligatoire",
+  "user_form_name_max_length_message": "La valeur doit avoir au maximum 128 charactères",
+  "user_form_email_label": "Email",
+  "user_form_email_required_message": "Valeur obligatoire",
+  "user_form_email_invalid_message": "Email invalide",
+  "user_form_email_max_length_message": "La valeur doit avoir au maximum 128 charactères",
+  "user_form_password_label": "Mot de passe",
+  "user_form_password_required_message": "La valeur est obligatoire",
+  "user_form_password_min_length_message": "La valeur doit avoir au minimum 6 charactère",
+  "user_form_confirm_password_label": "Confirmer mot de passe",
+  "user_form_confirm_password_required_message": "La valeur est obligatoire",
+  "user_form_confirm_password_min_length_message": "La valeur doit avoir au minimum 6 charactère",
+  "user_form_timezone_label": "Fuseau Horaire",
+  "user_form_timezone_required_message": "La valeur est obligatoire",
+  "user_form_timezone_pop_over_place_holder": "Selectionner un fuseau horaire",
+  "user_form_pop_timezone_over_not_found": "Fuseau horaure introuvable",
+  "user_form_timezone_africa_brazaville": "Africa/Brazaville",
+  "user_form_timezone_africa_douala": "Africa/Douala",
+  "user_form_timezone_africa_kinshasa": "Africa/Kinshasa",
+  "user_form_timezone_africa_libreville": "Africa/Libreville",
+  "user_form_timezone_europe_paris": "Europe/Paris",
+  "user_form_timezone_america_los_angeles": "America/Los_Angeles",
+  "user_form_company_id_label": "Société",
+  "user_form_company_id_required_message": "La valeur est obligatoire",
+  "user_form_company_id_pop_over_place_holder": "Selectionner une société",
+  "user_form_pop_company_id_over_not_found": "Société introuvable",
+  "user_form_tab_security": "Sécurité",
+  "user_form_tab_status": "Status du compte",
+  "company_form_roles_label": "Role",
+  "user_form_roles_pop_over_place_holder": "Selectionné un role",
+  "user_form_roles_required_message": "La valeur est obligatoire",
+  "user_form_role_id_required_message": "l'id du role est obligatoire",
+  "user_form_roles_name_required_message": "Le nom du role est obligatoire",
+  "user_form_pop_roles_over_not_found": "Role introuvable",
+  "user_form_mfa_label": "Double authentification",
+  "user_form_failed_login_attempt_label": "Nombre d'echec de tenantative de connexion",
+  "user_form_failed_login_attempt_positive_message": "La valeur doit être positive ou zero",
+  "user_form_account_enabled_label": "Compte activé",
+  "user_form_account_locked_label": "Compte bloqué",
+  "user_form_account_expired_label": "Compte expiré",
+  "user_form_credential_expired_label": "Mot de passe expiré"
+
+
+
+
+
+
+
 
 
 }

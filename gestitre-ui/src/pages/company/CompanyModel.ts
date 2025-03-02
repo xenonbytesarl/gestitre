@@ -5,6 +5,7 @@ import {ContactModel} from "@/pages/company/ContactModel.ts";
 
 export interface CompanyModel {
     id: string;
+    code: string;
     companyName: string;
     companyManagerName: string;
     licence: LicenceEnum | "";
