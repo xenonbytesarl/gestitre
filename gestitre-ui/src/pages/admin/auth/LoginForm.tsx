@@ -38,8 +38,8 @@ const LoginForm = () => {
 
     const defaultLoginRequestModel: LoginRequestModel = {
         tenantCode: "CM20250201",
-        email: "rmbiandji@roxaneevent.com",
-        password: "123456"
+        email: "ambiandji@gmail.com",
+        password: "gestitre123!"
     }
 
     const form = useForm<z.infer<typeof LoginSchema>>({
@@ -58,8 +58,8 @@ const LoginForm = () => {
     }
 
     const onSubmit = () => {
-        const loginRequest: LoginRequestModel = form.getValues() as LoginRequestModel;
-        dispatch(login({loginRequest}))
+        const loginFormValue: LoginRequestModel = form.getValues() as LoginRequestModel;
+        dispatch(login({loginRequest: loginFormValue}))
             .then(unwrapResult)
             .then((response) => {
                 showToast("success", response.message);
@@ -67,8 +67,8 @@ const LoginForm = () => {
                     dispatch(persistAuthentication({ accessToken: response.content.accessToken, refreshToken: response.content.refreshToken}));
                     navigate(redirectUrl);
                 } else {
-                    dispatch(persistMfa({email: loginRequest.email, tenantCode: loginRequest.tenantCode}));
-                    navigate(`/admin/auth/verify-code?${REDIRECT}=${encodeURIComponent(redirectUrl)}`, { state: {'email': loginRequest.email, tenantCode: loginRequest.tenantCode}});
+                    dispatch(persistMfa({email: loginFormValue.email, tenantCode: loginFormValue.tenantCode}));
+                    navigate(`/admin/auth/verify-code?${REDIRECT}=${encodeURIComponent(redirectUrl)}`, { state: {'email': loginFormValue.email, tenantCode: loginFormValue.tenantCode}});
                 }
             })
             .catch((error) => {

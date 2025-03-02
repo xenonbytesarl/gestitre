@@ -34,7 +34,7 @@ export const sidebarMenus: SidebarMenuModel[] = [
     {
         label: 'sidebar_menu_user',
         icon: 'supervisor_account',
-        link: '/users',
+        link: '/admin/users',
     },
     {
         label: 'sidebar_menu_about',

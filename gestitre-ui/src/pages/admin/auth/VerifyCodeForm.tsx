@@ -82,10 +82,10 @@ const VerifyCodeForm = () => {
             description: t(message),
         });
     }
-console.log(verifyCodeInfo)
+
     const onSubmit = () => {
-        const verifyCodeRequest: VerifyCodeRequestModel = form.getValues() as VerifyCodeRequestModel;
-        dispatch(verifyCode({verifyCodeRequest}))
+        const verifyCodeFormValue: VerifyCodeRequestModel = form.getValues() as VerifyCodeRequestModel;
+        dispatch(verifyCode({verifyCodeRequest: verifyCodeFormValue}))
             .then(unwrapResult)
             .then((response) => {
                 console.log(response.message);
