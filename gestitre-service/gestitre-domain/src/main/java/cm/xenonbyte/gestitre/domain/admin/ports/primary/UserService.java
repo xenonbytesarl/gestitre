@@ -42,4 +42,6 @@ public interface UserService {
     @Nonnull PageInfo<User> searchUsers(PageInfoPage pageInfoPage, PageInfoSize pageInfoSize, PageInfoField pageInfoField, PageInfoDirection pageInfoDirection, Keyword keyword);
 
     @Nonnull Text refreshAccessToken(Text refreshToken);
+
+    @Nonnull User getProfile(@Nonnull Text accessToken);
 }

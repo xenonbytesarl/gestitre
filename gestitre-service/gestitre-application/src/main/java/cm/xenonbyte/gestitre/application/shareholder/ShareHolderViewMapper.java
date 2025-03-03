@@ -1,14 +1,14 @@
 package cm.xenonbyte.gestitre.application.shareholder;
 
+import cm.xenonbyte.gestitre.application.shareholder.dto.CreateShareHolderResponseView;
 import cm.xenonbyte.gestitre.application.shareholder.dto.CreateShareHolderViewRequest;
-import cm.xenonbyte.gestitre.application.shareholder.dto.CreateShareHolderViewResponse;
-import cm.xenonbyte.gestitre.application.shareholder.dto.FindShareHolderByIdViewResponse;
+import cm.xenonbyte.gestitre.application.shareholder.dto.FindShareHolderByIdResponseView;
 import cm.xenonbyte.gestitre.application.shareholder.dto.FindShareHoldersPageInfoViewResponse;
-import cm.xenonbyte.gestitre.application.shareholder.dto.FindShareHoldersViewResponse;
+import cm.xenonbyte.gestitre.application.shareholder.dto.FindShareHoldersResponseView;
 import cm.xenonbyte.gestitre.application.shareholder.dto.RepresentativeView;
 import cm.xenonbyte.gestitre.application.shareholder.dto.SuccessorView;
-import cm.xenonbyte.gestitre.application.shareholder.dto.UpdateShareShareHolderViewRequest;
-import cm.xenonbyte.gestitre.application.shareholder.dto.UpdateShareHolderViewResponse;
+import cm.xenonbyte.gestitre.application.shareholder.dto.UpdateShareHolderResponseView;
+import cm.xenonbyte.gestitre.application.shareholder.dto.UpdateShareShareHolderRequestView;
 import cm.xenonbyte.gestitre.domain.common.vo.Email;
 import cm.xenonbyte.gestitre.domain.common.vo.Name;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfo;
@@ -41,7 +41,7 @@ public interface ShareHolderViewMapper {
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "name", target="name.text.value")
     @Mapping(source = "accountNumber", target="accountNumber.text.value")
-    @Mapping(expression = "java(cm.xenonbyte.gestitre.domain.shareholder.vo.AccountType.valueOf(createShareHolderViewRequest.getAccountTypeView().name()))", target="accountType")
+    @Mapping(expression = "java(cm.xenonbyte.gestitre.domain.shareholder.vo.AccountType.valueOf(createShareHolderViewRequest.getAccountType().name()))", target="accountType")
     @Mapping(source = "taxResidence", target="taxResidence.text.value")
     @Mapping(expression = "java(createShareHolderViewRequest.getInitialBalance() == null? null: cm.xenonbyte.gestitre.domain.common.vo.Money.of(createShareHolderViewRequest.getInitialBalance()))", target="initialBalance")
     @Mapping(expression = "java(createShareHolderViewRequest.getBankAccountNumber() == null || createShareHolderViewRequest.getBankAccountNumber().isEmpty()? null: cm.xenonbyte.gestitre.domain.shareholder.vo.BankAccountNumber.of(cm.xenonbyte.gestitre.domain.common.vo.Text.of(createShareHolderViewRequest.getBankAccountNumber())))", target="bankAccountNumber")
@@ -50,10 +50,10 @@ public interface ShareHolderViewMapper {
     @Mapping(expression = "java(createShareHolderViewRequest.getPhone() == null || createShareHolderViewRequest.getPhone().isEmpty()? null: cm.xenonbyte.gestitre.domain.common.vo.Phone.of(cm.xenonbyte.gestitre.domain.common.vo.Text.of(createShareHolderViewRequest.getPhone())))", target="phone")
     @Mapping(expression = "java(createShareHolderViewRequest.getCity() == null || createShareHolderViewRequest.getCity().isEmpty()? null: cm.xenonbyte.gestitre.domain.common.vo.City.of(cm.xenonbyte.gestitre.domain.common.vo.Text.of(createShareHolderViewRequest.getCity())))", target="city")
     @Mapping(expression = "java(createShareHolderViewRequest.getZipCode() == null || createShareHolderViewRequest.getZipCode().isEmpty()? null: cm.xenonbyte.gestitre.domain.common.vo.ZipCode.of(cm.xenonbyte.gestitre.domain.common.vo.Text.of(createShareHolderViewRequest.getZipCode())))", target="zipCode")
-    @Mapping(expression = "java(createShareHolderViewRequest.getShareHolderTypeView() == null? null: cm.xenonbyte.gestitre.domain.shareholder.vo.ShareHolderType.valueOf(createShareHolderViewRequest.getShareHolderTypeView().name()))", target="shareHolderType")
+    @Mapping(expression = "java(createShareHolderViewRequest.getShareHolderType() == null? null: cm.xenonbyte.gestitre.domain.shareholder.vo.ShareHolderType.valueOf(createShareHolderViewRequest.getShareHolderType().name()))", target="shareHolderType")
     @Mapping(expression = "java(createShareHolderViewRequest.getActive() == null? null: cm.xenonbyte.gestitre.domain.common.vo.Active.with(createShareHolderViewRequest.getActive()))", target="active")
-    @Mapping(source = "representativeView", qualifiedByName = "representativeViewRequestToRepresentative", target = "representative")
-    @Mapping(source = "successorView", qualifiedByName = "successorViewRequestToSuccessor", target = "successor")
+    @Mapping(source = "representative", qualifiedByName = "representativeViewRequestToRepresentative", target = "representative")
+    @Mapping(source = "successor", qualifiedByName = "successorViewRequestToSuccessor", target = "successor")
     @Mapping(expression = "java(createShareHolderViewRequest.getCreatedDate().withZoneSameInstant(java.time.ZoneOffset.UTC))", target="createdDate")
     @Nonnull ShareHolder toShareHolder(@Nonnull @Valid CreateShareHolderViewRequest createShareHolderViewRequest);
 
@@ -96,7 +96,7 @@ public interface ShareHolderViewMapper {
     @Mapping(source = "id.value", target = "id")
     @Mapping(source = "name.text.value", target = "name")
     @Mapping(source = "accountNumber.text.value", target = "accountNumber")
-    @Mapping(expression = "java(cm.xenonbyte.gestitre.application.shareholder.dto.AccountTypeView.valueOf(shareHolder.getAccountType().name()))", target = "accountTypeView")
+    @Mapping(expression = "java(cm.xenonbyte.gestitre.application.shareholder.dto.AccountTypeView.valueOf(shareHolder.getAccountType().name()))", target = "accountType")
     @Mapping(source = "taxResidence.text.value", target = "taxResidence")
     @Mapping(expression = "java(shareHolder.getInitialBalance() == null? null: shareHolder.getInitialBalance().value())", target="initialBalance")
     @Mapping(expression = "java(shareHolder.getBankAccountNumber() == null || shareHolder.getBankAccountNumber().text().value().isEmpty()? null: shareHolder.getBankAccountNumber().text().value())", target="bankAccountNumber")
@@ -105,13 +105,14 @@ public interface ShareHolderViewMapper {
     @Mapping(expression = "java(shareHolder.getPhone() == null || shareHolder.getPhone().text().value().isEmpty()? null: shareHolder.getPhone().text().value())", target="phone")
     @Mapping(expression = "java(shareHolder.getCity() == null || shareHolder.getCity().text().value().isEmpty()? null: shareHolder.getCity().text().value())", target="city")
     @Mapping(expression = "java(shareHolder.getZipCode() == null || shareHolder.getZipCode().text().value().isEmpty()? null: shareHolder.getZipCode().text().value())", target="zipCode")
-    @Mapping(expression = "java(shareHolder.getShareHolderType() == null? null: cm.xenonbyte.gestitre.application.shareholder.dto.ShareHolderTypeView.valueOf(shareHolder.getShareHolderType().name()))", target="shareHolderTypeView")
+    @Mapping(expression = "java(shareHolder.getShareHolderType() == null? null: cm.xenonbyte.gestitre.application.shareholder.dto.ShareHolderTypeView.valueOf(shareHolder.getShareHolderType().name()))", target="shareHolderType")
     @Mapping(expression = "java(shareHolder.getActive() == null? null: shareHolder.getActive().value())", target="active")
-    @Mapping(source = "representative", qualifiedByName = "representativeToRepresentativeView", target = "representativeView")
-    @Mapping(source = "successor", qualifiedByName = "successorToSuccessorView", target = "successorView")
+    @Mapping(source = "representative", qualifiedByName = "representativeToRepresentativeView", target = "representative")
+    @Mapping(source = "successor", qualifiedByName = "successorToSuccessorView", target = "successor")
     @Mapping(expression = "java(cm.xenonbyte.gestitre.domain.context.TimezoneContext.current() == null? null: shareHolder.getCreatedDate().withZoneSameInstant(java.time.ZoneId.of(cm.xenonbyte.gestitre.domain.context.TimezoneContext.current().getName())))", target="createdDate")
     @Mapping(source = "tenantId.value", target="tenantId")
-    @Nonnull @Valid CreateShareHolderViewResponse toCreateShareHolderViewResponse(ShareHolder shareHolder);
+    @Nonnull @Valid
+    CreateShareHolderResponseView toCreateShareHolderViewResponse(ShareHolder shareHolder);
 
     @Named("representativeToRepresentativeView")
     default RepresentativeView toRepresentativeView(Representative representative) {
@@ -162,14 +163,14 @@ public interface ShareHolderViewMapper {
 
 
     @Named("toFindShareHolderViewResponses")
-    @Nonnull @Valid List<FindShareHoldersViewResponse> toFindShareHolderViewResponses(@Nonnull List<ShareHolder> shareHolders);
+    @Nonnull @Valid List<FindShareHoldersResponseView> toFindShareHolderViewResponses(@Nonnull List<ShareHolder> shareHolders);
 
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "id.value", target = "id")
     @Mapping(source = "name.text.value", target = "name")
     @Mapping(source = "accountNumber.text.value", target = "accountNumber")
-    @Mapping(expression = "java(cm.xenonbyte.gestitre.application.shareholder.dto.AccountTypeView.valueOf(shareHolder.getAccountType().name()))", target = "accountTypeView")
+    @Mapping(expression = "java(cm.xenonbyte.gestitre.application.shareholder.dto.AccountTypeView.valueOf(shareHolder.getAccountType().name()))", target = "accountType")
     @Mapping(source = "taxResidence.text.value", target = "taxResidence")
     @Mapping(expression = "java(shareHolder.getInitialBalance() == null? null: shareHolder.getInitialBalance().value())", target="initialBalance")
     @Mapping(expression = "java(shareHolder.getBankAccountNumber() == null || shareHolder.getBankAccountNumber().text().value().isEmpty()? null: shareHolder.getBankAccountNumber().text().value())", target="bankAccountNumber")
@@ -178,19 +179,19 @@ public interface ShareHolderViewMapper {
     @Mapping(expression = "java(shareHolder.getPhone() == null || shareHolder.getPhone().text().value().isEmpty()? null: shareHolder.getPhone().text().value())", target="phone")
     @Mapping(expression = "java(shareHolder.getCity() == null || shareHolder.getCity().text().value().isEmpty()? null: shareHolder.getCity().text().value())", target="city")
     @Mapping(expression = "java(shareHolder.getZipCode() == null || shareHolder.getZipCode().text().value().isEmpty()? null: shareHolder.getZipCode().text().value())", target="zipCode")
-    @Mapping(expression = "java(shareHolder.getShareHolderType() == null? null: cm.xenonbyte.gestitre.application.shareholder.dto.ShareHolderTypeView.valueOf(shareHolder.getShareHolderType().name()))", target="shareHolderTypeView")
+    @Mapping(expression = "java(shareHolder.getShareHolderType() == null? null: cm.xenonbyte.gestitre.application.shareholder.dto.ShareHolderTypeView.valueOf(shareHolder.getShareHolderType().name()))", target="shareHolderType")
     @Mapping(expression = "java(shareHolder.getActive() == null? null: shareHolder.getActive().value())", target="active")
-    @Mapping(source = "representative", qualifiedByName = "representativeToRepresentativeView", target = "representativeView")
-    @Mapping(source = "successor", qualifiedByName = "successorToSuccessorView", target = "successorView")
+    @Mapping(source = "representative", qualifiedByName = "representativeToRepresentativeView", target = "representative")
+    @Mapping(source = "successor", qualifiedByName = "successorToSuccessorView", target = "successor")
     @Mapping(expression = "java(cm.xenonbyte.gestitre.domain.context.TimezoneContext.current() == null? null: shareHolder.getCreatedDate().withZoneSameInstant(java.time.ZoneId.of(cm.xenonbyte.gestitre.domain.context.TimezoneContext.current().getName())))", target="createdDate")
     @Mapping(source = "tenantId.value", target="tenantId")
-    @Nonnull @Valid FindShareHoldersViewResponse toFindShareHolderViewResponse(ShareHolder shareHolder);
+    @Nonnull @Valid FindShareHoldersResponseView toFindShareHolderViewResponse(ShareHolder shareHolder);
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "id", target="id.value")
     @Mapping(source = "name", target="name.text.value")
     @Mapping(source = "accountNumber", target="accountNumber.text.value")
-    @Mapping(expression = "java(cm.xenonbyte.gestitre.domain.shareholder.vo.AccountType.valueOf(updateShareHolderViewRequest.getAccountTypeView().name()))", target="accountType")
+    @Mapping(expression = "java(cm.xenonbyte.gestitre.domain.shareholder.vo.AccountType.valueOf(updateShareHolderViewRequest.getAccountType().name()))", target="accountType")
     @Mapping(source = "taxResidence", target="taxResidence.text.value")
     @Mapping(expression = "java(updateShareHolderViewRequest.getInitialBalance() == null? null: cm.xenonbyte.gestitre.domain.common.vo.Money.of(updateShareHolderViewRequest.getInitialBalance()))", target="initialBalance")
     @Mapping(expression = "java(updateShareHolderViewRequest.getBankAccountNumber() == null || updateShareHolderViewRequest.getBankAccountNumber().isEmpty()? null: cm.xenonbyte.gestitre.domain.shareholder.vo.BankAccountNumber.of(cm.xenonbyte.gestitre.domain.common.vo.Text.of(updateShareHolderViewRequest.getBankAccountNumber())))", target="bankAccountNumber")
@@ -199,18 +200,18 @@ public interface ShareHolderViewMapper {
     @Mapping(expression = "java(updateShareHolderViewRequest.getPhone() == null || updateShareHolderViewRequest.getPhone().isEmpty()? null: cm.xenonbyte.gestitre.domain.common.vo.Phone.of(cm.xenonbyte.gestitre.domain.common.vo.Text.of(updateShareHolderViewRequest.getPhone())))", target="phone")
     @Mapping(expression = "java(updateShareHolderViewRequest.getCity() == null || updateShareHolderViewRequest.getCity().isEmpty()? null: cm.xenonbyte.gestitre.domain.common.vo.City.of(cm.xenonbyte.gestitre.domain.common.vo.Text.of(updateShareHolderViewRequest.getCity())))", target="city")
     @Mapping(expression = "java(updateShareHolderViewRequest.getZipCode() == null || updateShareHolderViewRequest.getZipCode().isEmpty()? null: cm.xenonbyte.gestitre.domain.common.vo.ZipCode.of(cm.xenonbyte.gestitre.domain.common.vo.Text.of(updateShareHolderViewRequest.getZipCode())))", target="zipCode")
-    @Mapping(expression = "java(updateShareHolderViewRequest.getShareHolderTypeView() == null? null: cm.xenonbyte.gestitre.domain.shareholder.vo.ShareHolderType.valueOf(updateShareHolderViewRequest.getShareHolderTypeView().name()))", target="shareHolderType")
+    @Mapping(expression = "java(updateShareHolderViewRequest.getShareHolderType() == null? null: cm.xenonbyte.gestitre.domain.shareholder.vo.ShareHolderType.valueOf(updateShareHolderViewRequest.getShareHolderType().name()))", target="shareHolderType")
     @Mapping(expression = "java(updateShareHolderViewRequest.getActive() == null? null: cm.xenonbyte.gestitre.domain.common.vo.Active.with(updateShareHolderViewRequest.getActive()))", target="active")
-    @Mapping(source = "representativeView", qualifiedByName = "representativeViewRequestToRepresentative", target = "representative")
-    @Mapping(source = "successorView", qualifiedByName = "successorViewRequestToSuccessor", target = "successor")
+    @Mapping(source = "representative", qualifiedByName = "representativeViewRequestToRepresentative", target = "representative")
+    @Mapping(source = "successor", qualifiedByName = "successorViewRequestToSuccessor", target = "successor")
     @Mapping(expression = "java(updateShareHolderViewRequest.getCreatedDate().withZoneSameInstant(java.time.ZoneOffset.UTC))", target="createdDate")
-    @Nonnull ShareHolder toShareHolder(@Nonnull @Valid UpdateShareShareHolderViewRequest updateShareHolderViewRequest);
+    @Nonnull ShareHolder toShareHolder(@Nonnull @Valid UpdateShareShareHolderRequestView updateShareHolderViewRequest);
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "id.value", target = "id")
     @Mapping(source = "name.text.value", target = "name")
     @Mapping(source = "accountNumber.text.value", target = "accountNumber")
-    @Mapping(expression = "java(cm.xenonbyte.gestitre.application.shareholder.dto.AccountTypeView.valueOf(shareHolder.getAccountType().name()))", target = "accountTypeView")
+    @Mapping(expression = "java(cm.xenonbyte.gestitre.application.shareholder.dto.AccountTypeView.valueOf(shareHolder.getAccountType().name()))", target = "accountType")
     @Mapping(source = "taxResidence.text.value", target = "taxResidence")
     @Mapping(expression = "java(shareHolder.getInitialBalance() == null? null: shareHolder.getInitialBalance().value())", target="initialBalance")
     @Mapping(expression = "java(shareHolder.getBankAccountNumber() == null || shareHolder.getBankAccountNumber().text().value().isEmpty()? null: shareHolder.getBankAccountNumber().text().value())", target="bankAccountNumber")
@@ -219,19 +220,19 @@ public interface ShareHolderViewMapper {
     @Mapping(expression = "java(shareHolder.getPhone() == null || shareHolder.getPhone().text().value().isEmpty()? null: shareHolder.getPhone().text().value())", target="phone")
     @Mapping(expression = "java(shareHolder.getCity() == null || shareHolder.getCity().text().value().isEmpty()? null: shareHolder.getCity().text().value())", target="city")
     @Mapping(expression = "java(shareHolder.getZipCode() == null || shareHolder.getZipCode().text().value().isEmpty()? null: shareHolder.getZipCode().text().value())", target="zipCode")
-    @Mapping(expression = "java(shareHolder.getShareHolderType() == null? null: cm.xenonbyte.gestitre.application.shareholder.dto.ShareHolderTypeView.valueOf(shareHolder.getShareHolderType().name()))", target="shareHolderTypeView")
+    @Mapping(expression = "java(shareHolder.getShareHolderType() == null? null: cm.xenonbyte.gestitre.application.shareholder.dto.ShareHolderTypeView.valueOf(shareHolder.getShareHolderType().name()))", target="shareHolderType")
     @Mapping(expression = "java(shareHolder.getActive() == null? null: shareHolder.getActive().value())", target="active")
-    @Mapping(source = "representative", qualifiedByName = "representativeToRepresentativeView", target = "representativeView")
-    @Mapping(source = "successor", qualifiedByName = "successorToSuccessorView", target = "successorView")
+    @Mapping(source = "representative", qualifiedByName = "representativeToRepresentativeView", target = "representative")
+    @Mapping(source = "successor", qualifiedByName = "successorToSuccessorView", target = "successor")
     @Mapping(expression = "java(cm.xenonbyte.gestitre.domain.context.TimezoneContext.current() == null? null: shareHolder.getCreatedDate().withZoneSameInstant(java.time.ZoneId.of(cm.xenonbyte.gestitre.domain.context.TimezoneContext.current().getName())))", target="createdDate")
     @Mapping(expression = "java(shareHolder.getTenantId().getValue() == null? cm.xenonbyte.gestitre.domain.context.TenantContext.current(): shareHolder.getId().getValue())", target="tenantId")
-    @Nonnull @Valid UpdateShareHolderViewResponse toUpdateShareHolderViewResponse(@Nonnull ShareHolder shareHolder);
+    @Nonnull @Valid UpdateShareHolderResponseView toUpdateShareHolderViewResponse(@Nonnull ShareHolder shareHolder);
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "id.value", target = "id")
     @Mapping(source = "name.text.value", target = "name")
     @Mapping(source = "accountNumber.text.value", target = "accountNumber")
-    @Mapping(expression = "java(cm.xenonbyte.gestitre.application.shareholder.dto.AccountTypeView.valueOf(shareHolder.getAccountType().name()))", target = "accountTypeView")
+    @Mapping(expression = "java(cm.xenonbyte.gestitre.application.shareholder.dto.AccountTypeView.valueOf(shareHolder.getAccountType().name()))", target = "accountType")
     @Mapping(source = "taxResidence.text.value", target = "taxResidence")
     @Mapping(expression = "java(shareHolder.getInitialBalance() == null? null: shareHolder.getInitialBalance().value())", target="initialBalance")
     @Mapping(expression = "java(shareHolder.getBankAccountNumber() == null || shareHolder.getBankAccountNumber().text().value().isEmpty()? null: shareHolder.getBankAccountNumber().text().value())", target="bankAccountNumber")
@@ -240,11 +241,12 @@ public interface ShareHolderViewMapper {
     @Mapping(expression = "java(shareHolder.getPhone() == null || shareHolder.getPhone().text().value().isEmpty()? null: shareHolder.getPhone().text().value())", target="phone")
     @Mapping(expression = "java(shareHolder.getCity() == null || shareHolder.getCity().text().value().isEmpty()? null: shareHolder.getCity().text().value())", target="city")
     @Mapping(expression = "java(shareHolder.getZipCode() == null || shareHolder.getZipCode().text().value().isEmpty()? null: shareHolder.getZipCode().text().value())", target="zipCode")
-    @Mapping(expression = "java(shareHolder.getShareHolderType() == null? null: cm.xenonbyte.gestitre.application.shareholder.dto.ShareHolderTypeView.valueOf(shareHolder.getShareHolderType().name()))", target="shareHolderTypeView")
+    @Mapping(expression = "java(shareHolder.getShareHolderType() == null? null: cm.xenonbyte.gestitre.application.shareholder.dto.ShareHolderTypeView.valueOf(shareHolder.getShareHolderType().name()))", target="shareHolderType")
     @Mapping(expression = "java(shareHolder.getActive() == null? null: shareHolder.getActive().value())", target="active")
-    @Mapping(source = "representative", qualifiedByName = "representativeToRepresentativeView", target = "representativeView")
-    @Mapping(source = "successor", qualifiedByName = "successorToSuccessorView", target = "successorView")
+    @Mapping(source = "representative", qualifiedByName = "representativeToRepresentativeView", target = "representative")
+    @Mapping(source = "successor", qualifiedByName = "successorToSuccessorView", target = "successor")
     @Mapping(expression = "java(cm.xenonbyte.gestitre.domain.context.TimezoneContext.current() == null? null: shareHolder.getCreatedDate().withZoneSameInstant(java.time.ZoneId.of(cm.xenonbyte.gestitre.domain.context.TimezoneContext.current().getName())))", target="createdDate")
     @Mapping(source = "tenantId.value", target="tenantId")
-    @Nonnull @Valid FindShareHolderByIdViewResponse toFindShareHolderByIdViewResponse(ShareHolder shareHolder);
+    @Nonnull @Valid
+    FindShareHolderByIdResponseView toFindShareHolderByIdViewResponse(ShareHolder shareHolder);
 }

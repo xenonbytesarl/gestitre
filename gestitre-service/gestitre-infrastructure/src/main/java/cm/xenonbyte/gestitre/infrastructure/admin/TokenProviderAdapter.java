@@ -55,9 +55,9 @@ public final class TokenProviderAdapter implements TokenProvider {
     }
 
     @Override
-    public Boolean isValid(@Nonnull Text refreshToken) {
+    public Boolean isValid(@Nonnull Text token) {
         try{
-            parser.parse(refreshToken.value());
+            parser.parse(token.value());
             return true;
         } catch (ParseException exception) {
             return false;

@@ -216,6 +216,21 @@ public final class UserDomainService implements UserService {
         throw new UserRefreshTokenUnAuthorized();
     }
 
+    @Nonnull
+    @Override
+    public User getProfile(@Nonnull Text accessToken) {
+        if(Boolean.TRUE.equals(tokenProvider.isValid(accessToken))) {
+            Email email = tokenProvider.getEmail(accessToken);
+            Optional<User> optionalUser = userRepository.findByEmail(email);
+            if(optionalUser.isPresent()) {
+                return optionalUser.get();
+            } else {
+                throw new UserAccessTokenUnAuthorized();
+            }
+        }
+        throw new UserAccessTokenUnAuthorized();
+    }
+
 
     private void validateUser(User user) {
         validateEmail(user.getId(), user.getEmail());

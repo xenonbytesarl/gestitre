@@ -5,6 +5,7 @@ import cm.xenonbyte.gestitre.domain.admin.vo.AccountExpired;
 import cm.xenonbyte.gestitre.domain.admin.vo.AccountLocked;
 import cm.xenonbyte.gestitre.domain.admin.vo.CredentialExpired;
 import cm.xenonbyte.gestitre.domain.admin.vo.FailedLoginAttempt;
+import cm.xenonbyte.gestitre.domain.admin.vo.Language;
 import cm.xenonbyte.gestitre.domain.admin.vo.Timezone;
 import cm.xenonbyte.gestitre.domain.admin.vo.UseMfa;
 import cm.xenonbyte.gestitre.domain.common.entity.AggregateRoot;
@@ -32,6 +33,7 @@ public final class User extends AggregateRoot<UserId> {
     private final Name name;
     private final Set<Role> roles;
     private final Timezone timezone;
+    private Language language;
     private TenantId tenantId;
     private Password password;
     private Password confirmPassword;
@@ -60,6 +62,7 @@ public final class User extends AggregateRoot<UserId> {
         setId(builder.id);
         companyId = builder.companyId;
         email = builder.email;
+        language = builder.language;
         password = builder.password;
         confirmPassword = builder.confirmPassword;
         tenantId = builder.tenantId;
@@ -147,6 +150,10 @@ public final class User extends AggregateRoot<UserId> {
         return failedLoginAttempt;
     }
 
+    public Language getLanguage() {
+        return language;
+    }
+
     public void validatePasswords() {
         Assert.field("Password", password)
                 .notNull();
@@ -163,6 +170,9 @@ public final class User extends AggregateRoot<UserId> {
                 .notNull();
 
         Assert.field("Timezone", timezone)
+                .notNull();
+
+        Assert.field("Language", language)
                 .notNull();
 
         Assert.field("Roles", roles)
@@ -216,6 +226,7 @@ public final class User extends AggregateRoot<UserId> {
         private TenantId tenantId;
         private CompanyId companyId;
         private Email email;
+        private Language language;
         private Password password;
         private Password confirmPassword;
         private Name name;
@@ -248,6 +259,11 @@ public final class User extends AggregateRoot<UserId> {
 
         public Builder email(Email val) {
             email = val;
+            return this;
+        }
+
+        public Builder language(Language val) {
+            language = val;
             return this;
         }
 

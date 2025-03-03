@@ -22,13 +22,13 @@ import static cm.xenonbyte.gestitre.application.common.ApplicationConstant.POSIT
 @Setter
 @SuperBuilder
 @NoArgsConstructor
-public class FindShareHoldersViewResponse extends ShareHolderViewResponse {
+public class FindShareHoldersResponseView extends ShareHolderResponseView {
     @PositiveOrZero(message = POSITIVE_OR_ZERO)
     private BigDecimal ircmRetain;
     @Size(max = 64, message = MAX_SIZE)
     private String isinCode;
 
-    public FindShareHoldersViewResponse addCompanyInfo(Company company) {
+    public FindShareHoldersResponseView addCompanyInfo(Company company) {
         if(company.getIrcmRetain() != null) {
             ircmRetain = company.getIrcmRetain().amount().value();
         }

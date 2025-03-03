@@ -347,4 +347,27 @@ public class  UserResource {
                 )
                 .build();
     }
+
+    @GET
+    @Path("/auth/profile")
+    @Consumes(APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
+    @PermitAll
+    public Response getProfile(
+            @HeaderParam("Accept-Language") String acceptLanguage,
+            @Context HttpHeaders headers
+    ) {
+        return Response.status(OK)
+                .entity(
+                        SuccessApiResponse.builder()
+                                .success(true)
+                                .status(OK.name())
+                                .code(OK.getStatusCode())
+                                .timestamp(ZonedDateTime.now())
+                                .message("")
+                                .data(of(CONTENT, userApplicationAdapter.getProfile(headers.getHeaderString(AUTHORIZATION))))
+                                .build()
+                )
+                .build();
+    }
 }

@@ -11,7 +11,7 @@ public class UserRefreshTokenUnAuthorized extends BaseDomainUnAuthorizedExceptio
 
     public static final String USER_REFRESH_TOKEN_UNAUTHORIZED = "UserRefreshTokenUnAuthorized.1";
 
-    protected UserRefreshTokenUnAuthorized() {
+    public UserRefreshTokenUnAuthorized() {
         super(USER_REFRESH_TOKEN_UNAUTHORIZED);
     }
 }

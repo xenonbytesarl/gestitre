@@ -23,5 +23,5 @@ import java.util.List;
 @AllArgsConstructor
 public final class FindShareHoldersPageInfoViewResponse extends PageInfoView {
     @Valid
-    private List<FindShareHoldersViewResponse> elements = new ArrayList<>();
+    private List<FindShareHoldersResponseView> elements = new ArrayList<>();
 }

@@ -49,6 +49,7 @@ create table if not exists t_user
     c_tenant_id              uuid                      not null ,
     c_company_id             uuid                      not null ,
     c_timezone             varchar(64)                 not null ,
+    c_language             varchar(4)                  not null ,
     constraint Pk_t_user_c_id primary key (c_id),
     constraint Uk_t_user_c_email UNIQUE (c_email),
     constraint Fk_t_tenant_c_tenant_id foreign key (c_tenant_id) references t_tenant (c_id),

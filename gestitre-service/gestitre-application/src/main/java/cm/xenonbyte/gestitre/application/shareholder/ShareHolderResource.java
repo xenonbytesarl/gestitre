@@ -2,7 +2,7 @@ package cm.xenonbyte.gestitre.application.shareholder;
 
 import cm.xenonbyte.gestitre.application.common.dto.SuccessApiResponse;
 import cm.xenonbyte.gestitre.application.shareholder.dto.CreateShareHolderViewRequest;
-import cm.xenonbyte.gestitre.application.shareholder.dto.UpdateShareShareHolderViewRequest;
+import cm.xenonbyte.gestitre.application.shareholder.dto.UpdateShareShareHolderRequestView;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
@@ -82,7 +82,7 @@ public final class ShareHolderResource {
     public Response updateShareHolder(
             @HeaderParam("Accept-Language") String acceptLanguage,
             @PathParam("shareHolderId") UUID shareHolderId,
-            @Valid UpdateShareShareHolderViewRequest updateShareHolderViewRequest
+            @Valid UpdateShareShareHolderRequestView updateShareHolderViewRequest
             ) {
         return Response.status(OK)
                 .entity(
@@ -125,7 +125,7 @@ public final class ShareHolderResource {
     @GET
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    @RolesAllowed({"read:shareholder"})
+    @RolesAllowed({"search:shareholder"})
     public Response findAllShareHolder(
             @HeaderParam("Accept-Language") String acceptLanguage,
             @QueryParam("page") Integer page,

@@ -7,6 +7,8 @@ package cm.xenonbyte.gestitre.application.common;
  */
 public final class ApplicationConstant {
 
+    public static final String BEARER_HEADER = "Bearer ";
+
     private ApplicationConstant() {}
 
     public static final String ROOT_API_PATH = "/api/v1/gestitre";

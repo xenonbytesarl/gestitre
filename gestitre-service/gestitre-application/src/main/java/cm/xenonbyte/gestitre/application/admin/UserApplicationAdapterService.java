@@ -7,6 +7,7 @@ import cm.xenonbyte.gestitre.application.admin.dto.CreateUserViewResponse;
 import cm.xenonbyte.gestitre.application.admin.dto.FindUserByIdViewResponse;
 import cm.xenonbyte.gestitre.application.admin.dto.LoginRequest;
 import cm.xenonbyte.gestitre.application.admin.dto.LoginResponse;
+import cm.xenonbyte.gestitre.application.admin.dto.ProfileResponseView;
 import cm.xenonbyte.gestitre.application.admin.dto.RefreshTokenResponse;
 import cm.xenonbyte.gestitre.application.admin.dto.ResendVerificationCodeRequest;
 import cm.xenonbyte.gestitre.application.admin.dto.ResetPasswordRequest;
@@ -47,6 +48,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.util.UUID;
 
+import static cm.xenonbyte.gestitre.application.common.ApplicationConstant.BEARER_HEADER;
 import static cm.xenonbyte.gestitre.domain.common.verification.vo.VerificationType.ACCOUNT;
 import static cm.xenonbyte.gestitre.domain.common.verification.vo.VerificationType.PASSWORD;
 import static java.util.Objects.requireNonNull;
@@ -235,11 +237,24 @@ public final class UserApplicationAdapterService implements UserApplicationAdapt
     @Nonnull
     @Override
     public RefreshTokenResponse refreshAccessToken(String refreshToken) {
-        refreshToken = refreshToken.replace("Bearer ", "");
+        refreshToken = refreshToken.replace(BEARER_HEADER, "");
         Text accessToken = userService.refreshAccessToken(Text.of(refreshToken));
         return RefreshTokenResponse.builder()
                 .accessToken(accessToken.value())
                 .refreshToken(refreshToken)
+                .build();
+    }
+
+    @Nonnull
+    @Override
+    public ProfileResponseView getProfile(String accessToken) {
+        accessToken = accessToken.replace(BEARER_HEADER, "");
+        User user = userService.getProfile(Text.of(accessToken));
+        return ProfileResponseView.builder()
+                .companyId(user.getCompanyId().getValue())
+                .tenantId(user.getCompanyId().getValue())
+                .name(user.getName().text().value())
+                .language(user.getLanguage().name())
                 .build();
     }
 }

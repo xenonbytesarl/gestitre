@@ -14,5 +14,5 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @SuperBuilder
 @NoArgsConstructor
-public final class FindShareHolderByIdViewResponse extends ShareHolderViewResponse {
+public final class UpdateShareShareHolderRequestView extends UpdateShareHolderView {
 }

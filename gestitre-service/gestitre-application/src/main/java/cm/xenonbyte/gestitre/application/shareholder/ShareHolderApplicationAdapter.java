@@ -1,11 +1,11 @@
 package cm.xenonbyte.gestitre.application.shareholder;
 
+import cm.xenonbyte.gestitre.application.shareholder.dto.CreateShareHolderResponseView;
 import cm.xenonbyte.gestitre.application.shareholder.dto.CreateShareHolderViewRequest;
-import cm.xenonbyte.gestitre.application.shareholder.dto.CreateShareHolderViewResponse;
-import cm.xenonbyte.gestitre.application.shareholder.dto.FindShareHolderByIdViewResponse;
+import cm.xenonbyte.gestitre.application.shareholder.dto.FindShareHolderByIdResponseView;
 import cm.xenonbyte.gestitre.application.shareholder.dto.FindShareHoldersPageInfoViewResponse;
-import cm.xenonbyte.gestitre.application.shareholder.dto.UpdateShareShareHolderViewRequest;
-import cm.xenonbyte.gestitre.application.shareholder.dto.UpdateShareHolderViewResponse;
+import cm.xenonbyte.gestitre.application.shareholder.dto.UpdateShareHolderResponseView;
+import cm.xenonbyte.gestitre.application.shareholder.dto.UpdateShareShareHolderRequestView;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.Valid;
 
@@ -18,12 +18,14 @@ import java.util.UUID;
  */
 public interface ShareHolderApplicationAdapter {
 
-    @Nonnull @Valid CreateShareHolderViewResponse createShareHolder(@Nonnull @Valid CreateShareHolderViewRequest createShareHolderViewRequest);
-
-    @Nonnull @Valid UpdateShareHolderViewResponse updateShareHolder(UUID shareHolderId, @Nonnull @Valid UpdateShareShareHolderViewRequest updateShareHolderViewRequest);
+    @Nonnull @Valid
+    CreateShareHolderResponseView createShareHolder(@Nonnull @Valid CreateShareHolderViewRequest createShareHolderViewRequest);
 
     @Nonnull @Valid
-    FindShareHolderByIdViewResponse findShareHolderById(UUID shareHolderId);
+    UpdateShareHolderResponseView updateShareHolder(UUID shareHolderId, @Nonnull @Valid UpdateShareShareHolderRequestView updateShareHolderViewRequest);
+
+    @Nonnull @Valid
+    FindShareHolderByIdResponseView findShareHolderById(UUID shareHolderId);
 
     @Nonnull FindShareHoldersPageInfoViewResponse findShareHolders(Integer page, Integer size, String field, String direction, String keyword);
 }

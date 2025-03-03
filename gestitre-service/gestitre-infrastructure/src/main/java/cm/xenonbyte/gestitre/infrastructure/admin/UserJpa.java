@@ -43,6 +43,9 @@ public class UserJpa extends Tenantable {
     @Enumerated(EnumType.STRING)
     @Column(name = "c_timezone", nullable = false, length = 64)
     private TimezoneJpa timezoneJpa;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "c_language", nullable = false, length = 4)
+    private LanguageJpa languageJpa;
     @Column(name = "c_account_enabled", nullable = false)
     private Boolean accountEnabled;
     @Column(name = "c_credential_expired", nullable = false)

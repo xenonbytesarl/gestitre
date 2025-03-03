@@ -38,7 +38,7 @@ public class ShareHolderView {
     @Size(max = 64, message = MAX_SIZE)
     private String accountNumber;
     @NotNull(message = NOT_BLANK)
-    private AccountTypeView accountTypeView;
+    private AccountTypeView accountType;
     @NotBlank(message = NOT_BLANK)
     @Size(max = 128, message = MAX_SIZE)
     private String taxResidence;
@@ -51,11 +51,11 @@ public class ShareHolderView {
     private String phone;
     private String city;
     private String zipCode;
-    private ShareHolderTypeView shareHolderTypeView;
+    private ShareHolderTypeView shareHolderType;
     @Valid
-    private RepresentativeView representativeView;
+    private RepresentativeView representative;
     @Valid
-    private SuccessorView successorView;
+    private SuccessorView successor;
     @NotNull(message = NOT_NULL)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ssZ")
     private ZonedDateTime createdDate;

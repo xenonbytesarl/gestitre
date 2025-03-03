@@ -19,7 +19,7 @@ import static cm.xenonbyte.gestitre.application.common.ApplicationConstant.NOT_N
 @Setter
 @SuperBuilder
 @NoArgsConstructor
-public class ShareHolderViewResponse extends ShareHolderView {
+public class ShareHolderResponseView extends ShareHolderView {
     @NotNull(message = NOT_NULL)
     private UUID id;
     @NotNull(message = NOT_NULL)

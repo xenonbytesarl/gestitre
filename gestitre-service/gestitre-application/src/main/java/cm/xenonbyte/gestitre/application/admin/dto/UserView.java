@@ -46,5 +46,6 @@ public class UserView {
     protected UUID companyId;
     @NotNull(message = NOT_NULL)
     protected TimezoneView timezone;
+    protected LanguageView language;
     protected Boolean useMfa;
 }

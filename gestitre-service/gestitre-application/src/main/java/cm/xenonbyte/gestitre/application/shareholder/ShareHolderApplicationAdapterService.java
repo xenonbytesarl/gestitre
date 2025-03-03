@@ -1,11 +1,11 @@
 package cm.xenonbyte.gestitre.application.shareholder;
 
+import cm.xenonbyte.gestitre.application.shareholder.dto.CreateShareHolderResponseView;
 import cm.xenonbyte.gestitre.application.shareholder.dto.CreateShareHolderViewRequest;
-import cm.xenonbyte.gestitre.application.shareholder.dto.CreateShareHolderViewResponse;
-import cm.xenonbyte.gestitre.application.shareholder.dto.FindShareHolderByIdViewResponse;
+import cm.xenonbyte.gestitre.application.shareholder.dto.FindShareHolderByIdResponseView;
 import cm.xenonbyte.gestitre.application.shareholder.dto.FindShareHoldersPageInfoViewResponse;
-import cm.xenonbyte.gestitre.application.shareholder.dto.UpdateShareShareHolderViewRequest;
-import cm.xenonbyte.gestitre.application.shareholder.dto.UpdateShareHolderViewResponse;
+import cm.xenonbyte.gestitre.application.shareholder.dto.UpdateShareHolderResponseView;
+import cm.xenonbyte.gestitre.application.shareholder.dto.UpdateShareShareHolderRequestView;
 import cm.xenonbyte.gestitre.domain.common.vo.Keyword;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfo;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoDirection;
@@ -58,7 +58,7 @@ public final class ShareHolderApplicationAdapterService implements ShareHolderAp
 
     @Nonnull
     @Override
-    public CreateShareHolderViewResponse createShareHolder(@Nonnull CreateShareHolderViewRequest createShareHolderViewRequest) {
+    public CreateShareHolderResponseView createShareHolder(@Nonnull CreateShareHolderViewRequest createShareHolderViewRequest) {
         ShareHolderCreatedEvent shareHolderCreatedEvent = shareHolderService.createShareHolder(
                 shareHolderViewMapper.toShareHolder(createShareHolderViewRequest)
         );
@@ -67,14 +67,14 @@ public final class ShareHolderApplicationAdapterService implements ShareHolderAp
 
     @Nonnull
     @Override
-    public UpdateShareHolderViewResponse updateShareHolder(UUID shareHolderId, @Nonnull UpdateShareShareHolderViewRequest updateShareHolderViewRequest) {
+    public UpdateShareHolderResponseView updateShareHolder(UUID shareHolderId, @Nonnull UpdateShareShareHolderRequestView updateShareHolderViewRequest) {
         ShareHolderUpdatedEvent shareHolderUpdatedEvent = shareHolderService.updateShareHolder(new ShareHolderId(shareHolderId), shareHolderViewMapper.toShareHolder(updateShareHolderViewRequest));
         return shareHolderViewMapper.toUpdateShareHolderViewResponse(shareHolderUpdatedEvent.getShareHolder());
     }
 
     @Nonnull
     @Override
-    public FindShareHolderByIdViewResponse findShareHolderById(UUID shareHolderId) {
+    public FindShareHolderByIdResponseView findShareHolderById(UUID shareHolderId) {
         return shareHolderViewMapper.toFindShareHolderByIdViewResponse(
                 shareHolderService.findShareHolderById(new ShareHolderId(shareHolderId)));
     }
