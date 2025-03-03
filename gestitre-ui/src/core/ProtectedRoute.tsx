@@ -16,11 +16,8 @@ const ProtectedRoute = () => {
     const dispatch = useDispatch<RootDispatch>();
 
     useEffect(() => {
-        console.log(isAuthenticated)
-        if(isAuthenticated) {
-            dispatch(recoverAuthentication()).finally(() => setLoadingAuth(false));
-            dispatch(recoverProfile()).finally(() => setLoadingProfile(false));
-        }
+        dispatch(recoverAuthentication()).finally(() => setLoadingAuth(false));
+        dispatch(recoverProfile()).finally(() => setLoadingProfile(false));
     }, [dispatch]);
 
     if (loadingAuth) return <div>Loading...</div>;
