@@ -1,0 +1,3 @@
+export enum ShareHolderTypeEnum {
+    REPRESENTATIVE = 'REPRESENTATIVE', SUCCESSOR = 'SUCCESSOR'
+}

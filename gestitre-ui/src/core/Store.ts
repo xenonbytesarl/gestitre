@@ -4,6 +4,7 @@ import sidebarSlice from "@/layout/sidebar/SidebarSlice.tsx";
 import CompanySlice from "@/pages/company/CompanySlice.ts";
 import CertificateTemplateSlice from "@/pages/company/certificatetemplate/CertificateTemplateSlice.ts";
 import adminSlice from "@/pages/admin/AdminSlice.ts";
+import ShareholderSlice from "@/pages/shareholder/ShareholderSlice.tsx";
 
 const store = configureStore({
     reducer: {
@@ -11,6 +12,7 @@ const store = configureStore({
         sidebar: sidebarSlice,
         admin: adminSlice,
         company: CompanySlice,
+        shareHolder: ShareholderSlice,
         certificateTemplate: CertificateTemplateSlice
     }/*,
     middleware: (getDefaultMiddleware) => {

@@ -7,7 +7,7 @@ import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useDispatch, useSelector} from "react-redux";
 import {RootDispatch} from "@/core/Store.ts";
-import {getLoading, login, persistAuthentication, persistMfa} from "@/pages/admin/auth/AuthSlice.ts";
+import {getLoading, getProfile, login, persistAuthentication, persistMfa} from "@/pages/admin/auth/AuthSlice.ts";
 import {unwrapResult} from "@reduxjs/toolkit";
 import {REDIRECT, ToastType} from "@/shared/constant/globalConstant.ts";
 import {cn} from "@/lib/utils.ts";
@@ -65,6 +65,7 @@ const LoginForm = () => {
                 showToast("success", response.message);
                 if(!response.content.isMfa) {
                     dispatch(persistAuthentication({ accessToken: response.content.accessToken, refreshToken: response.content.refreshToken}));
+                    dispatch(getProfile());
                     navigate(redirectUrl);
                 } else {
                     dispatch(persistMfa({email: loginFormValue.email, tenantCode: loginFormValue.tenantCode}));

@@ -10,6 +10,7 @@ import {RootDispatch} from "@/core/Store.ts";
 import {
     cleanMfa,
     getLoading,
+    getProfile,
     getVerifyCodeInfo,
     persistAuthentication,
     recoverMfa,
@@ -92,6 +93,7 @@ const VerifyCodeForm = () => {
                 showToast("success", response.message);
                 dispatch(persistAuthentication({ accessToken: response.content.accessToken, refreshToken: response.content.refreshToken}));
                 dispatch(cleanMfa());
+                dispatch(getProfile());
                 navigate(redirectUrl);
             })
             .catch((error) => {

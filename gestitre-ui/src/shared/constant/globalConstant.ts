@@ -25,7 +25,7 @@ export type ToastType = "danger" | "info" | "success";
 export const DEFAULT_COMPANY_LOGO_IMAGE = '/images/company_logo.png';
 export const DEFAULT_COMPANY_STAMP_IMAGE = '/images/company_stamp.png';
 
-export const DEBOUNCE_TIMEOUT = 500;
+export const DEBOUNCE_TIMEOUT = 300;
 
 export const AUTHORIZATION = "Authorization";
 export const BEARER = "Bearer";

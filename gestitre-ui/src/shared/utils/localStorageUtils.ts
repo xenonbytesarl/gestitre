@@ -8,6 +8,8 @@ import {
     TENANT_CODE
 } from "../constant/globalConstant";
 import {VerifyCodeRequestModel} from "@/pages/admin/auth/VerifyCodeRequestModel.ts";
+import {ProfileModel} from "@/pages/admin/user/ProfileModel.ts";
+import {LanguageEnum} from "@/pages/admin/user/LanguageEnum.ts";
 
 
 export const persistAuthenticationInformation = (accessToken: string, refreshToken: string)=> {
@@ -70,4 +72,38 @@ export const cleanLastVisitedUrl = () => {
     if(localStorage.getItem(LAST_VISITED_URL)) {
         localStorage.removeItem(LAST_VISITED_URL);
     }
+}
+
+const COMPANY_ID = "companyId";
+const TENANT_ID = "tenantId";
+const LANGUAGE = "language";
+const NAME = "name";
+export const persistProfileInformation = (profile: ProfileModel)=> {
+    localStorage.setItem(COMPANY_ID, profile.companyId);
+    localStorage.setItem(TENANT_ID, profile.tenantId);
+    localStorage.setItem(LANGUAGE, profile.language);
+    localStorage.setItem(NAME, profile.name);
+}
+
+export const cleanProfileInformation = () => {
+    if(localStorage.getItem(COMPANY_ID)) {
+        localStorage.removeItem(COMPANY_ID);
+    }
+    if(localStorage.getItem(TENANT_ID)) {
+        localStorage.removeItem(TENANT_ID);
+    }
+    if(localStorage.getItem(LANGUAGE)) {
+        localStorage.removeItem(LANGUAGE);
+    }
+    if(localStorage.getItem(NAME)) {
+        localStorage.removeItem(NAME);
+    }
+}
+
+export const recoverProfileInformation = (): ProfileModel => {
+    const companyId = localStorage.getItem(COMPANY_ID) ?? '';
+    const tenantId = localStorage.getItem(TENANT_ID) ?? '';
+    const name = localStorage.getItem(NAME) ?? '';
+    const language: LanguageEnum = (localStorage.getItem(LANGUAGE)?? 'FR') as LanguageEnum;
+    return {companyId, tenantId, name, language};
 }

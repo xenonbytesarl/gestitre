@@ -5,7 +5,14 @@ import {VerifyCodeRequestModel} from "@/pages/admin/auth/VerifyCodeRequestModel.
 import {LoginResponseModel} from "@/pages/admin/auth/LoginResponseModel.ts";
 import {VerifyCodeResponseModel} from "@/pages/admin/auth/VerifyCodeResponseModel.ts";
 import api from "@/core/Api.ts";
+import {ProfileModel} from "@/pages/admin/user/ProfileModel.ts";
 
+const getProfile = async (): Promise<SuccessResponseModel<ProfileModel>> => {
+    return await api.get('/users/auth/profile',
+        {
+            headers: API_JSON_HEADER
+        });
+}
 
 const login = async (loginRequest: LoginRequestModel): Promise<SuccessResponseModel<LoginResponseModel>> => {
     return await api.post('/users/auth/token', loginRequest, {
@@ -28,7 +35,8 @@ const refreshToken = async(): Promise<SuccessResponseModel<VerifyCodeResponseMod
 const authServices = {
     login,
     verifyCode,
-    refreshToken
+    refreshToken,
+    getProfile
 };
 
 export default authServices;

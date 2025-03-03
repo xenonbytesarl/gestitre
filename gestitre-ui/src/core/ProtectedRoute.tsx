@@ -1,5 +1,5 @@
 import {useDispatch, useSelector} from "react-redux";
-import {getIsAuthenticated, recoverAuthentication} from "@/pages/admin/auth/AuthSlice.ts";
+import {getIsAuthenticated, recoverAuthentication, recoverProfile} from "@/pages/admin/auth/AuthSlice.ts";
 import {Navigate, Outlet, useLocation} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {RootDispatch} from "@/core/Store.ts";
@@ -9,16 +9,22 @@ import {REDIRECT} from "@/shared/constant/globalConstant.ts";
 
 const ProtectedRoute = () => {
     const isAuthenticated = useSelector(getIsAuthenticated);
-    const [loading, setLoading] = useState(true);
+    const [loadingAuth, setLoadingAuth] = useState(true);
+    const [loadingProfile, setLoadingProfile] = useState(true);
     const location = useLocation();
 
     const dispatch = useDispatch<RootDispatch>();
 
     useEffect(() => {
-        dispatch(recoverAuthentication()).finally(() => setLoading(false));
+        console.log(isAuthenticated)
+        if(isAuthenticated) {
+            dispatch(recoverAuthentication()).finally(() => setLoadingAuth(false));
+            dispatch(recoverProfile()).finally(() => setLoadingProfile(false));
+        }
     }, [dispatch]);
 
-    if (loading) return <div>Loading...</div>;
+    if (loadingAuth) return <div>Loading...</div>;
+    if (loadingProfile) return <div>Loading...</div>;
 
     if (!isAuthenticated) {
         persistLastVisitedUrl(location.pathname);

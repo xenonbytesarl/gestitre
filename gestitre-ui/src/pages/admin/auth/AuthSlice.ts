@@ -11,11 +11,16 @@ import {
     cleanAuthenticationInformation,
     cleanLastVisitedUrl,
     cleanMfaInformation,
+    cleanProfileInformation,
     persistAuthenticationInformation,
     persistMfaInformation,
+    persistProfileInformation,
     recoverAuthenticationInformation,
-    recoverMfaInformation
+    recoverMfaInformation,
+    recoverProfileInformation
 } from "@/shared/utils/localStorageUtils.ts";
+import {ProfileModel} from "@/pages/admin/user/ProfileModel.ts";
+import {LanguageEnum} from "@/pages/admin/user/LanguageEnum.ts";
 
 interface VerifyCodeInfo {
     email: string;
@@ -27,6 +32,7 @@ interface AuthState {
     loginResponse: LoginResponseModel;
     verifyCodeInfo: VerifyCodeInfo;
     isAuthenticated: boolean;
+    profile: ProfileModel,
     message: string;
     error: any;
 }
@@ -42,10 +48,18 @@ const defaultVerifyCodeInfo: VerifyCodeInfo = {
     tenantCode: ''
 }
 
+const defaultProfile: ProfileModel = {
+    companyId: '',
+    tenantId: '',
+    name: '',
+    language: LanguageEnum.FR
+}
+
 const authInitialState: AuthState = {
     loading: false,
     loginResponse: defaultLoginResponse,
     verifyCodeInfo: defaultVerifyCodeInfo,
+    profile: defaultProfile,
     isAuthenticated: false,
     message: '',
     error: null
@@ -94,6 +108,7 @@ export const persistMfa = createAsyncThunk("auth/persistMfa", async({email, tena
 export const logout = createAsyncThunk("auth/logout", async() => {
     cleanAuthenticationInformation();
     cleanLastVisitedUrl();
+    cleanProfileInformation();
 });
 
 export const cleanMfa = createAsyncThunk("auth/cleanMfa", async() => {
@@ -106,9 +121,26 @@ export const recoverAuthentication = createAsyncThunk("auth/recoverAuthenticatio
     return {content: response, isAuthenticated};
 });
 
+export const recoverProfile = createAsyncThunk("auth/recoverProfile", () => {
+    const response = recoverProfileInformation();
+    return {content: response};
+});
+
 export const recoverMfa = createAsyncThunk("auth/recoverMfa", () => {
     const response = recoverMfaInformation();
     return {content: response};
+});
+
+export const getProfile = createAsyncThunk('auth/getProfile', async (_, {rejectWithValue})=> {
+    try {
+        const response =  await authService.getProfile();
+        // @ts-ignore
+        persistProfileInformation(response.data.data.content)
+        // @ts-ignore
+        return {content: response.data.data.content, message: response.data.message}
+    } catch (apiError) {
+        return handleApiError(apiError as AxiosError<ErrorResponseModel>, {rejectWithValue});
+    }
 });
 
 const authSlice = createSlice({
@@ -140,6 +172,11 @@ const authSlice = createSlice({
                 state.isAuthenticated = true;
                 state.loginResponse = {...content};
             })
+            .addCase(getProfile.fulfilled, (state, action) => {
+                const {content} = action.payload;
+                state.loading = false;
+                state.profile = content;
+            })
             .addCase(refreshToken.pending, (state)=> {
                 state.loading = true;
                 state.message = '';
@@ -151,6 +188,11 @@ const authSlice = createSlice({
                 state.loading = false;
                 state.isAuthenticated = isAuthenticated;
                 state.loginResponse = content;
+            })
+            .addCase(recoverProfile.fulfilled, (state, action)=> {
+                const {content} = action.payload;
+                state.loading = false;
+                state.profile = content;
             })
             .addCase(recoverMfa.fulfilled, (state, action)=> {
                 const {content} = action.payload;
@@ -166,7 +208,9 @@ const authSlice = createSlice({
                 state.message = '';
                 state.error = null;
             })
-            .addCase(recoverAuthentication.pending, (state)=> {
+            .addMatcher(isAnyOf(
+                recoverAuthentication.pending,
+                recoverProfile.pending) , (state)=> {
                 state.loading = true;
             })
             .addMatcher(isAnyOf(
@@ -181,7 +225,9 @@ const authSlice = createSlice({
                 verifyCode.rejected,
                 refreshToken.rejected,
                 recoverAuthentication.rejected,
-                recoverMfa.rejected
+                recoverMfa.rejected,
+                recoverProfile.rejected,
+                getProfile.rejected
             ),(state, action) => {
                 state.loading = false;
                 state.loginResponse = defaultLoginResponse;
@@ -208,6 +254,7 @@ export const getIsAuthenticated = (state: RootState) => state.admin.auth.isAuthe
 export const getLoading = (state: RootState) => state.admin.auth.loading;
 export const getLoginResponse = (state: RootState) => state.admin.auth.loginResponse;
 export const getVerifyCodeInfo = (state: RootState) => state.admin.auth.verifyCodeInfo;
+export const getProfileInfo = (state: RootState) => state.admin.auth.profile;
 export const getMessage = (state: RootState) => state.admin.auth.message;
 export const getError = (state: RootState) => state.admin.auth.error;
 

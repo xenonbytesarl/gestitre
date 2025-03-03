@@ -6,12 +6,15 @@ import {changeLanguage, selectLanguage} from "@/layout/navbar/NavbarSlice.ts";
 import {useEffect, useRef, useState} from "react";
 import i18n from "@/core/i18n.tsx";
 import {getImageUrl} from "@/shared/utils/imageUtils.ts";
+import {ProfileModel} from "@/pages/admin/user/ProfileModel.ts";
+import {getProfileInfo} from "@/pages/admin/auth/AuthSlice.ts";
 
 const WebNavbar = () => {
     const {t} = useTranslation(['home']);
 
     const dispatch = useDispatch<RootDispatch>();
     const language: LanguageModel = useSelector(selectLanguage);
+    const profile: ProfileModel = useSelector(getProfileInfo);
 
     const dropdownRef = useRef<HTMLDivElement>(null);
     const [isOpenLanguageMenu, setIsOpenLanguageMenu] = useState(false);
@@ -42,7 +45,7 @@ const WebNavbar = () => {
 
     return (
         <div className="flex flex-row justify-between items-center bg-white shadow-lg py-6 px-8 ml-80">
-            <div>{t('navbar_connected_user')}: MBIANDJI Brice</div>
+            <div>{t('navbar_connected_user')}:{profile.name? profile.name: ""}</div>
             <div className="relative mr-5">
                 <div
                     ref={dropdownRef}

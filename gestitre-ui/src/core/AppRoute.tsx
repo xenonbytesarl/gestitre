@@ -5,6 +5,7 @@ import NotFound from "@/pages/NotFound.tsx";
 import CompanyRoute from "@/pages/company/CompanyRoute.tsx";
 import AdminRoute from "@/pages/admin/AdminRoute.tsx";
 import ProtectedRoute from "@/core/ProtectedRoute.tsx";
+import ShareHolderRoute from "@/pages/shareholder/ShareHolderRoute.tsx";
 
 
 const AppRoute = () => {
@@ -16,6 +17,7 @@ const AppRoute = () => {
                    <Route index path="/" element={<Navigate to="/dashboard"/>}/>
                    <Route path="dashboard" element={<Dashboard/>}/>
                    <Route path="companies/*" element={<CompanyRoute/>}/>
+                   <Route path="shareholders/*" element={<ShareHolderRoute/>}/>
                </Route>
            </Route>
            <Route path="*" element={<NotFound/>}/>
