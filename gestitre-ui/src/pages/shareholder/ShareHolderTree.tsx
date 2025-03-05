@@ -73,7 +73,7 @@ const ShareHolderTree = () => {
         },
         {
             accessorKey: "codeIsin",
-            header: () => (<div className="text-left">{t("shareholder_tree_account_number")}</div>),
+            header: () => (<div className="text-left">{t("shareholder_tree_code_isin")}</div>),
             cell: ({row}) => (
                 <div className="text-left capitalize">{row.original.tenantId === profile.tenantId? company?.isinCode: ''}</div>
             )
