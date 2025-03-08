@@ -52,7 +52,7 @@ const WebNavbar = () => {
 
     return (
         <div className="flex flex-row justify-between items-center bg-white shadow-lg py-6 px-8 ml-80">
-            <div>{t('navbar_connected_user')}: {profile.name? profile.name: ""}</div>
+            <div className="text-xl text-primary font-bold">{t('navbar_connected_user')} {profile.name? profile.name: ""}</div>
             <div className="relative mr-5">
                 <div
                     ref={dropdownRef}
