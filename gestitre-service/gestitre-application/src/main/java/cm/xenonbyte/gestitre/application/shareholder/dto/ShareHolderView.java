@@ -57,7 +57,7 @@ public class ShareHolderView {
     @Valid
     private SuccessorView successor;
     @NotNull(message = NOT_NULL)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ssZ")
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private ZonedDateTime createdDate;
     private Boolean active;
 }

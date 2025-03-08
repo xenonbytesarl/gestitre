@@ -7,7 +7,7 @@ create table if not exists t_shareholder
     c_updated_at           timestamp with time zone,
     c_name                 varchar(128)                not null,
     c_administrator        varchar(128),
-    c_account_number       varchar(64)                 not null,
+    c_account_number       varchar(32)                 not null,
     c_bank_account_number  varchar(64),
     c_email                varchar(128),
     c_phone                varchar(32),

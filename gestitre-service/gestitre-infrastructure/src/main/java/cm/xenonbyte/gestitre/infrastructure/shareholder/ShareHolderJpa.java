@@ -37,7 +37,7 @@ public class ShareHolderJpa extends Tenantable {
     @Column(name = "c_administrator", length = 128)
     private String administrator;
 
-    @Column(name = "c_account_number", nullable = false, unique = true, length = 64)
+    @Column(name = "c_account_number", nullable = false, unique = true, length = 32)
     private String accountNumber;
 
     @Column(name = "c_bank_account_number", unique = true, length = 64)

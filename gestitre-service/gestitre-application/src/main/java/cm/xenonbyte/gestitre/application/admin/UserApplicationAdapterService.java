@@ -252,7 +252,7 @@ public final class UserApplicationAdapterService implements UserApplicationAdapt
         User user = userService.getProfile(Text.of(accessToken));
         return ProfileResponseView.builder()
                 .companyId(user.getCompanyId().getValue())
-                .tenantId(user.getCompanyId().getValue())
+                .tenantId(user.getTenantId().getValue())
                 .name(user.getName().text().value())
                 .language(user.getLanguage().name())
                 .build();
