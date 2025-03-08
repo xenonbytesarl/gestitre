@@ -44,8 +44,8 @@
   "verify_code_form_button_label_validate": "Valider",
 
 
-  "company_form_edit_title": "Nouvelle société",
-  "company_form_new_title": "Modifier une société",
+  "company_form_edit_title": "Modifier une société",
+  "company_form_new_title": "Nouvelle société",
   "company_form_company_name_label": "Dénomination Sociale",
   "company_form_company_name_required_message": "Valeur obligatoire",
   "company_form_company_name_max_length_message": "La valeur doit être au maximum 64 charactères",
@@ -139,6 +139,7 @@
   "user_form_confirm_password_label": "Confirmer mot de passe",
   "user_form_confirm_password_required_message": "La valeur est obligatoire",
   "user_form_confirm_password_min_length_message": "La valeur doit avoir au minimum 6 charactère",
+  "user_form_confirm_password_not_match_message": "Les mots de passes ne correspondent pas",
   "user_form_timezone_label": "Fuseau Horaire",
   "user_form_timezone_required_message": "La valeur est obligatoire",
   "user_form_timezone_pop_over_place_holder": "Selectionner un fuseau horaire",
@@ -149,6 +150,12 @@
   "user_form_timezone_africa_libreville": "Africa/Libreville",
   "user_form_timezone_europe_paris": "Europe/Paris",
   "user_form_timezone_america_los_angeles": "America/Los_Angeles",
+  "user_form_language_label": "Langue",
+  "user_form_language_required_message": "La valeur est obligatoire",
+  "user_form_language_pop_over_place_holder": "Selectionner une langue",
+  "user_form_pop_language_over_not_found": "Langue introuvable",
+  "user_form_language_fr": "Français",
+  "user_form_language_en": "Anglais",
   "user_form_company_id_label": "Société",
   "user_form_company_id_required_message": "La valeur est obligatoire",
   "user_form_company_id_pop_over_place_holder": "Selectionner une société",
@@ -181,16 +188,54 @@
   "shareholder_tree_name": "Nom & prénom",
   "shareholder_tree_created_date": "Date création",
   "shareholder_tree_initial_balance": "Balance initiale",
-  "shareholder_tree_ircm": "IRCM"
+  "shareholder_tree_ircm": "IRCM",
 
-
-
-
-
-
-
-
-
-
-
+  "shareholder_form_new_title": "Nouvel Actionnaire",
+  "shareholder_form_edit_title": "Modifier Actionnaire",
+  "shareholder_form_name_label": "Nom",
+  "shareholder_form_name_required_message": "Valeur obligatoire",
+  "shareholder_form_name_max_length_message": "La valeur doit avoir au maximum 128 caractères",
+  "shareholder_form_administrator_label": "Administrateur",
+  "shareholder_form_administrator_max_length_message": "la valeur doit avoir au maximum 128 caractères",
+  "shareholder_form_tax_residence_label": "Residence fiscale",
+  "shareholder_form_tax_residence_required_message": "a valeur est obligatoire",
+  "shareholder_form_bank_account_number_label": "R.I.B",
+  "shareholder_form_account_number_label": "N° de compte",
+  "shareholder_form_account_number_required_message": "Valeur obligatoire",
+  "shareholder_form_account_number_max_length_message": "La valeur doit avoir 32 charatère au maximum",
+  "shareholder_form_city_label": "Ville",
+  "shareholder_form_phone_label": "N° Téléphone",
+  "shareholder_form_phone_length_message": "La valeur doit avoir 32 charactères au maximum",
+  "shareholder_form_bank_initial_balance_label": "Solde initial",
+  "shareholder_form_initial_balance_positive_message": "La valeur doit être supérieur a 0",
+  "shareholder_form_account_type_label": "Type de compte",
+  "shareholder_form_account_type_required_message": "La valeur est obligatoire",
+  "shareholder_form_account_type_pop_over_place_holder": "Selectionnez un type de compte",
+  "shareholder_form_pop_account_type_over_not_found": "Aucun type de compte trouvé",
+  "shareholder_form_account_type_nominative_pure": "Nominatif pur",
+  "shareholder_form_account_type_nominative_administrative": "Nominatif administré",
+  "shareholder_form_zip_code_label": "Code postal",
+  "shareholder_form_email_label": "Email",
+  "shareholder_form_email_invalid_message": "Email invalid",
+  "shareholder_form_created_date_label": "Date de création",
+  "shareholder_form_created_date_required_message": "La valeur est obligatoire",
+  "shareholder_form_created_date_default_message": "Selectionnez la date",
+  "shareholder_type_form_tab_shareholder_type": "Représentant",
+  "shareholder_form_shareholder_type_label": "Type de représentant",
+  "shareholder_form_shareholder_type_pop_over_place_holder": "Selectionner le type de représentant",
+  "shareholder_form_shareholder_type_representative": "Mandataire",
+  "shareholder_form_shareholder_type_successor": "Successeur",
+  "shareholder_form_pop_shareholder_type_over_not_found": "Aucun représentant trouvé",
+  "shareholder_form_representative_name_label": "Nom du mandataire",
+  "shareholder_form_representative_name_required_message": "La valeur est obligatoire",
+  "shareholder_form_representative_phone_label": "Téléphone du mandataire",
+  "shareholder_form_representative_phone_required_message": "La valeur est obligatoire",
+  "shareholder_form_representative_email_label": "Email du mandataire",
+  "shareholder_form_representative_email_invalid_message": "Email invalid",
+  "shareholder_form_successor_name_label": "Nom du successeur",
+  "shareholder_form_successor_name_required_message": "La valeur est obligatoire",
+  "shareholder_form_successor_phone_label": "Téléphone du successeur",
+  "shareholder_form_successor_phone_required_message": "La valeur est obligatoire",
+  "shareholder_form_successor_email_label": "Email du successeur",
+  "shareholder_form_successor_email_invalid_message": "Email invalid"
 }

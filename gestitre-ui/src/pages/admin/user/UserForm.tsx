@@ -38,6 +38,7 @@ import {Toaster} from "@/components/ui/toaster.tsx";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs.tsx";
 import {Checkbox} from "@/components/ui/checkbox.tsx";
 import {RoleModel} from "@/pages/admin/user/RoleModel.ts";
+import {LanguageEnum} from "@/pages/admin/user/LanguageEnum.ts";
 
 const timezoneTypes = [
     {label: 'user_form_timezone_africa_brazaville', name: 'Africa_Brazzaville'},
@@ -46,6 +47,11 @@ const timezoneTypes = [
     {label: 'user_form_timezone_africa_libreville', name: 'Africa_Libreville'},
     {label: 'user_form_timezone_europe_paris', name: 'Europe_Paris'},
     {label: 'user_form_timezone_america_los_angeles', name: 'America_Los_Angeles'},
+];
+
+const languageTypes = [
+    {label: 'user_form_language_fr', name: LanguageEnum.FR},
+    {label: 'user_form_language_en', name: LanguageEnum.EN}
 ];
 
 const UserForm = () => {
@@ -68,19 +74,22 @@ const UserForm = () => {
     const [rolePopOverLabel, setRolePopOverLabel] = useState("");
     const [openTimezonePopOver, setOpenTimezonePopOver] = useState(false);
     const [timezonePopOverLabel, setTimezonePopOverLabel] = useState("");
+    const [openLanguagePopOver, setOpenLanguagePopOver] = useState(false);
+    const [languagePopOverLabel, setLanguagePopOverLabel] = useState("");
 
     const navigate = useNavigate();
     const [mode, setMode] = useState<FormModeType>(userId? FormModeType.READ: FormModeType.CREATE);
 
     const UserSchema = z.object({
-        id: z.string().min(0),
+        id: z.string(),
         name: z.string().min(1, {message: t('user_form_name_required_message')}).max(128, {message: t('user_form_name_max_length_message')}),
         email: z.string().min(1, {message: t('user_form_email_required_message')}).max(128, {message: t('user_form_email_max_length_message')}).email(t('user_form_email_invalid_message')),
         password: z.string().min(1, {message: t('user_form_password_required_message')}).min(6, {message: t('user_form_password_min_length_message')}),
         confirmPassword: z.string().min(1, {message: t('user_form_confirm_password_required_message')}).min(6, {message: t('user_form_confirm_password_min_length_message')}),
         timezone: z.string().min(1, {message: t('user_form_timezone_required_message')}),
+        language: z.string().min(1, {message: t('user_form_language_required_message')}),
         companyId: z.string().min(1, {message: t('user_form_company_id_required_message')}),
-        tenantId: z.string().min(0),
+        tenantId: z.string(),
         roles: z.array(z.object({
             id: z.string().min(1, {message: t('user_form_roles_id_required_message')}),
             name: z.string().min(1, {message: t('user_form_roles_name_required_message')}),
@@ -93,6 +102,14 @@ const UserForm = () => {
         credentialExpired: z.boolean(),
         failedLoginAttempt: z.coerce.number().nonnegative({message: t('user_form_failed_login_attempt_positive_message')})
 
+    }).superRefine((data, ctx) => {
+        if(data.password && data.confirmPassword && data.password !== data.confirmPassword) {
+            ctx.addIssue({
+                path: ["confirmPassword"],
+                message: t('user_form_confirm_password_not_match_message'),
+                code: z.ZodIssueCode.custom
+            });
+        }
     });
 
     const defaultUserValue: UserModel = {
@@ -104,6 +121,7 @@ const UserForm = () => {
         timezone: TimezoneEnum.Africa_Douala,
         companyId: '',
         tenantId: '',
+        language: LanguageEnum.FR,
         roles: [],
         useMfa: true,
         accountEnabled: false,
@@ -136,7 +154,6 @@ const UserForm = () => {
 
     useEffect(() => {
         if(user) {
-            console.log(user)
             form.reset(changeNullToEmptyString(user));
             resetPopOverLabel(user);
         }
@@ -208,14 +225,17 @@ const UserForm = () => {
             setCompanyPopOverLabel(companies.find(company => company.id === user.companyId)?.companyName as string);
             setRolePopOverLabel(roles.find(role => user.roles.find(userRole => userRole.id === role.id))?.name as string);
             setTimezonePopOverLabel(timezoneTypes.find(timezone => user.timezone.valueOf() === timezone.name)?.label as string);
+            setLanguagePopOverLabel(languageTypes.find(language => user.language.valueOf() === language.name)?.label as string);
         } else {
             setCompanyPopOverLabel('');
             setRolePopOverLabel('');
             setTimezonePopOverLabel('');
+            setLanguagePopOverLabel('');
         }
         setOpenCompanyPopOver(false);
         setOpenRolePopOver(false);
         setOpenTimezonePopOver(false);
+        setOpenLanguagePopOver(false);
     }
 
     return (
@@ -298,6 +318,69 @@ const UserForm = () => {
                                                       <FormControl>
                                                           <Input id="email" type="email" {...field}
                                                                  disabled={mode === FormModeType.READ || isLoading}/>
+                                                      </FormControl>
+                                                      <FormMessage className="text-xs text-destructive"/>
+                                                  </FormItem>
+                                              )}
+                                          />
+                                      </div>
+                                      <div className="flex flex-col space-y-1.5 mb-5">
+                                          <FormField
+                                              control={form.control}
+                                              name="language"
+                                              render={() => (
+                                                  <FormItem>
+                                                      <FormLabel>{t('user_form_language_label')}</FormLabel>
+                                                      <FormControl>
+                                                          <Popover open={openLanguagePopOver} onOpenChange={setOpenLanguagePopOver}>
+                                                              <PopoverTrigger asChild>
+                                                                  <Button
+                                                                      variant="outline"
+                                                                      role="combobox"
+                                                                      aria-expanded={openLanguagePopOver}
+                                                                      className="w-full justify-between"
+                                                                      disabled={mode === FormModeType.READ || isLoading}
+                                                                  >
+                                                                    <span>{languagePopOverLabel
+                                                                        //@ts-ignore
+                                                                        ? t(languageTypes.find((language) => language.label === languagePopOverLabel)?.label)
+                                                                        //@ts-ignore
+                                                                        : user ? t(languageTypes.find((languageEdit) => languageEdit.label === user.language)?.label) : t('user_form_language_pop_over_place_holder')}</span>
+                                                                      <span
+                                                                          className="opacity-50 material-symbols-outlined">unfold_more</span>
+                                                                  </Button>
+                                                              </PopoverTrigger>
+                                                              <PopoverContent className="w-[--radix-popover-trigger-width]">
+                                                                  <Command>
+                                                                      <CommandInput id="type" placeholder={t('user_form_language_pop_over_place_holder')} />
+                                                                      <CommandList>
+                                                                          <Command>{t('user_form_pop_language_over_not_found')}</Command>
+                                                                          <CommandGroup>
+                                                                              {languageTypes.map((language) => (
+                                                                                  <CommandItem
+                                                                                      key={language.label}
+                                                                                      value={language.label}
+                                                                                      onSelect={(currentValue) => {
+                                                                                          setLanguagePopOverLabel(currentValue === languagePopOverLabel ? "" : currentValue);
+                                                                                          setOpenLanguagePopOver(false);
+                                                                                          form.setValue(
+                                                                                              "language",
+                                                                                              currentValue === languagePopOverLabel ? "" : language.name.valueOf(),
+                                                                                              {shouldTouch: true, shouldDirty: true, shouldValidate: true}
+                                                                                          );
+                                                                                      }}
+                                                                                  >
+                                                                                    <span
+                                                                                        className={`mr-2 h-4 w-4 material-symbols-outlined ${languagePopOverLabel === language.label ? 'opacity-100' : 'opacity-0'}`}
+                                                                                    >check</span>
+                                                                                      {t(language.label)}
+                                                                                  </CommandItem>
+                                                                              ))}
+                                                                          </CommandGroup>
+                                                                      </CommandList>
+                                                                  </Command>
+                                                              </PopoverContent>
+                                                          </Popover>
                                                       </FormControl>
                                                       <FormMessage className="text-xs text-destructive"/>
                                                   </FormItem>

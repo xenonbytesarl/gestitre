@@ -13,7 +13,7 @@ const findShareHolderById = async (shareholderId: string): Promise<SuccessRespon
 }
 
 const searchShareHolders = async (searchParam: SearchParamModel): Promise<SuccessResponseModel<PageModel<ShareHolderModel>>> => {
-    return await api.get('/shareholders/search',
+    return await api.get('/shareholders',
         {
             params: {...searchParam},
             headers: API_JSON_HEADER
@@ -27,10 +27,18 @@ const createShareHolder = async (shareholder: ShareHolderModel): Promise<Success
         });
 }
 
+const updateShareHolder = async (shareholder: ShareHolderModel): Promise<SuccessResponseModel<ShareHolderModel>> => {
+    return await api.put(`/shareholders/${shareholder.id}`, shareholder,
+        {
+            headers: API_JSON_HEADER
+        });
+}
+
 const shareHolderService = {
     findShareHolderById,
     searchShareHolders,
-    createShareHolder
+    createShareHolder,
+    updateShareHolder
 };
 
 export default shareHolderService;

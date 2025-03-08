@@ -19,6 +19,7 @@ import {getLoading, getProfileInfo} from "@/pages/admin/auth/AuthSlice.ts";
 import {ProfileModel} from "@/pages/admin/user/ProfileModel.ts";
 import {findCompanyById, selectCompanyById} from "@/pages/company/CompanySlice.ts";
 import {CompanyModel} from "@/pages/company/CompanyModel.ts";
+import {format} from "date-fns";
 
 const ShareHolderTree = () => {
 
@@ -89,13 +90,16 @@ const ShareHolderTree = () => {
         {
             accessorKey: "createdDate",
             header: () => (<div className="text-left">{t("shareholder_tree_created_date")}</div>),
+            cell: ({row}) => (
+                <div className="text-left capitalize">{format(row.original.createdDate, 'dd/MM/yyyy HH:mm:ss')}</div>
+            )
         },
         {
             accessorKey: "initialBalance",
             header: () => (<div className="text-left">{t("shareholder_tree_initial_balance")}</div>)
         },
         {
-            accessorKey: "codeIsin",
+            accessorKey: "ircmRetain",
             header: () => (<div className="text-left">{t("shareholder_tree_ircm")}</div>),
             cell: ({row}) => (
                 <div className="text-left capitalize">{row.original.tenantId === profile.tenantId? company?.ircmRetain: ''}</div>

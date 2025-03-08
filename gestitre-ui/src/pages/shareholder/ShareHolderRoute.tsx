@@ -12,7 +12,7 @@ const ShareHolderRoute = () => {
                 <Route path="tree"  element={<ShareHolderTree/>}/>
                 <Route path="card"  element={<ShareHolderCard/>}/>
                 <Route path="form/new"  element={<ShareHolderForm/>}/>
-                <Route path="form/details/:shareholderId"  element={<ShareHolderForm/>}/>
+                <Route path="form/details/:shareHolderId"  element={<ShareHolderForm/>}/>
                 <Route path="*" element={<NotFound/>}/>
             </Route>
         </Routes>

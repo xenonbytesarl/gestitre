@@ -51,6 +51,16 @@ export const createShareHolder = createAsyncThunk('shareHolder/createShareHolder
     }
 });
 
+export const updateShareHolder = createAsyncThunk('shareHolder/updateShareHolder', async (shareHolder: ShareHolderModel, {rejectWithValue})=> {
+    try {
+        const response =  await shareHolderService.updateShareHolder(shareHolder);
+        // @ts-ignore
+        return {content: response.data.data.content, message: response.data.message}
+    } catch (apiError) {
+        return handleApiError(apiError as AxiosError<ErrorResponseModel>, {rejectWithValue});
+    }
+});
+
 const shareHolderSlice = createSlice({
     name: "shareHolder",
     initialState: shareHolderInitialState,
@@ -68,6 +78,13 @@ const shareHolderSlice = createSlice({
                 state.message = message;
                 state.currentShareHolder = content;
                 shareHolderEntityAdapter.addOne(state, content);
+            })
+            .addCase(updateShareHolder.fulfilled, (state, action) => {
+                const {content, message} = action.payload;
+                state.loading = false;
+                state.message = message;
+                state.currentShareHolder= content;
+                shareHolderEntityAdapter.updateOne(state, content);
             })
             .addCase(searchShareHolders.fulfilled, (state, action) => {
                 const {content} = action.payload;
@@ -87,7 +104,8 @@ const shareHolderSlice = createSlice({
                 isAnyOf(
                     createShareHolder.pending,
                     findShareHolderById.pending,
-                    searchShareHolders.pending
+                    searchShareHolders.pending,
+                    updateShareHolder.pending
                 ), (state) => {
                     state.loading = true;
                     state.message = '';
@@ -99,7 +117,8 @@ const shareHolderSlice = createSlice({
                 isAnyOf(
                     createShareHolder.rejected,
                     findShareHolderById.rejected,
-                    searchShareHolders.rejected
+                    searchShareHolders.rejected,
+                    updateShareHolder.rejected
                 ), (state, action) => {
                     state.loading = false;
                     state.message = '';

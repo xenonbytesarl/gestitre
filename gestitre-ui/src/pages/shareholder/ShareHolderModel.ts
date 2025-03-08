@@ -10,16 +10,16 @@ export interface ShareHolderModel {
     accountNumber: string;
     accountType: AccountTypeEnum;
     taxResidence: string;
-    initialBalance?: number;
+    initialBalance?: number | undefined;
     bankAccountNumber?: string;
     administrator?: string;
     email?: string;
     phone?: string;
     city?: string;
     zipCode?: string;
-    shareHolderType?: ShareHolderTypeEnum;
-    representative?: RepresentativeModel;
-    successor?: SuccessorModel;
+    shareHolderType?: ShareHolderTypeEnum | undefined;
+    representative?: RepresentativeModel | undefined;
+    successor?: SuccessorModel | undefined;
     createdDate: Date;
     active: boolean;
 
