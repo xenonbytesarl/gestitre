@@ -6,5 +6,5 @@ package cm.xenonbyte.gestitre.domain.stock.event;
  * @since 16/02/2025
  */
 public enum StockMoveEventType {
-    STOCK_MOVE_CREATED
+    STOCK_MOVE_CREATED, STOCK_MOVE_UPDATED
 }

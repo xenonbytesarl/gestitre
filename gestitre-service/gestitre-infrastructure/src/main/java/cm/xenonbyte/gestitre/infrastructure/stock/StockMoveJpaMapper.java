@@ -7,6 +7,7 @@ import org.mapstruct.BeanMapping;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 
 import java.util.List;
@@ -96,4 +97,6 @@ public interface StockMoveJpaMapper {
     @Mapping(expression = "java(new cm.xenonbyte.gestitre.domain.stock.vo.StockMoveId(stockMoveLineJpa.getStockMoveJpa().getId()))", target = "stockMoveId")
     @Mapping(expression = "java(new cm.xenonbyte.gestitre.domain.common.vo.TenantId(stockMoveLineJpa.getTenantId()))", target = "tenantId")
     @Nonnull StockMoveLine moveLineJpaToMoveLine(@Nonnull StockMoveLineJpa stockMoveLineJpa);
+
+    void copyNewToOldStockMoveJpa(@Nonnull StockMoveJpa newStockMoveJpa, @Nonnull @MappingTarget StockMoveJpa oldStockMoveJpa);
 }
