@@ -239,5 +239,16 @@
   "shareholder_form_successor_phone_label": "Téléphone du successeur",
   "shareholder_form_successor_phone_required_message": "La valeur est obligatoire",
   "shareholder_form_successor_email_label": "Email du successeur",
-  "shareholder_form_successor_email_invalid_message": "Email invalid"
+  "shareholder_form_successor_email_invalid_message": "Email invalid",
+
+  "stock_move_tree_title": "Mouvements des titres",
+  "stock_move_tree_code_isin": "Code ISIN",
+  "stock_move_tree_reference": "Reference",
+  "stock_move_tree_created_date": "Date de création",
+  "stock_move_tree_accounting_date": "Date de comptabilisation",
+  "stock_move_tree_type": "Type",
+  "stock_move_tree_state": "Statut",
+  "stock_move_tree_nature": "Nature",
+  "stock_move_tree_quantity_credit": "Quantité de titre"
+
 }

@@ -4,7 +4,7 @@ import {AccountTypeEnum} from "@/pages/shareholder/AccountTypeEnum.ts";
 import {RepresentativeModel} from "@/pages/shareholder/RepresentativeModel.ts";
 
 export interface ShareHolderModel {
-    id?: string;
+    id: string;
     tenantId?: string;
     name: string;
     accountNumber: string;

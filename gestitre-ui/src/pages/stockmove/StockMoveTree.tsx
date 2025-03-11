@@ -1,33 +1,32 @@
 import {useTranslation} from "react-i18next";
-import {ShareHolderModel} from "@/pages/shareholder/ShareHolderModel.ts";
 import {useDispatch, useSelector} from "react-redux";
-
-import {RootDispatch, RootState} from "@/core/Store.ts";
+import {getLoading} from "@/pages/admin/auth/AuthSlice.ts";
+import {RootDispatch} from "@/core/Store.ts";
 import {useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
-import {DEFAULT_DIRECTION_VALUE, DEFAULT_PAGE_VALUE} from "@/shared/constant/page.constant.ts";
+import {DEFAULT_PAGE_VALUE} from "@/shared/constant/page.constant.ts";
 import useDebounce from "@/hooks/useDebounce.tsx";
 import {DEBOUNCE_TIMEOUT} from "@/shared/constant/globalConstant.ts";
+import {StockMoveModel} from "@/pages/stockmove/StockMoveModel.ts";
+import {
+    getPageSize,
+    getTotalElements,
+    getTotalPages,
+    searchStockMoves,
+    selectStockMoves
+} from "@/pages/stockmove/StockMoveSlice.ts";
 import {SearchParamModel} from "@/shared/model/searchParamModel.ts";
 import {Direction} from "@/shared/constant/directionConstant.ts";
 import {ColumnDef} from "@tanstack/react-table";
 import {Checkbox} from "@/components/ui/checkbox.tsx";
-import DataTable from "@/components/DataTable.tsx";
-import {searchShareHolders, selectShareHolders} from "@/pages/shareholder/ShareholderSlice.tsx";
-import {getPageSize, getTotalElements, getTotalPages} from "@/pages/admin/user/UserSlice.ts";
-import {getLoading, getProfileInfo} from "@/pages/admin/auth/AuthSlice.ts";
-import {ProfileModel} from "@/pages/admin/user/ProfileModel.ts";
-import {findCompanyById, selectCompanyById} from "@/pages/company/CompanySlice.ts";
-import {CompanyModel} from "@/pages/company/CompanyModel.ts";
 import {format} from "date-fns";
+import DataTable from "@/components/DataTable.tsx";
 
-const ShareHolderTree = () => {
+const StockMoveTree = () => {
 
     const {t} = useTranslation(['home']);
 
-    const shareholders: Array<ShareHolderModel> = useSelector(selectShareHolders);
-    const profile: ProfileModel = useSelector(getProfileInfo);
-    const company: CompanyModel = useSelector((state: RootState) => selectCompanyById(state, profile.companyId))
+    const stockMoves: Array<StockMoveModel> = useSelector(selectStockMoves);
     const pageSize: number = useSelector(getPageSize);
     const totalElements = useSelector(getTotalElements);
     const totalPages = useSelector(getTotalPages);
@@ -44,12 +43,12 @@ const ShareHolderTree = () => {
     const [, setSearchParam] = useState<SearchParamModel>({
         page: DEFAULT_PAGE_VALUE,
         size: pageSize,
-        field: "shareholderName",
-        direction: Direction.ASC,
+        field: "createdDate",
+        direction: Direction.DESC,
         keyword: keyword
     });
 
-    const columns: ColumnDef<ShareHolderModel>[] = [
+    const columns: ColumnDef<StockMoveModel>[] = [
         {
             id: "select",
             header: ({ table }) => (
@@ -74,35 +73,52 @@ const ShareHolderTree = () => {
         },
         {
             accessorKey: "codeIsin",
-            header: () => (<div className="text-left">{t("shareholder_tree_code_isin")}</div>),
-            cell: ({row}) => (
-                <div className="text-left capitalize">{row.original.tenantId === profile.tenantId? company?.isinCode: ''}</div>
-            )
+            header: () => (<div className="text-left">{t("stock_move_tree_code_isin")}</div>)
         },
         {
-            accessorKey: "accountNumber",
-            header: () => (<div className="text-left">{t("shareholder_tree_account_number")}</div>),
-        },
-        {
-            accessorKey: "name",
-            header: () => (<div className="text-left">{t("shareholder_tree_name")}</div>),
+            accessorKey: "reference",
+            header: () => (<div className="text-left">{t("stock_move_tree_reference")}</div>),
         },
         {
             accessorKey: "createdDate",
-            header: () => (<div className="text-left">{t("shareholder_tree_created_date")}</div>),
+            header: () => (<div className="text-left">{t("stock_move_tree_created_date")}</div>),
             cell: ({row}) => (
-                <div className="text-left capitalize">{row.original.createdDate === undefined? '': format(row.original.createdDate, 'dd/MM/yyyy HH:mm:ss')}</div>
+                <div className="text-left">{row.original.createdDate === undefined? '': format(row.original.createdDate, 'dd/MM/yyyy')}</div>
             )
         },
         {
-            accessorKey: "initialBalance",
-            header: () => (<div className="text-left">{t("shareholder_tree_initial_balance")}</div>)
+            accessorKey: "accountingDate",
+            header: () => (<div className="text-left">{t("stock_move_tree_accounting_date")}</div>),
+            cell: ({row}) => (
+                <div className="text-left">{row.original.accountingDate === undefined? '': format(row.original.accountingDate, 'dd/MM/yyyy')}</div>
+            )
         },
         {
-            accessorKey: "ircmRetain",
-            header: () => (<div className="text-left">{t("shareholder_tree_ircm")}</div>),
+            accessorKey: "type",
+            header: () => (<div className="text-left">{t("stock_move_tree_type")}</div>),
             cell: ({row}) => (
-                <div className="text-left capitalize">{row.original.tenantId === profile.tenantId? company?.ircmRetain: ''}</div>
+                <div className="text-left capitalize">{row.original.type}</div>
+            )
+        },
+        {
+            accessorKey: "nature",
+            header: () => (<div className="text-left">{t("stock_move_tree_nature")}</div>),
+            cell: ({row}) => (
+                <div className="text-left capitalize">{row.original.nature}</div>
+            )
+        },
+        {
+            accessorKey: "quantityCredit",
+            header: () => (<div className="text-left">{t("stock_move_tree_quantity_credit")}</div>),
+            cell: ({row}) => (
+                <div className="text-right">{row.original.quantityCredit}</div>
+            )
+        },
+        {
+            accessorKey: "state",
+            header: () => (<div className="text-left">{t("stock_move_tree_state")}</div>),
+            cell: ({row}) => (
+                <div className="text-left capitalize">{row.original.state}</div>
             )
         },
         {
@@ -118,30 +134,23 @@ const ShareHolderTree = () => {
     ];
 
     useEffect(() => {
-        if(profile && profile.companyId) {
-            dispatch(findCompanyById(profile.companyId));
-        }
-    }, [dispatch, profile]);
-
-    useEffect(() => {
-        dispatch(searchShareHolders({
+        dispatch(searchStockMoves({
             page: page,
             size: size,
-            field: "name",
-            direction: DEFAULT_DIRECTION_VALUE,
+            field: "createdDate",
+            direction: Direction.DESC,
             keyword: keyword
         }));
     }, [debounceKeyword, page, size]);
 
-
     const handlePageChange = (page: number) => {
-        setSearchParam({page: page, size: size, field: "name", direction: DEFAULT_DIRECTION_VALUE, keyword: keyword});
+        setSearchParam({page: page, size: size, field: "createdDate", direction: Direction.DESC, keyword: keyword});
         //TODO add page in pageInfo in backend and manage page in store
         setPage(page);
     }
 
     const handleSizeChange = (size: number) => {
-        setSearchParam({page: DEFAULT_PAGE_VALUE, size: size, field: "name", direction: DEFAULT_DIRECTION_VALUE, keyword: keyword});
+        setSearchParam({page: DEFAULT_PAGE_VALUE, size: size, field: "createdDate", direction: Direction.DESC, keyword: keyword});
         //TODO add page in pageInfo in backend and manage page in store
         setSize(size);
         setPage(DEFAULT_PAGE_VALUE);
@@ -152,16 +161,16 @@ const ShareHolderTree = () => {
         setPage(DEFAULT_PAGE_VALUE);
     }
 
-    const handleDelete = (rows: Array<ShareHolderModel>) => {
+    const handleDelete = (rows: Array<StockMoveModel>) => {
         console.log(rows); //TODO
     }
 
-    const handleEdit = (row: ShareHolderModel) => {
-        navigate(`/shareholders/form/details/${row.id}`);
+    const handleEdit = (row: StockMoveModel) => {
+        navigate(`/stock-moves/form/details/${row.id}`);
     }
 
     const handleNew = () => {
-        navigate('/shareholders/form/new');
+        navigate('/stock-moves/form/new');
     }
 
     const handleClear = () => {
@@ -171,8 +180,8 @@ const ShareHolderTree = () => {
     return (
         <div className="text-3xl text-primary min-h-full">
             <DataTable
-                title={'shareholder_tree_title'}
-                columns={columns} data={shareholders}
+                title={'stock_move_tree_title'}
+                columns={columns} data={stockMoves}
                 totalElements={totalElements}
                 page={page}
                 size={size}
@@ -190,4 +199,4 @@ const ShareHolderTree = () => {
     );
 };
 
-export default ShareHolderTree;
+export default StockMoveTree;

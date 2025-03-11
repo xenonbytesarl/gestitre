@@ -14,7 +14,7 @@ export const sidebarMenus: SidebarMenuModel[] = [
     {
         label: 'sidebar_menu_movement',
         icon: 'sync_alt',
-        link: '/movements',
+        link: '/stock-moves',
     },
     {
         label: 'sidebar_menu_account',

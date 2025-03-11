@@ -5,6 +5,7 @@ import CompanySlice from "@/pages/company/CompanySlice.ts";
 import CertificateTemplateSlice from "@/pages/company/certificatetemplate/CertificateTemplateSlice.ts";
 import adminSlice from "@/pages/admin/AdminSlice.ts";
 import ShareholderSlice from "@/pages/shareholder/ShareholderSlice.tsx";
+import StockMoveSlice from "@/pages/stockmove/StockMoveSlice.ts";
 
 const store = configureStore({
     reducer: {
@@ -13,7 +14,8 @@ const store = configureStore({
         admin: adminSlice,
         company: CompanySlice,
         shareHolder: ShareholderSlice,
-        certificateTemplate: CertificateTemplateSlice
+        certificateTemplate: CertificateTemplateSlice,
+        stockMove: StockMoveSlice
     }/*,
     middleware: (getDefaultMiddleware) => {
         return getDefaultMiddleware().concat(axiosMiddleware)

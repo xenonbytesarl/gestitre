@@ -198,7 +198,7 @@ const ShareHolderForm = () => {
                 .then(unwrapResult)
                 .then((response) => {
                     setMode(FormModeType.READ);
-                    showToast("success", response.message);
+                    showToast("info", response.message);
                     navigate(`/shareholders/form/details/${response.content.id}`);
                 })
                 .catch((error) => {
