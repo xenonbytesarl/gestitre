@@ -4,24 +4,24 @@ import {AccountTypeEnum} from "@/pages/shareholder/AccountTypeEnum.ts";
 import {RepresentativeModel} from "@/pages/shareholder/RepresentativeModel.ts";
 
 export interface ShareHolderModel {
-    id: string;
-    tenantId: string;
+    id?: string;
+    tenantId?: string;
     name: string;
     accountNumber: string;
-    accountType: AccountTypeEnum;
+    accountType: AccountTypeEnum | undefined;
     taxResidence: string;
-    initialBalance?: number | undefined;
+    initialBalance: number;
     bankAccountNumber?: string;
     administrator?: string;
     email?: string;
     phone?: string;
     city?: string;
     zipCode?: string;
-    shareHolderType?: ShareHolderTypeEnum | undefined;
-    representative?: RepresentativeModel | undefined;
-    successor?: SuccessorModel | undefined;
-    createdDate: Date;
-    active: boolean;
+    shareHolderType?: ShareHolderTypeEnum;
+    representative?: RepresentativeModel;
+    successor?: SuccessorModel;
+    createdDate: Date | undefined;
+    active?: boolean;
 
 
 }

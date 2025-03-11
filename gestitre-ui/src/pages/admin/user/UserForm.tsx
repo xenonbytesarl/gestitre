@@ -154,7 +154,7 @@ const UserForm = () => {
 
     useEffect(() => {
         if(user) {
-            form.reset(changeNullToEmptyString(user));
+            form.reset(changeNullToEmptyString(user, defaultUserValue));
             resetPopOverLabel(user);
         }
     }, [user]);
@@ -203,7 +203,7 @@ const UserForm = () => {
 
     const onCancel = () => {
         if(user) {
-            form.reset(changeNullToEmptyString(user));
+            form.reset(changeNullToEmptyString(user, defaultUserValue));
             setMode(FormModeType.READ);
             resetPopOverLabel(user);
         } else {

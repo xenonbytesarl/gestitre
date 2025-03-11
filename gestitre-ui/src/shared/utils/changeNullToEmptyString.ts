@@ -1,4 +1,8 @@
-export const changeNullToEmptyString = (custom: object) => {
+
+
+export const changeNullToEmptyString = (custom: object, defaultCustom: object) => {
     // @ts-ignore
-    return JSON.parse(JSON.stringify(custom), (key, value) => value === null ? '' : value)
+    const result = JSON.parse(JSON.stringify(custom), (key, value) => value === null ? defaultCustom[key] : value);
+    console.log(result)
+    return result;
 }

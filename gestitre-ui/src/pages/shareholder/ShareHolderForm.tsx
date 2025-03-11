@@ -15,7 +15,6 @@ import {useEffect, useState} from "react";
 import {FormModeType} from "@/shared/model/FormModeType.ts";
 import {z} from "zod";
 import {ShareHolderModel} from "@/pages/shareholder/ShareHolderModel.ts";
-import {AccountTypeEnum} from "@/pages/shareholder/AccountTypeEnum.ts";
 import {ShareHolderTypeEnum} from "@/pages/shareholder/ShareHolderTypeEnum.ts";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -35,6 +34,8 @@ import {Calendar} from "@/components/ui/calendar.tsx";
 import {format} from "date-fns";
 import {CalendarIcon} from "lucide-react";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs.tsx";
+import {countries} from "@/shared/constant/country.ts";
+import {DevTool} from "@hookform/devtools";
 
 const accountTypes = [
     {label: 'shareholder_form_account_type_nominative_pure', name: 'NOMINATIVE_PURE'},
@@ -59,9 +60,11 @@ const ShareHolderForm = () => {
     const dispatch = useDispatch<RootDispatch>();
 
     const [openAccountTypePopOver, setOpenAccountTypePopOver] = useState(false);
-    const [accountTypePopOverLabel, setAccountTypePopOverLabel] = useState("");
+    const [accountTypePopOverLabel, setAccountTypePopOverLabel] = useState<string | undefined>("");
     const [openShareHolderTypePopOver, setOpenShareHolderTypePopOver] = useState(false);
-    const [shareHolderTypePopOverLabel, setShareHolderTypePopOverLabel] = useState<string | undefined>(undefined);
+    const [shareHolderTypePopOverLabel, setShareHolderTypePopOverLabel] = useState("");
+    const [openTaxResidencePopOver, setOpenTaxResidencePopOver] = useState(false);
+    const [taxResidencePopOverLabel, setTaxResidencePopOverLabel] = useState("");
 
     const navigate = useNavigate();
     const [mode, setMode] = useState<FormModeType>(shareHolderId? FormModeType.READ: FormModeType.CREATE);
@@ -80,7 +83,7 @@ const ShareHolderForm = () => {
         bankAccountNumber: z.string(),
         administrator: z.string().max(128, {message: t('shareholder_form_administrator_max_length_message')}),
         shareHolderType: z.string().optional(),
-        createdDate: z.date({required_error: t('shareholder_form_created_date_required_message')}),
+        createdDate: z.preprocess((arg) => typeof arg === "string" ? new Date(arg) : arg , z.date(), {required_error: t('shareholder_form_created_date_required_message')}),
         tenantId: z.string(),
         representative: z.object({
             name: z.string(),
@@ -94,15 +97,15 @@ const ShareHolderForm = () => {
         }),
         active: z.boolean()
     }).superRefine((data, ctx) => {
-        if(data.shareHolderType && data.shareHolderType === ShareHolderTypeEnum.REPRESENTATIVE) {
-            if(!data.representative.name) {
+        if(data.shareHolderType && data.shareHolderType === ShareHolderTypeEnum.REPRESENTATIVE.valueOf()) {
+            if(data.representative && !data.representative.name) {
                 ctx.addIssue({
                     code: z.ZodIssueCode.custom,
                     path: ["representative", "name"],
                     message: t('shareholder_form_representative_name_required_message')
                 });
             }
-            if(!data.representative.phone) {
+            if(data.representative && !data.representative.phone) {
                 ctx.addIssue({
                     code: z.ZodIssueCode.custom,
                     path: ["representative", "phone"],
@@ -111,15 +114,15 @@ const ShareHolderForm = () => {
             }
         }
 
-        if(data.shareHolderType && data.shareHolderType === ShareHolderTypeEnum.SUCCESSOR) {
-            if(!data.successor?.name) {
+        if(data.shareHolderType && data.shareHolderType === ShareHolderTypeEnum.SUCCESSOR.valueOf()) {
+            if(data.successor && !data.successor?.name) {
                 ctx.addIssue({
                     code: z.ZodIssueCode.custom,
                     path: ["successor", "name"],
                     message: t('shareholder_form_successor_name_required_message')
                 });
             }
-            if(!data.successor?.phone) {
+            if(data.successor && !data.successor?.phone) {
                 ctx.addIssue({
                     code: z.ZodIssueCode.custom,
                     path: ["successor", "phone"],
@@ -134,7 +137,7 @@ const ShareHolderForm = () => {
         name: '',
         email: '',
         accountNumber: '',
-        accountType: AccountTypeEnum.NOMINATIVE_PURE,
+        accountType: undefined,
         taxResidence: '',
         phone: '',
         city: '',
@@ -175,7 +178,7 @@ const ShareHolderForm = () => {
 
     useEffect(() => {
         if(shareHolder) {
-            form.reset(changeNullToEmptyString(shareHolder));
+            form.reset(changeNullToEmptyString(shareHolder, defaultShareHolderValue));
             resetPopOverLabel(shareHolder);
         }
     }, [shareHolder]);
@@ -185,12 +188,11 @@ const ShareHolderForm = () => {
         if(!shareHolderFormValue.shareHolderType) {
             shareHolderFormValue.representative = undefined;
             shareHolderFormValue.successor = undefined;
-        } else if(shareHolderFormValue.shareHolderType === ShareHolderTypeEnum.SUCCESSOR) {
+        } else if(shareHolderFormValue.shareHolderType === ShareHolderTypeEnum.SUCCESSOR.valueOf()) {
             shareHolderFormValue.representative = undefined;
         } else {
             shareHolderFormValue.successor = undefined;
         }
-        console.log(shareHolderFormValue)
         if(shareHolderFormValue.id) {
             dispatch(updateShareHolder(shareHolderFormValue))
                 .then(unwrapResult)
@@ -233,7 +235,7 @@ const ShareHolderForm = () => {
 
     const onCancel = () => {
         if(shareHolder) {
-            form.reset(changeNullToEmptyString(shareHolder));
+            form.reset(changeNullToEmptyString(shareHolder, defaultShareHolderValue));
             setMode(FormModeType.READ);
             resetPopOverLabel(shareHolder);
         } else {
@@ -252,16 +254,18 @@ const ShareHolderForm = () => {
 
     const resetPopOverLabel = (shareHolder: ShareHolderModel | undefined) => {
         if(shareHolder) {
-            setAccountTypePopOverLabel(accountTypes.find(accountType => shareHolder.accountType.valueOf() === accountType.name)?.label as string);
+            setAccountTypePopOverLabel(accountTypes.find(accountType => shareHolder?.accountType?.valueOf() === accountType.name)?.label as string);
             setShareHolderTypePopOverLabel(shareHolderTypes.find(shareHolderType => shareHolder.shareHolderType?.valueOf() === shareHolderType.name)?.label as string);
+            setTaxResidencePopOverLabel(countries.find(taxResidence => shareHolder.taxResidence === taxResidence.name)?.label as string);
         } else {
             setAccountTypePopOverLabel('');
             setShareHolderTypePopOverLabel('');
+            setTaxResidencePopOverLabel('');
         }
         setOpenAccountTypePopOver(false);
         setOpenShareHolderTypePopOver(false);
+        setOpenTaxResidencePopOver(false);
     }
-
     return (
         <div>
             <Form {...form}>
@@ -352,12 +356,60 @@ const ShareHolderForm = () => {
                                             <FormField
                                                 control={form.control}
                                                 name="taxResidence"
-                                                render={({field}) => (
+                                                render={() => (
                                                     <FormItem>
                                                         <FormLabel>{t('shareholder_form_tax_residence_label')}</FormLabel>
                                                         <FormControl>
-                                                            <Input id="taxResidence" type="text" {...field}
-                                                                   disabled={mode === FormModeType.READ || isLoading}/>
+                                                            <Popover open={openTaxResidencePopOver} onOpenChange={setOpenTaxResidencePopOver}>
+                                                                <PopoverTrigger asChild>
+                                                                    <Button
+                                                                        variant="outline"
+                                                                        role="combobox"
+                                                                        aria-expanded={openTaxResidencePopOver}
+                                                                        className="w-full justify-between"
+                                                                        disabled={mode === FormModeType.READ || isLoading}
+                                                                    >
+                                                                    <span>{taxResidencePopOverLabel
+                                                                        //@ts-ignore
+                                                                        ? t(countries.find((taxResidence) => taxResidence.label === taxResidencePopOverLabel)?.label)
+                                                                        //@ts-ignore
+                                                                        : shareHolder ? t(countries.find((taxResidenceEdit) => taxResidenceEdit.name === shareHolder.taxResidence)?.label) : t('shareholder_form_tax_residence_pop_over_place_holder')}</span>
+                                                                        <span
+                                                                            className="opacity-50 material-symbols-outlined">unfold_more</span>
+                                                                    </Button>
+                                                                </PopoverTrigger>
+                                                                <PopoverContent className="w-[--radix-popover-trigger-width]">
+                                                                    <Command>
+                                                                        <CommandInput id="type" placeholder={t('shareholder_form_tax_residence_pop_over_place_holder')} />
+                                                                        <CommandList>
+                                                                            <Command>{t('shareholder_form_pop_tax_residence_over_not_found')}</Command>
+                                                                            <CommandGroup>
+                                                                                {countries.map((taxResidence) => (
+                                                                                    <CommandItem
+                                                                                        key={taxResidence.label}
+                                                                                        value={taxResidence.label}
+                                                                                        onSelect={(currentValue) => {
+                                                                                            setTaxResidencePopOverLabel(currentValue === taxResidencePopOverLabel ? "" : currentValue);
+                                                                                            setOpenTaxResidencePopOver(false);
+                                                                                            console.log(currentValue)
+                                                                                            form.setValue(
+                                                                                                "taxResidence",
+                                                                                                currentValue === taxResidencePopOverLabel ? "" : taxResidence.name,
+                                                                                                {shouldTouch: true, shouldDirty: true, shouldValidate: true}
+                                                                                            );
+                                                                                        }}
+                                                                                    >
+                                                                                    <span
+                                                                                        className={`mr-2 h-4 w-4 material-symbols-outlined ${taxResidencePopOverLabel === taxResidence.label ? 'opacity-100' : 'opacity-0'}`}
+                                                                                    >check</span>
+                                                                                        {t(taxResidence.label)}
+                                                                                    </CommandItem>
+                                                                                ))}
+                                                                            </CommandGroup>
+                                                                        </CommandList>
+                                                                    </Command>
+                                                                </PopoverContent>
+                                                            </Popover>
                                                         </FormControl>
                                                         <FormMessage className="text-xs text-destructive"/>
                                                     </FormItem>
@@ -624,7 +676,7 @@ const ShareHolderForm = () => {
                                                                         //@ts-ignore
                                                                         ? t(shareHolderTypes.find((shareHolderType) => shareHolderType.label === shareHolderTypePopOverLabel)?.label)
                                                                         //@ts-ignore
-                                                                        : shareHolder ? t(shareHolderTypes.find((shareHolderTypeEdit) => shareHolderTypeEdit.name === shareHolder.shareHolderType)?.label) : t('shareholder_form_shareholder_type_pop_over_place_holder')}</span>
+                                                                        : shareHolder && shareHolder.shareHolderType ? t(shareHolderTypes.find((shareHolderTypeEdit) => shareHolderTypeEdit.name === shareHolder.shareHolderType)?.label) : t('shareholder_form_shareholder_type_pop_over_place_holder')}</span>
                                                                             <span
                                                                                 className="opacity-50 material-symbols-outlined">unfold_more</span>
                                                                         </Button>
@@ -644,7 +696,7 @@ const ShareHolderForm = () => {
                                                                                                 setOpenShareHolderTypePopOver(false);
                                                                                                 form.setValue(
                                                                                                     "shareHolderType",
-                                                                                                    currentValue === shareHolderTypePopOverLabel ? undefined : shareHolderType.name,
+                                                                                                    currentValue === shareHolderTypePopOverLabel ? "" : shareHolderType.name,
                                                                                                     {shouldTouch: true, shouldDirty: true, shouldValidate: true}
                                                                                                 );
                                                                                             }}
@@ -669,7 +721,7 @@ const ShareHolderForm = () => {
                                         </div>
 
                                         {
-                                            form.getValues().shareHolderType === ShareHolderTypeEnum.SUCCESSOR &&
+                                            form.getValues().shareHolderType === ShareHolderTypeEnum.SUCCESSOR.valueOf() &&
                                             <div className="lg:w-6/12 mb-4">
                                                 <div className="flex flex-col space-y-1.5 mb-5">
                                                     <FormField
@@ -722,7 +774,7 @@ const ShareHolderForm = () => {
                                         }
 
                                         {
-                                            form.getValues().shareHolderType === ShareHolderTypeEnum.REPRESENTATIVE &&
+                                            form.getValues().shareHolderType === ShareHolderTypeEnum.REPRESENTATIVE.valueOf() &&
                                             <div className="lg:w-6/12 mb-4">
                                                 <div className="flex flex-col space-y-1.5 mb-5">
                                                     <FormField
@@ -780,7 +832,9 @@ const ShareHolderForm = () => {
                         </CardContent>
                     </Card>
                 </form>
+                <DevTool control={form.control}/>
             </Form>
+
         </div>
     );
 };

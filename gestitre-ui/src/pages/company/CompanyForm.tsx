@@ -191,7 +191,7 @@ const CompanyForm = () => {
 
     useEffect(() => {
         if(company) {
-            form.reset(changeNullToEmptyString(company));
+            form.reset(changeNullToEmptyString(company, defaultCompanyValue));
             resetPopOverLabel(company);
         }
     }, [company]);
@@ -300,7 +300,7 @@ const CompanyForm = () => {
 
     const onCancel = () => {
         if(company) {
-            form.reset(changeNullToEmptyString(company));
+            form.reset(changeNullToEmptyString(company, defaultCompanyValue));
             setMode(FormModeType.READ);
             resetPopOverLabel(company);
         } else {
