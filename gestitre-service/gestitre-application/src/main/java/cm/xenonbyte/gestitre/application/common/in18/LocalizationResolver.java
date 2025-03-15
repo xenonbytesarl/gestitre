@@ -12,7 +12,8 @@ import java.util.Locale;
  * @since 05/11/2024
  */
 @RequestScoped
-public final class LocalizationResolver {
+public final class
+LocalizationResolver {
 
     @Context
     private HttpHeaders headers;

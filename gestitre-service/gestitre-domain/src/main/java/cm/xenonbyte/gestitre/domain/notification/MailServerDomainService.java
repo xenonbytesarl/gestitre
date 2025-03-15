@@ -1,6 +1,8 @@
 package cm.xenonbyte.gestitre.domain.notification;
 
+import cm.xenonbyte.gestitre.domain.admin.vo.Timezone;
 import cm.xenonbyte.gestitre.domain.common.annotation.DomainService;
+import cm.xenonbyte.gestitre.domain.common.validation.Assert;
 import cm.xenonbyte.gestitre.domain.common.verification.ports.primary.VerificationService;
 import cm.xenonbyte.gestitre.domain.common.vo.Code;
 import cm.xenonbyte.gestitre.domain.common.vo.Keyword;
@@ -15,7 +17,7 @@ import cm.xenonbyte.gestitre.domain.notification.event.MailServerUpdatedEvent;
 import cm.xenonbyte.gestitre.domain.notification.ports.primary.MailServerService;
 import cm.xenonbyte.gestitre.domain.notification.ports.secondary.MailServerRepository;
 import cm.xenonbyte.gestitre.domain.notification.ports.secondary.message.MailServerMessagePublisher;
-import cm.xenonbyte.gestitre.domain.common.vo.MailServerId;
+import cm.xenonbyte.gestitre.domain.notification.vo.MailServerId;
 import jakarta.annotation.Nonnull;
 
 import java.time.ZonedDateTime;
@@ -58,10 +60,11 @@ public final class MailServerDomainService implements MailServerService {
         mailServer.initializeDefaultValues();
         mailServer = mailServerRepository.create(mailServer);
         LOGGER.info("Mail server is created with id " + mailServer.getId().getValue());
-        MailServerCreatedEvent mailServerCreatedEvent = new MailServerCreatedEvent(mailServer, ZonedDateTime.now());
+        MailServerCreatedEvent mailServerCreatedEvent = new MailServerCreatedEvent(mailServer, ZonedDateTime.now().withZoneSameInstant(Timezone.getCurrentZoneId()));
         mailServerMessagePublisher.publish(mailServerCreatedEvent, MAIL_SERVER_CREATED);
         return mailServerCreatedEvent;
     }
+
 
 
     @Nonnull
@@ -103,17 +106,20 @@ public final class MailServerDomainService implements MailServerService {
     }
 
     @Override
-    public PageInfo<MailServer> findMailServers(@Nonnull PageInfoPage page, @Nonnull PageInfoSize size, @Nonnull PageInfoField field, @Nonnull PageInfoDirection direction) {
-        return null;
+    public PageInfo<MailServer> searchMailServers(@Nonnull PageInfoPage page, @Nonnull PageInfoSize size, @Nonnull PageInfoField field, @Nonnull PageInfoDirection direction, @Nonnull Keyword keyword) {
+        PageInfo.validatePageParameters(page, size, field, direction);
+        Assert.field("Keyword", keyword)
+                .notNull();
+        return mailServerRepository.search(page, size, field, direction, keyword);
     }
 
     @Override
-    public PageInfo<MailServer> searchMailServers(@Nonnull PageInfoPage page, @Nonnull PageInfoSize size, @Nonnull PageInfoField field, @Nonnull PageInfoDirection direction, @Nonnull Keyword keyword) {
-        return null;
+    public MailServer findDefaultMailServer() {
+        return mailServerRepository.findByIsDefault().orElseThrow(MailServerDefaultServerNotFoundException::new);
     }
 
     private void validateMailServer(MailServer mailServer) {
-        if(mailServerRepository.existByName(mailServer.getName())) {
+        if(Boolean.TRUE.equals(mailServerRepository.existByName(mailServer.getName()))) {
             throw new MailServerNameConflictException(new String[] {mailServer.getName().text().value()});
         }
     }

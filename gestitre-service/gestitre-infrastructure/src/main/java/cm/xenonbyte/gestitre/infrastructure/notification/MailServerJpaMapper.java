@@ -6,6 +6,7 @@ import org.mapstruct.BeanMapping;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 /**
  * @author bamk
@@ -54,4 +55,5 @@ public interface MailServerJpaMapper {
     @Mapping(source = "active", target = "active.value")
     @Nonnull MailServer toMailServer(@Nonnull MailServerJpa mailServerJpa);
 
+    void copyNewToOldMailServerJpa(@Nonnull MailServerJpa newMailServerJpa, @Nonnull @MappingTarget MailServerJpa oldMailServerJpa);
 }

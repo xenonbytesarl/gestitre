@@ -142,7 +142,7 @@ public final class ShareHolderResource {
                                 .code(OK.getStatusCode())
                                 .timestamp(ZonedDateTime.now())
                                 .message(getMessage(SHARE_HOLDER_FINDS_SUCCESSFULLY, forLanguageTag(acceptLanguage)))
-                                .data(of(CONTENT, shareHolderApplicationAdapter.findShareHolders(page, size, field, direction, keyword)))
+                                .data(of(CONTENT, shareHolderApplicationAdapter.searchShareHolders(page, size, field, direction, keyword)))
                 )
                 .build();
     }

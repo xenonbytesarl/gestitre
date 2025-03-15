@@ -22,6 +22,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public final class SearchUserPageInfoViewResponse extends PageInfoView {
-    @Valid
-    private List<SearchUsersViewResponse> elements = new ArrayList<>();
+
+    private List<@Valid SearchUsersViewResponse> elements = new ArrayList<>();
 }

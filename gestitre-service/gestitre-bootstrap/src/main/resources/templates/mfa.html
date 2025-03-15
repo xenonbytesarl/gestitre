@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Spring boot mail template with Thymeleaf</title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="webjars/bootstrap/5.3.2/css/bootstrap.min.css">
+    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'/>
+
+    <!-- use the font -->
+    <style type="text/css">
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .email-container {
+            max-width: 40%;
+            margin: 0 auto;
+            background-color: #f0f8ff !important;
+            box-shadow: 1px 2px 3px 4px rgba(20,20,20,0.4);
+        }
+        .email-header {
+            background-color: #80c668 !important;
+            color: #fff !important;
+            padding: 10px;
+            text-align: center;
+        }
+        .email-body {
+            padding: 20px;
+            color: #3d3c3c;
+        }
+        .email-footer {
+            padding: 20px;
+            color: #3d3c3c;
+        }
+        .code {
+            color: #80c668 !important;
+            font-size: medium;
+            font-weight: bold;
+        }
+
+        .btn {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            width: 40%;
+            background-color: #80c668;
+            padding: 15px 10px;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 10px;
+        }
+
+        .btn:hover {
+            background-color: #6eaf57;
+            color: #ffffff;
+        }
+
+        .btn-text {
+            color: #ffffff;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="email-header text-start">
+            <h2>GESTITRE</h2>
+        </div>
+        <div class="email-body">
+            <p>Bonjour {fullName},</p>
+            <p>Vous avez effectuez une tentative de connexion votre compte</p>
+            <p>Veuillez entrer le code suivant pour vous connecter: <span class="code">{code}</span></p>
+            <p>Ce code expire dans <span class="code">{expireIn} minutes</span>.</p>
+            <p> Si vous n'êtes pas a l'origine de cette tentative de connexion, veuillez ignorer ce message.</p>
+
+        </div>
+        <div class="email-footer">
+            <p>Merci de nous avoir choisis.</p>
+        </div>
+    </div>
+</body>
+</html>

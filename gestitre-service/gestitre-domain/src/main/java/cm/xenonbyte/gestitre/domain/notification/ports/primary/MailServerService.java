@@ -11,7 +11,7 @@ import cm.xenonbyte.gestitre.domain.notification.MailServer;
 import cm.xenonbyte.gestitre.domain.notification.event.MailServerConfirmedEvent;
 import cm.xenonbyte.gestitre.domain.notification.event.MailServerCreatedEvent;
 import cm.xenonbyte.gestitre.domain.notification.event.MailServerUpdatedEvent;
-import cm.xenonbyte.gestitre.domain.common.vo.MailServerId;
+import cm.xenonbyte.gestitre.domain.notification.vo.MailServerId;
 import jakarta.annotation.Nonnull;
 
 /**
@@ -19,12 +19,16 @@ import jakarta.annotation.Nonnull;
 * @version 1.0
 * @since 29/11/2024
 */public interface MailServerService {
+
     @Nonnull MailServerCreatedEvent createMailServer(@Nonnull MailServer mailServer);
-    @Nonnull
-    MailServerUpdatedEvent updateMailServer(@Nonnull MailServerId mailServerId, @Nonnull MailServer newMailServer);
-    @Nonnull
-    MailServerConfirmedEvent confirmMailServer(@Nonnull MailServerId mailServerId, @Nonnull Code code);
+
+    @Nonnull MailServerUpdatedEvent updateMailServer(@Nonnull MailServerId mailServerId, @Nonnull MailServer newMailServer);
+
+    @Nonnull MailServerConfirmedEvent confirmMailServer(@Nonnull MailServerId mailServerId, @Nonnull Code code);
+
     @Nonnull MailServer findMailServerById(@Nonnull MailServerId mailServerId);
-    PageInfo<MailServer> findMailServers(@Nonnull PageInfoPage page, @Nonnull PageInfoSize size, @Nonnull PageInfoField field, @Nonnull PageInfoDirection direction);
+
     PageInfo<MailServer> searchMailServers(@Nonnull PageInfoPage page, @Nonnull PageInfoSize size, @Nonnull PageInfoField field, @Nonnull PageInfoDirection direction, @Nonnull Keyword keyword);
+
+    MailServer findDefaultMailServer();
 }

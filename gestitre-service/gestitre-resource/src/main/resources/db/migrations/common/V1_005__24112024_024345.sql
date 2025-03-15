@@ -1,7 +1,7 @@
 -- Permission for certificate template
-insert into t_permission (c_id, c_created_at, c_updated_at, c_name) values ('01935bd8-b568-7b70-bf61-cbbbdc707687', current_timestamp, null, 'create:certificate:template');
-insert into t_permission (c_id, c_created_at, c_updated_at, c_name) values ('01935bd8-d4d3-76a6-8bec-7edf01ea264d', current_timestamp, null, 'update:certificate:template');
-insert into t_permission (c_id, c_created_at, c_updated_at, c_name) values ('01935bd9-2c9f-7be6-8800-e0e332a9fe34', current_timestamp, null, 'read:certificate:template');
+insert into t_permission (c_id, c_created_at, c_updated_at, c_name) values ('01935bd8-b568-7b70-bf61-cbbbdc707687', current_timestamp, null, 'create:certificate_template');
+insert into t_permission (c_id, c_created_at, c_updated_at, c_name) values ('01935bd8-d4d3-76a6-8bec-7edf01ea264d', current_timestamp, null, 'update:certificate_template');
+insert into t_permission (c_id, c_created_at, c_updated_at, c_name) values ('01935bd9-2c9f-7be6-8800-e0e332a9fe34', current_timestamp, null, 'read:certificate_template');
 -- Permission for company
 insert into t_permission (c_id, c_created_at, c_updated_at, c_name) values ('01935bd9-2c9f-72a8-840b-ae72e943c715', current_timestamp, null, 'create:company');
 insert into t_permission (c_id, c_created_at, c_updated_at, c_name) values ('01935bd9-2c9f-7951-bfc5-3c02921ac515', current_timestamp, null, 'update:company');

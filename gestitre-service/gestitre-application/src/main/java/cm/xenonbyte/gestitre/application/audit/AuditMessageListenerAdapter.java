@@ -9,6 +9,14 @@ import cm.xenonbyte.gestitre.domain.common.verification.event.VerificationCreate
 import cm.xenonbyte.gestitre.domain.common.verification.event.VerificationVerifiedEvent;
 import cm.xenonbyte.gestitre.domain.company.event.CompanyCreatedEvent;
 import cm.xenonbyte.gestitre.domain.company.event.CompanyUpdatedEvent;
+import cm.xenonbyte.gestitre.domain.notification.event.MailCreatedEvent;
+import cm.xenonbyte.gestitre.domain.notification.event.MailFailedEvent;
+import cm.xenonbyte.gestitre.domain.notification.event.MailSentEvent;
+import cm.xenonbyte.gestitre.domain.notification.event.MailServerConfirmedEvent;
+import cm.xenonbyte.gestitre.domain.notification.event.MailServerCreatedEvent;
+import cm.xenonbyte.gestitre.domain.notification.event.MailServerUpdatedEvent;
+import cm.xenonbyte.gestitre.domain.notification.event.MailTemplateCreatedEvent;
+import cm.xenonbyte.gestitre.domain.notification.event.MailTemplateUpdatedEvent;
 import cm.xenonbyte.gestitre.domain.shareholder.event.ShareHolderCreatedEvent;
 import cm.xenonbyte.gestitre.domain.shareholder.event.ShareHolderUpdatedEvent;
 import cm.xenonbyte.gestitre.domain.stock.event.StockMoveCreatedEvent;
@@ -20,6 +28,14 @@ import lombok.extern.slf4j.Slf4j;
 
 import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.COMPANY_CREATED;
 import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.COMPANY_UPDATED;
+import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.MAIL_CREATED;
+import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.MAIL_FAIL;
+import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.MAIL_SEND;
+import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.MAIL_SERVER_CONFIRMED;
+import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.MAIL_SERVER_CREATED;
+import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.MAIL_SERVER_UPDATED;
+import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.MAIL_TEMPLATE_CREATED;
+import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.MAIL_TEMPLATE_UPDATED;
 import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.SHAREHOLDER_CREATED;
 import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.SHAREHOLDER_UPDATED;
 import static cm.xenonbyte.gestitre.domain.common.constant.CommonConstant.STOCK_MOVE_CREATED;
@@ -86,21 +102,21 @@ public final class AuditMessageListenerAdapter implements AuditMessageListener {
     @Blocking
     @ConsumeEvent(value = VERIFICATION_CREATED)
     public void handle(VerificationCreatedEvent event) {
-        log.info(">>>> Receiving event from VerificationMessagePublisher to create audit <verification with of type {}>", event.getVerification().getType().name());
+        log.info(">>>> Receiving event from VerificationMessagePublisher to create audit <create verification with of type {}>", event.getVerification().getType().name());
     }
 
     @Override
     @Blocking
     @ConsumeEvent(value = VERIFICATION_CANCELED)
     public void handle(VerificationCanceledEvent event) {
-        log.info(">>>> Receiving event from VerificationMessagePublisher to create audit  <canceled verification with of type {}>", event.getVerification().getType().name());
+        log.info(">>>> Receiving event from VerificationMessagePublisher to create audit  <code verification of type {} cancelled>", event.getVerification().getType().name());
     }
 
     @Override
     @Blocking
     @ConsumeEvent(value = VERIFICATION_VERIFIED)
     public void handle(VerificationVerifiedEvent event) {
-        log.info(">>>> Receiving event from VerificationMessagePublisher to create audit <verified verification with of type {}>", event.getVerification().getType().name());
+        log.info(">>>> Receiving event from VerificationMessagePublisher to create audit <code verification of type {} verified>", event.getVerification().getType().name());
     }
 
     @Override
@@ -124,5 +140,61 @@ public final class AuditMessageListenerAdapter implements AuditMessageListener {
     public void handle(StockMoveCreatedEvent event) {
         log.info(">>>> Receiving event from StockMoveMessagePublisher to create audit  <create stock move with reference {}>", event.getStockMove().getReference().text().value());
 
+    }
+
+    @Override
+    @Blocking
+    @ConsumeEvent(value = MAIL_SERVER_CREATED)
+    public void handle(MailServerCreatedEvent event) {
+        log.info(">>>> Receiving event from MailServerMessagePublisher to create audit  <create mail server with name {}>", event.getMailServer().getName().text().value());
+    }
+
+    @Override
+    @Blocking
+    @ConsumeEvent(value = MAIL_SERVER_UPDATED)
+    public void handle(MailServerUpdatedEvent event) {
+        log.info(">>>> Receiving event from MailServerMessagePublisher to create audit  <update mail server with name {}>", event.getMailServer().getName().text().value());
+    }
+
+    @Override
+    @Blocking
+    @ConsumeEvent(value = MAIL_SERVER_CONFIRMED)
+    public void handle(MailServerConfirmedEvent event) {
+        log.info(">>>> Receiving event from MailServerMessagePublisher to create audit  <mail server with name {} is confirmed>", event.getMailServer().getName().text().value());
+    }
+
+    @Override
+    @Blocking
+    @ConsumeEvent(value = MAIL_TEMPLATE_CREATED)
+    public void handle(MailTemplateCreatedEvent event) {
+        log.info(">>>> Receiving event from MailTemplateMessagePublisher to create audit  <create mail template with name {}>", event.getMailTemplate().getName().text().value());
+    }
+
+    @Override
+    @Blocking
+    @ConsumeEvent(value = MAIL_TEMPLATE_UPDATED)
+    public void handle(MailTemplateUpdatedEvent event) {
+        log.info(">>>> Receiving event from MailTemplateMessagePublisher to create audit  <update mail template with name {}>", event.getMailTemplate().getName().text().value());
+    }
+
+    @Override
+    @Blocking
+    @ConsumeEvent(value = MAIL_CREATED)
+    public void handle(MailCreatedEvent event) {
+        log.info(">>>> Receiving event from MailMessagePublisher to create audit  <create mail of type {}>", event.getMail().getType().name());
+    }
+
+    @Override
+    @Blocking
+    @ConsumeEvent(value = MAIL_FAIL)
+    public void handle(MailFailedEvent event) {
+        log.info(">>>> Receiving event from MailMessagePublisher to create audit  <send mail fail for type {}>", event.getMail().getType().name());
+    }
+
+    @Override
+    @Blocking
+    @ConsumeEvent(value = MAIL_SEND)
+    public void handle(MailSentEvent event) {
+        log.info(">>>> Receiving event from MailMessagePublisher to create audit  <send mail success for type {}>", event.getMail().getType().name());
     }
 }

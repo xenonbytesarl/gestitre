@@ -23,6 +23,5 @@ import java.util.List;
 @AllArgsConstructor
 public  class SearchCertificateTemplatesPageInfoViewResponse extends PageInfoView {
 
-    @Valid
-    private List<SearchCertificateTemplatesViewResponse> elements = new ArrayList<>();
+    private List<@Valid SearchCertificateTemplatesViewResponse> elements = new ArrayList<>();
 }

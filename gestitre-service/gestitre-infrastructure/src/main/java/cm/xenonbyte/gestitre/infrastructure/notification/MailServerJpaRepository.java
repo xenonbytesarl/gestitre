@@ -3,6 +3,7 @@ package cm.xenonbyte.gestitre.infrastructure.notification;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import jakarta.enterprise.context.ApplicationScoped;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -14,5 +15,9 @@ import java.util.UUID;
 public final class MailServerJpaRepository implements PanacheRepositoryBase<MailServerJpa, UUID> {
     public Boolean existsByName(String name) {
         return find("name", name).count() > 0;
+    }
+
+    public Optional<MailServerJpa> findByIsDefault() {
+        return find("isDefault", true).firstResultOptional();
     }
 }

@@ -3,9 +3,9 @@ package cm.xenonbyte.gestitre.application.shareholder;
 import cm.xenonbyte.gestitre.application.shareholder.dto.CreateShareHolderViewRequest;
 import cm.xenonbyte.gestitre.application.shareholder.dto.CreateShareHolderViewResponse;
 import cm.xenonbyte.gestitre.application.shareholder.dto.FindShareHolderByIdViewResponse;
-import cm.xenonbyte.gestitre.application.shareholder.dto.FindShareHoldersPageInfoViewResponse;
-import cm.xenonbyte.gestitre.application.shareholder.dto.UpdateShareShareHolderViewRequest;
+import cm.xenonbyte.gestitre.application.shareholder.dto.SearchShareHoldersPageInfoViewResponse;
 import cm.xenonbyte.gestitre.application.shareholder.dto.UpdateShareHolderViewResponse;
+import cm.xenonbyte.gestitre.application.shareholder.dto.UpdateShareShareHolderViewRequest;
 import cm.xenonbyte.gestitre.domain.common.vo.Keyword;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfo;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfoDirection;
@@ -81,7 +81,7 @@ public final class ShareHolderApplicationAdapterService implements ShareHolderAp
 
     @Nonnull
     @Override
-    public FindShareHoldersPageInfoViewResponse findShareHolders(Integer page, Integer size, String field, String direction, String keyword) {
+    public SearchShareHoldersPageInfoViewResponse searchShareHolders(Integer page, Integer size, String field, String direction, String keyword) {
         Tenant tenant = TenantContext.current() == null? null : tenantService.findTenantById(new TenantId(TenantContext.current()));
         Company company = tenant == null? null: companyService.findCompanyByName(tenant.getName());
         PageInfo<ShareHolder> shareHolderPageInfo = shareHolderService.searchShareHolders(
@@ -92,21 +92,21 @@ public final class ShareHolderApplicationAdapterService implements ShareHolderAp
                 Keyword.of(Text.of(keyword))
         );
 
-        FindShareHoldersPageInfoViewResponse findShareHolderPageInfoViewResponse
-                = shareHolderViewMapper.toFindShareHoldersPageInfoViewResponse(shareHolderPageInfo);
+        SearchShareHoldersPageInfoViewResponse searchShareHolderPageInfoViewResponse
+                = shareHolderViewMapper.toSearchShareHoldersPageInfoViewResponse(shareHolderPageInfo);
         if(company == null) {
-            return findShareHolderPageInfoViewResponse
+            return searchShareHolderPageInfoViewResponse
                     ;
         }
-        return FindShareHoldersPageInfoViewResponse.builder()
-                .pageSize(findShareHolderPageInfoViewResponse.getPageSize())
-                .pageSize(findShareHolderPageInfoViewResponse.getPageSize())
-                .totalPages(findShareHolderPageInfoViewResponse.getTotalPages())
-                .totalElements(findShareHolderPageInfoViewResponse.getTotalElements())
-                .first(findShareHolderPageInfoViewResponse.getFirst())
-                .last(findShareHolderPageInfoViewResponse.getLast())
+        return SearchShareHoldersPageInfoViewResponse.builder()
+                .pageSize(searchShareHolderPageInfoViewResponse.getPageSize())
+                .pageSize(searchShareHolderPageInfoViewResponse.getPageSize())
+                .totalPages(searchShareHolderPageInfoViewResponse.getTotalPages())
+                .totalElements(searchShareHolderPageInfoViewResponse.getTotalElements())
+                .first(searchShareHolderPageInfoViewResponse.getFirst())
+                .last(searchShareHolderPageInfoViewResponse.getLast())
                 .elements(
-                        findShareHolderPageInfoViewResponse
+                        searchShareHolderPageInfoViewResponse
                                 .getElements().stream()
                                 .map(value -> value.addCompanyInfo(company))
                                 .toList()
