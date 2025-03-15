@@ -57,7 +57,7 @@ public class CertificateTemplateResource {
     @POST
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    @RolesAllowed({"create:certificate:template"})
+    @RolesAllowed({"create:certificate_template"})
     public Response createCertificateTemplate(
             @HeaderParam("Accept-Language") String acceptLanguage,
             @Valid CreateCertificateTemplateViewRequest createCertificateTemplateViewRequest
@@ -79,7 +79,7 @@ public class CertificateTemplateResource {
     @GET
     @Path("/{certificateTemplateId}")
     @Produces(APPLICATION_JSON)
-    @RolesAllowed({"read:certificate:template"})
+    @RolesAllowed({"read:certificate_template"})
     public Response findCertificateTemplateById(
             @HeaderParam("Accept-Language") String acceptLanguage,
             @PathParam("certificateTemplateId") UUID certificateTemplateId) {
@@ -98,7 +98,7 @@ public class CertificateTemplateResource {
 
     @GET
     @Produces(APPLICATION_JSON)
-    @RolesAllowed({"read:certificate:template"})
+    @RolesAllowed({"read:certificate_template"})
     public Response findCertificateTemplates(
             @HeaderParam("Accept-Language") String acceptLanguage,
             @QueryParam("page") Integer page,
@@ -122,7 +122,7 @@ public class CertificateTemplateResource {
     @GET
     @Path("/search")
     @Produces(APPLICATION_JSON)
-    @RolesAllowed({"read:certificate:template"})
+    @RolesAllowed({"read:certificate_template"})
     public Response searchCertificateTemplates(
             @HeaderParam("Accept-Language") String acceptLanguage,
             @QueryParam("page") Integer page,
@@ -148,7 +148,7 @@ public class CertificateTemplateResource {
     @Path("/{certificateTemplateId}")
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    @RolesAllowed({"update:certificate:template"})
+    @RolesAllowed({"update:certificate_template"})
     public Response updateCertificateTemplate(
             @HeaderParam("Accept-Language") String acceptLanguage,
             @PathParam("certificateTemplateId") UUID certificateTemplateId,

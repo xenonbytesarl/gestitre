@@ -4,10 +4,10 @@ import cm.xenonbyte.gestitre.domain.common.entity.BaseEntity;
 import cm.xenonbyte.gestitre.domain.common.validation.Assert;
 import cm.xenonbyte.gestitre.domain.common.vo.Active;
 import cm.xenonbyte.gestitre.domain.common.vo.Email;
-import cm.xenonbyte.gestitre.domain.common.vo.MailServerId;
 import cm.xenonbyte.gestitre.domain.common.vo.Name;
 import cm.xenonbyte.gestitre.domain.common.vo.Password;
 import cm.xenonbyte.gestitre.domain.notification.vo.Host;
+import cm.xenonbyte.gestitre.domain.notification.vo.MailServerId;
 import cm.xenonbyte.gestitre.domain.notification.vo.MailServerState;
 import cm.xenonbyte.gestitre.domain.notification.vo.MailServerType;
 import cm.xenonbyte.gestitre.domain.notification.vo.Port;
@@ -43,6 +43,7 @@ public final class MailServer extends BaseEntity<MailServerId> {
     private MailServerState state;
     private ZonedDateTime confirmedAt;
     private Active active;
+    private IsDefault isDefault;
 
     public MailServer(Name name, Email from, MailServerType type, Host host, Port port, Protocol protocol) {
         this.name = Objects.requireNonNull(name);
@@ -69,6 +70,7 @@ public final class MailServer extends BaseEntity<MailServerId> {
         state = builder.state;
         confirmedAt = builder.confirmedAt;
         active = builder.active;
+        isDefault = builder.isDefault;
     }
 
     public static Builder builder() {
@@ -129,6 +131,10 @@ public final class MailServer extends BaseEntity<MailServerId> {
 
     public Active getActive() {
         return active;
+    }
+
+    public IsDefault getIsDefault() {
+        return isDefault;
     }
 
     public void validateMandatoryFields() {
@@ -193,6 +199,7 @@ public final class MailServer extends BaseEntity<MailServerId> {
         private MailServerState state;
         private ZonedDateTime confirmedAt;
         private Active active;
+        private IsDefault isDefault;
 
         private Builder() {
         }
@@ -269,6 +276,11 @@ public final class MailServer extends BaseEntity<MailServerId> {
 
         public Builder active(Active val) {
             active = val;
+            return this;
+        }
+
+        public Builder isDefault(IsDefault val) {
+            isDefault = val;
             return this;
         }
 

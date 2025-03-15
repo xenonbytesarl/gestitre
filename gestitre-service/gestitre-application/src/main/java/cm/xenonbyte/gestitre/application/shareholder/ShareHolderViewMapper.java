@@ -3,12 +3,12 @@ package cm.xenonbyte.gestitre.application.shareholder;
 import cm.xenonbyte.gestitre.application.shareholder.dto.CreateShareHolderViewRequest;
 import cm.xenonbyte.gestitre.application.shareholder.dto.CreateShareHolderViewResponse;
 import cm.xenonbyte.gestitre.application.shareholder.dto.FindShareHolderByIdViewResponse;
-import cm.xenonbyte.gestitre.application.shareholder.dto.FindShareHoldersPageInfoViewResponse;
-import cm.xenonbyte.gestitre.application.shareholder.dto.FindShareHoldersViewResponse;
 import cm.xenonbyte.gestitre.application.shareholder.dto.RepresentativeView;
+import cm.xenonbyte.gestitre.application.shareholder.dto.SearchShareHoldersPageInfoViewResponse;
+import cm.xenonbyte.gestitre.application.shareholder.dto.SearchShareHoldersViewResponse;
 import cm.xenonbyte.gestitre.application.shareholder.dto.SuccessorView;
-import cm.xenonbyte.gestitre.application.shareholder.dto.UpdateShareShareHolderViewRequest;
 import cm.xenonbyte.gestitre.application.shareholder.dto.UpdateShareHolderViewResponse;
+import cm.xenonbyte.gestitre.application.shareholder.dto.UpdateShareShareHolderViewRequest;
 import cm.xenonbyte.gestitre.domain.common.vo.Email;
 import cm.xenonbyte.gestitre.domain.common.vo.Name;
 import cm.xenonbyte.gestitre.domain.common.vo.PageInfo;
@@ -157,12 +157,13 @@ public interface ShareHolderViewMapper {
     @Mapping(source = "pageSize", target = "pageSize")
     @Mapping(source = "totalPages", target = "totalPages")
     @Mapping(source = "totalElements", target = "totalElements")
-    @Mapping(source = "elements", qualifiedByName = "toFindShareHolderViewResponses", target = "elements")
-    @Nonnull FindShareHoldersPageInfoViewResponse toFindShareHoldersPageInfoViewResponse(@Nonnull PageInfo<ShareHolder> shareHolderPageInfo);
+    @Mapping(source = "elements", qualifiedByName = "toSearchShareHolderViewResponses", target = "elements")
+    @Nonnull
+    SearchShareHoldersPageInfoViewResponse toSearchShareHoldersPageInfoViewResponse(@Nonnull PageInfo<ShareHolder> shareHolderPageInfo);
 
 
-    @Named("toFindShareHolderViewResponses")
-    @Nonnull @Valid List<FindShareHoldersViewResponse> toFindShareHolderViewResponses(@Nonnull List<ShareHolder> shareHolders);
+    @Named("toSearchShareHolderViewResponses")
+    @Nonnull @Valid List<SearchShareHoldersViewResponse> toSearchShareHolderViewResponses(@Nonnull List<ShareHolder> shareHolders);
 
 
     @BeanMapping(ignoreByDefault = true)
@@ -184,7 +185,7 @@ public interface ShareHolderViewMapper {
     @Mapping(source = "successor", qualifiedByName = "successorToSuccessorView", target = "successorView")
     @Mapping(expression = "java(cm.xenonbyte.gestitre.domain.context.TimezoneContext.current() == null? null: shareHolder.getCreatedDate().withZoneSameInstant(java.time.ZoneId.of(cm.xenonbyte.gestitre.domain.context.TimezoneContext.current().getName())))", target="createdDate")
     @Mapping(source = "tenantId.value", target="tenantId")
-    @Nonnull @Valid FindShareHoldersViewResponse toFindShareHolderViewResponse(ShareHolder shareHolder);
+    @Nonnull @Valid SearchShareHoldersViewResponse toSearchShareHolderViewResponse(ShareHolder shareHolder);
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "id", target="id.value")

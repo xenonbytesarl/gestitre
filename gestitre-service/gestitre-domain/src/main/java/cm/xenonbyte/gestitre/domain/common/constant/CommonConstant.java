@@ -23,7 +23,14 @@ public final class CommonConstant {
     public static final String VERIFICATION_CANCELED = "VERIFICATION_CANCELED";
     public static final String VERIFICATION_VERIFIED = "VERIFICATION_VERIFIED";
     public static final String MAIL_SERVER_CREATED = "MAIL_SERVER_CREATED";
+    public static final String MAIL_SERVER_UPDATED = "MAIL_SERVER_UPDATED";
+    public static final String MAIL_SERVER_CONFIRMED = "MAIL_SERVER_CONFIRMED";
     public static final String SHAREHOLDER_CREATED = "SHAREHOLDER_CREATED";
     public static final String SHAREHOLDER_UPDATED = "SHAREHOLDER_UPDATED";
     public static final String STOCK_MOVE_CREATED = "STOCK_MOVE_CREATED";
+    public static final String MAIL_TEMPLATE_CREATED = "MAIL_TEMPLATE_CREATED";
+    public static final String MAIL_TEMPLATE_UPDATED = "MAIL_TEMPLATE_UPDATED";
+    public static final String MAIL_CREATED = "MAIL_CREATED";
+    public static final String MAIL_SEND = "MAIL_SEND";
+    public static final String MAIL_FAIL = "MAIL_FAIL";
 }

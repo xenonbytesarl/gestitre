@@ -1,8 +1,7 @@
-package cm.xenonbyte.gestitre.application.shareholder.dto;
+package cm.xenonbyte.gestitre.application.notification.dto;
 
 import cm.xenonbyte.gestitre.application.common.dto.PageInfoView;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,14 +13,13 @@ import java.util.List;
 /**
  * @author bamk
  * @version 1.0
- * @since 09/02/2025
+ * @since 15/03/2025
  */
 @Getter
 @Setter
 @SuperBuilder
 @NoArgsConstructor
-@AllArgsConstructor
-public final class FindShareHoldersPageInfoViewResponse extends PageInfoView {
-    @Valid
-    private List<FindShareHoldersViewResponse> elements = new ArrayList<>();
+public final class SearchMailServerPageInfoViewResponse extends PageInfoView {
+
+    private List<@Valid SearchMailsServerViewResponse> elements = new ArrayList<>();
 }

@@ -41,7 +41,7 @@ public interface VerificationJpaMapper {
     @Mapping(target = "createdAt", source = "creationAt")
     @Mapping(target = "email.text.value", source = "email")
     @Mapping(target = "userId", expression = "java(verificationJpa.getUserJpa() == null? null: new cm.xenonbyte.gestitre.domain.common.vo.UserId(verificationJpa.getUserJpa().getId()))")
-    @Mapping(target = "mailServerId", expression = "java(verificationJpa.getMailServerJpa() == null? null: new cm.xenonbyte.gestitre.domain.common.vo.MailServerId(verificationJpa.getMailServerJpa().getId()))")
+    @Mapping(target = "mailServerId", expression = "java(verificationJpa.getMailServerJpa() == null? null: new cm.xenonbyte.gestitre.domain.notification.vo.MailServerId(verificationJpa.getMailServerJpa().getId()))")
     @Mapping(target = "type", expression = "java(cm.xenonbyte.gestitre.domain.common.verification.vo.VerificationType.valueOf(verificationJpa.getType().name()))")
     @Mapping(target = "status", expression = "java(cm.xenonbyte.gestitre.domain.common.verification.vo.VerificationStatus.valueOf(verificationJpa.getStatus().name()))")
     @Nonnull Verification toVerification(@Nonnull VerificationJpa verificationJpa);

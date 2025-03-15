@@ -11,8 +11,8 @@ import cm.xenonbyte.gestitre.domain.common.verification.vo.VerificationType;
 import cm.xenonbyte.gestitre.domain.common.vo.Code;
 import cm.xenonbyte.gestitre.domain.common.vo.Email;
 import cm.xenonbyte.gestitre.domain.common.vo.Text;
-import cm.xenonbyte.gestitre.domain.common.vo.MailServerId;
 import cm.xenonbyte.gestitre.domain.common.vo.UserId;
+import cm.xenonbyte.gestitre.domain.notification.vo.MailServerId;
 
 import java.time.ZonedDateTime;
 import java.util.Objects;

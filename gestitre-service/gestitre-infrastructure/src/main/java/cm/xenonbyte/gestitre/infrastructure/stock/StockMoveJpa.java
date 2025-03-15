@@ -34,7 +34,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "t_stock_move")
-public final class StockMoveJpa extends Tenantable {
+public class StockMoveJpa extends Tenantable {
 
     @Column(name = "c_reference", unique = true, nullable = false, length = 32)
     private String reference;

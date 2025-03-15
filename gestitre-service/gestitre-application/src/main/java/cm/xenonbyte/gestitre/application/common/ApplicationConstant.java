@@ -16,6 +16,7 @@ public final class ApplicationConstant {
     public static final String MAIL_SERVER_API_PATH = ROOT_API_PATH + "/mail-servers";
     public static final String SHARE_HOLDER_API_PATH = ROOT_API_PATH + "/shareholders";
     public static final String STOCK_MOVE_API_PATH = ROOT_API_PATH + "/stock-moves";
+    public static final String MAIL_TEMPLATE_API_PATH = ROOT_API_PATH + "/mail-templates";
     public static final String CONTENT = "content";
 
     public static final String NOT_EMPTY = "ApplicationConstant.NotEmpty";

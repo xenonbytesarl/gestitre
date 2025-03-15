@@ -28,9 +28,24 @@ import cm.xenonbyte.gestitre.domain.company.ports.secondary.repository.Certifica
 import cm.xenonbyte.gestitre.domain.company.ports.secondary.repository.CompanyRepository;
 import cm.xenonbyte.gestitre.domain.file.StorageManagerDomainService;
 import cm.xenonbyte.gestitre.domain.file.port.primary.StorageManager;
+import cm.xenonbyte.gestitre.domain.notification.MailDomainService;
 import cm.xenonbyte.gestitre.domain.notification.MailServerDomainService;
+import cm.xenonbyte.gestitre.domain.notification.MailTemplateDomainService;
+import cm.xenonbyte.gestitre.domain.notification.event.MailCreatedEvent;
+import cm.xenonbyte.gestitre.domain.notification.event.MailServerConfirmedEvent;
+import cm.xenonbyte.gestitre.domain.notification.event.MailServerCreatedEvent;
+import cm.xenonbyte.gestitre.domain.notification.event.MailServerUpdatedEvent;
+import cm.xenonbyte.gestitre.domain.notification.event.MailTemplateCreatedEvent;
+import cm.xenonbyte.gestitre.domain.notification.event.MailTemplateUpdatedEvent;
 import cm.xenonbyte.gestitre.domain.notification.ports.primary.MailServerService;
+import cm.xenonbyte.gestitre.domain.notification.ports.primary.MailService;
+import cm.xenonbyte.gestitre.domain.notification.ports.primary.MailTemplateService;
+import cm.xenonbyte.gestitre.domain.notification.ports.secondary.MailMessagePublisher;
+import cm.xenonbyte.gestitre.domain.notification.ports.secondary.MailRepository;
+import cm.xenonbyte.gestitre.domain.notification.ports.secondary.MailSenderService;
 import cm.xenonbyte.gestitre.domain.notification.ports.secondary.MailServerRepository;
+import cm.xenonbyte.gestitre.domain.notification.ports.secondary.MailTemplateMessagePublisher;
+import cm.xenonbyte.gestitre.domain.notification.ports.secondary.MailTemplateRepository;
 import cm.xenonbyte.gestitre.domain.notification.ports.secondary.message.MailServerMessagePublisher;
 import cm.xenonbyte.gestitre.domain.shareholder.ShareHolderDomainService;
 import cm.xenonbyte.gestitre.domain.shareholder.event.ShareHolderCreatedEvent;
@@ -133,6 +148,12 @@ public final class BootstrapApplicationContext {
         eventBus.registerDefaultCodec(VerificationVerifiedEvent.class, new GenericCodec<>(VerificationVerifiedEvent.class));
         eventBus.registerDefaultCodec(ShareHolderCreatedEvent.class, new GenericCodec<>(ShareHolderCreatedEvent.class));
         eventBus.registerDefaultCodec(StockMoveCreatedEvent.class, new GenericCodec<>(StockMoveCreatedEvent.class));
+        eventBus.registerDefaultCodec(MailServerCreatedEvent.class, new GenericCodec<>(MailServerCreatedEvent.class));
+        eventBus.registerDefaultCodec(MailServerUpdatedEvent.class, new GenericCodec<>(MailServerUpdatedEvent.class));
+        eventBus.registerDefaultCodec(MailTemplateCreatedEvent.class, new GenericCodec<>(MailTemplateCreatedEvent.class));
+        eventBus.registerDefaultCodec(MailTemplateUpdatedEvent.class, new GenericCodec<>(MailTemplateUpdatedEvent.class));
+        eventBus.registerDefaultCodec(MailCreatedEvent.class, new GenericCodec<>(MailCreatedEvent.class));
+        eventBus.registerDefaultCodec(MailServerConfirmedEvent.class, new GenericCodec<>(MailServerConfirmedEvent.class));
         return eventBus;
     }
 
@@ -177,6 +198,25 @@ public final class BootstrapApplicationContext {
             CompanyRepository companyRepository
     ) {
         return new StockMoveDomainService(stockMoveRepository, stockMessagePublisher, companyRepository);
+    }
+
+    @ApplicationScoped
+    public MailTemplateDomainService mailTemplateDomainService(
+            MailTemplateRepository mailTemplateRepository,
+            MailTemplateMessagePublisher mailTemplateMessagePublisher
+    ) {
+        return new MailTemplateDomainService(mailTemplateRepository, mailTemplateMessagePublisher);
+    }
+
+    @ApplicationScoped
+    public MailService mailService(
+          MailTemplateService mailTemplateService,
+          MailServerService mailServerService,
+          MailRepository mailRepository,
+          MailMessagePublisher mailMessagePublisher,
+          MailSenderService mailSenderService
+    ) {
+        return new MailDomainService(mailTemplateService, mailServerService, mailRepository, mailMessagePublisher, mailSenderService);
     }
 
 }

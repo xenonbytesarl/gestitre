@@ -14,5 +14,5 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @SuperBuilder
 @NoArgsConstructor
-public final class CreateMailServerViewResponse extends MailServerViewResponse{
+public final class CreateMailServerViewResponse extends MailServerViewResponse {
 }

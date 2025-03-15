@@ -6,8 +6,8 @@ import cm.xenonbyte.gestitre.domain.common.verification.vo.VerificationId;
 import cm.xenonbyte.gestitre.domain.common.verification.vo.VerificationStatus;
 import cm.xenonbyte.gestitre.domain.common.vo.Code;
 import cm.xenonbyte.gestitre.domain.common.vo.Email;
-import cm.xenonbyte.gestitre.domain.common.vo.MailServerId;
 import cm.xenonbyte.gestitre.domain.common.vo.UserId;
+import cm.xenonbyte.gestitre.domain.notification.vo.MailServerId;
 import jakarta.annotation.Nonnull;
 
 import java.util.Optional;

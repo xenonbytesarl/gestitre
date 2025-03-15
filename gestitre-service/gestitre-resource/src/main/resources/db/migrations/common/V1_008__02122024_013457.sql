@@ -18,6 +18,7 @@ create table if not exists t_mail_server
     c_use_ssl      boolean,
     c_use_auth     boolean,
     c_active       boolean,
+    c_is_default boolean,
     constraint Pk_t_mail_server primary key (c_id),
     constraint Uk_t_mail_server_c_name unique (c_name)
 );

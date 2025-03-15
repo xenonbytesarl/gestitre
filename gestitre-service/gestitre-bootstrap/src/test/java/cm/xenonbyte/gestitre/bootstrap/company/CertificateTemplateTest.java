@@ -363,15 +363,15 @@ final class CertificateTemplateTest {
                                 .permissions(Set.of(
                                         Permission.builder()
                                                 .id(new PermissionId(UUID.fromString("01935bd8-b568-7b70-bf61-cbbbdc707687")))
-                                                .name(Name.of(Text.of("create:certificate:template")))
+                                                .name(Name.of(Text.of("create:certificate_template")))
                                                 .build(),
                                         Permission.builder()
                                                 .id(new PermissionId(UUID.fromString("01935bd8-d4d3-76a6-8bec-7edf01ea264d")))
-                                                .name(Name.of(Text.of("update:certificate:template")))
+                                                .name(Name.of(Text.of("update:certificate_template")))
                                                 .build(),
                                         Permission.builder()
                                                 .id(new PermissionId(UUID.fromString("01935bd9-2c9f-7be6-8800-e0e332a9fe34")))
-                                                .name(Name.of(Text.of("read:certificate:template")))
+                                                .name(Name.of(Text.of("read:certificate_template")))
                                                 .build()
                                 ))
                                 .build()

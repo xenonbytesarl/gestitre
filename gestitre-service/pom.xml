@@ -37,6 +37,7 @@
         <quarkus.platform.version>3.16.1</quarkus.platform.version>
         <aspectj.version>1.9.22.1</aspectj.version>
         <commons-lang3.version>3.17.0</commons-lang3.version>
+        <angus-mail.version>2.0.3</angus-mail.version>
     </properties>
 
     <dependencyManagement>

@@ -1,5 +1,6 @@
-package cm.xenonbyte.gestitre.domain.common.vo;
+package cm.xenonbyte.gestitre.domain.notification.vo;
 
+import cm.xenonbyte.gestitre.domain.common.vo.BaseId;
 import jakarta.annotation.Nonnull;
 
 import java.util.UUID;

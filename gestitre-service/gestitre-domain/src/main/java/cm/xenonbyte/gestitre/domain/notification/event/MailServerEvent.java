@@ -28,4 +28,16 @@ public class MailServerEvent implements BaseEvent<MailServer> {
     public ZonedDateTime getCreatedAt() {
         return createdAt;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        MailServerEvent that = (MailServerEvent) o;
+        return Objects.equals(mailServer, that.mailServer) && Objects.equals(createdAt, that.createdAt);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(mailServer, createdAt);
+    }
 }

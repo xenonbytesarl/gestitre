@@ -32,7 +32,7 @@ import java.time.ZonedDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "t_stock_move_line")
-public final class StockMoveLineJpa extends Tenantable {
+public class StockMoveLineJpa extends Tenantable {
 
     @Column(name = "c_reference", unique = true, nullable = false, length = 32)
     private String reference;

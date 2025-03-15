@@ -71,6 +71,6 @@ public class MailServerJpa extends Auditable {
     @Column(name = "c_active")
     private Boolean active;
 
-
-
+    @Column(name = "c_is_default")
+    private Boolean isDefault;
 }
